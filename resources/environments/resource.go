@@ -21,13 +21,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dtcookie/dynatrace/api/cluster/v2/envs"
-	"github.com/dtcookie/dynatrace/rest"
-	"github.com/dtcookie/hcl"
-	"github.com/dtcookie/opt"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/config"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/hcl2sdk"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/logging"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/cluster/v2/envs"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/logging"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -36,7 +34,7 @@ import (
 // Resource produces terraform resource definition for Management Zones
 func Resource() *schema.Resource {
 	return &schema.Resource{
-		Schema:        hcl2sdk.Convert(new(envs.Environment).Schema()),
+		Schema:        new(envs.Environment).Schema(),
 		CreateContext: logging.Enable(Create),
 		UpdateContext: logging.Enable(Update),
 		ReadContext:   logging.Enable(Read),
@@ -48,7 +46,6 @@ func Resource() *schema.Resource {
 func NewService(m interface{}) *envs.ServiceClient {
 	conf := m.(*config.ProviderConfiguration)
 	apiService := envs.NewService(fmt.Sprintf("%s%s", conf.ClusterAPIV2URL, "/api/cluster/v2"), conf.ClusterAPIToken)
-	rest.Verbose = config.HTTPVerbose
 	return apiService
 }
 
