@@ -19,7 +19,6 @@ package resources
 
 import (
 	"context"
-	"log"
 	"os"
 
 	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
@@ -95,7 +94,6 @@ func (me *Generic) Update(ctx context.Context, d *schema.ResourceData, m interfa
 }
 
 func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	log.Println("Generic", "Read", d.Id())
 	var err error
 	var restLogFile *os.File
 	restLogFileName := os.Getenv("DT_REST_DEBUG_LOG")
