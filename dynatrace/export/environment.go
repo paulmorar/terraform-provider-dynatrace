@@ -19,7 +19,6 @@ package export
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"sort"
@@ -70,7 +69,7 @@ func (me *Environment) InitialDownload() error {
 }
 
 func (me *Environment) PostProcess() error {
-	log.Println("Post-Processing Resources ...")
+	fmt.Println("Post-Processing Resources ...")
 	resources := me.GetNonPostProcessedResources()
 	for len(resources) > 0 {
 		for _, resource := range resources {

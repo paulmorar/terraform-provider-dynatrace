@@ -20,7 +20,6 @@ package export
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path"
@@ -313,7 +312,7 @@ func (me *Module) Download(keys ...string) (err error) {
 			return err
 		}
 	}
-	log.Println("Downloading \"" + me.Type + "\" ...")
+	fmt.Println("Downloading \"" + me.Type + "\" ...")
 	if len(keys) == 0 {
 		for _, resource := range me.Resources {
 			if err := resource.Download(); err != nil {
@@ -392,8 +391,17 @@ func (me *Module) ExecuteImport() (err error) {
 			}
 		}
 	}
-	log.Println("  -", me.Type)
+	length := 0
+	for _, resource := range me.Resources {
+		if !resource.Status.IsOneOf(ResourceStati.PostProcessed) {
+			continue
+		}
+		length++
+	}
+	fmt.Printf("  - %s (0 of %d)", me.Type, length)
 	exePath, _ := exec.LookPath("terraform")
+	const ClearLine = "\033[2K"
+	idx := 0
 	for _, resource := range me.Resources {
 		if !resource.Status.IsOneOf(ResourceStati.PostProcessed) {
 			continue
@@ -407,6 +415,8 @@ func (me *Module) ExecuteImport() (err error) {
 			exePath,
 			"import",
 			"-lock=false",
+			"-input=false",
+			"-no-color",
 			statement,
 			resource.ID,
 		)
@@ -419,7 +429,7 @@ func (me *Module) ExecuteImport() (err error) {
 			return err
 		}
 		cmd.Env = []string{
-			"TF_LOG_PROVIDER=INFO",
+			// "TF_LOG_PROVIDER=INFO",
 			"DYNATRACE_ENV_URL=" + me.Environment.Credentials.URL,
 			"DYNATRACE_API_TOKEN=" + me.Environment.Credentials.Token,
 			"DT_CACHE_FOLDER=" + cacheFolder,
@@ -432,7 +442,14 @@ func (me *Module) ExecuteImport() (err error) {
 			fmt.Println("out:", outb.String())
 			fmt.Println("err:", errb.String())
 		}
+		idx++
+		fmt.Print(ClearLine)
+		fmt.Print("\r")
+		fmt.Printf("  - %s (%d of %d)", me.Type, idx, length)
 	}
+	fmt.Print(ClearLine)
+	fmt.Print("\r")
+	fmt.Printf("  - %s\n", me.Type)
 	me.Status = ModuleStati.Imported
 	return nil
 }

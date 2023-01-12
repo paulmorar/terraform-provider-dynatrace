@@ -19,7 +19,6 @@ package dynatrace
 
 import (
 	"fmt"
-	"log"
 	"os/exec"
 	"strings"
 
@@ -59,7 +58,7 @@ func runExport() (err error) {
 	}
 
 	if environment.Flags.ImportState {
-		log.Println("Importing Resources into Terraform State ...")
+		fmt.Println("Importing Resources into Terraform State ...")
 		if err = environment.ExecuteImport(); err != nil {
 			return err
 		}
