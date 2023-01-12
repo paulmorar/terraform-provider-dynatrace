@@ -406,6 +406,7 @@ func (me *Module) ExecuteImport() (err error) {
 		cmd := exec.Command(
 			exePath,
 			"import",
+			"-lock=false",
 			statement,
 			resource.ID,
 		)
