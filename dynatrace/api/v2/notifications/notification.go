@@ -20,7 +20,6 @@ package notifications
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	ansible "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/ansible/settings"
 	email "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/email/settings"
@@ -68,7 +67,6 @@ type preparer interface {
 }
 
 func (me *Notification) PrepareMarshalHCL(decoder hcl.Decoder) error {
-	log.Println("Notification", "PrepareMarshalHCL")
 	config := me.resolveConfig()
 	if preparer, ok := config.(preparer); ok {
 		return preparer.PrepareMarshalHCL(decoder)
