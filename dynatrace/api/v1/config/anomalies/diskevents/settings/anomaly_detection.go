@@ -98,9 +98,9 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnomalyDetection) MarshalHCL() (map[string]interface{}, error) {
+func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
-	properties, err := properties.EncodeAll(map[string]interface{}{
+	properties, err := properties.EncodeAll(map[string]any{
 		"name":              me.Name,
 		"threshold":         me.Threshold,
 		"enabled":           me.Enabled,
@@ -115,18 +115,18 @@ func (me *AnomalyDetection) MarshalHCL() (map[string]interface{}, error) {
 		properties["host_group_id"] = *me.HostGroupID
 	}
 	if me.DiskNameFilter != nil {
-		if marshalled, err := me.DiskNameFilter.MarshalHCL(); err != nil {
+		if marshalled, err := me.DiskNameFilter.MarshalHCL(decoder); err != nil {
 			return nil, err
 		} else {
-			properties["disk_name"] = []interface{}{marshalled}
+			properties["disk_name"] = []any{marshalled}
 		}
 
 	}
 	if len(me.TagFilters) > 0 {
-		if marshalled, err := me.TagFilters.MarshalHCL(); err != nil {
+		if marshalled, err := me.TagFilters.MarshalHCL(decoder); err != nil {
 			return nil, err
 		} else {
-			properties["tags"] = []interface{}{marshalled}
+			properties["tags"] = []any{marshalled}
 		}
 	}
 	return properties, nil
@@ -175,7 +175,7 @@ func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *AnomalyDetection) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"name":             me.Name,
 		"hostGroupId":      me.HostGroupID,
 		"threshold":        me.Threshold,
@@ -196,7 +196,7 @@ func (me *AnomalyDetection) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"name":             &me.Name,
 		"hostGroupId":      &me.HostGroupID,
 		"threshold":        &me.Threshold,

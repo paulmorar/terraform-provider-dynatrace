@@ -108,8 +108,8 @@ func (me *Request) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Request) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Request) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if me.Description != nil && len(*me.Description) > 0 {
 		result["description"] = *me.Description
 	}
@@ -125,22 +125,22 @@ func (me *Request) MarshalHCL() (map[string]interface{}, error) {
 		result["post_processing"] = *me.PostProcessing
 	}
 	if me.Validation != nil {
-		if marshalled, err := me.Validation.MarshalHCL(); err == nil {
-			result["validation"] = []interface{}{marshalled}
+		if marshalled, err := me.Validation.MarshalHCL(decoder); err == nil {
+			result["validation"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Authentication != nil {
-		if marshalled, err := me.Authentication.MarshalHCL(); err == nil {
-			result["authentication"] = []interface{}{marshalled}
+		if marshalled, err := me.Authentication.MarshalHCL(decoder); err == nil {
+			result["authentication"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Configuration != nil {
-		if marshalled, err := me.Configuration.MarshalHCL(); err == nil {
-			result["configuration"] = []interface{}{marshalled}
+		if marshalled, err := me.Configuration.MarshalHCL(decoder); err == nil {
+			result["configuration"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

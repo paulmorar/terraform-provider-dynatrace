@@ -102,8 +102,8 @@ func (me *Window) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Window) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Window) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.Unknowns != nil {
 		delete(me.Unknowns, "managementZoneId")
@@ -120,8 +120,8 @@ func (me *Window) MarshalHCL() (map[string]interface{}, error) {
 		result["description"] = me.Description
 	}
 	if me.Schedule != nil {
-		if marshalled, err := me.Schedule.MarshalHCL(); err == nil {
-			result["schedule"] = []interface{}{marshalled}
+		if marshalled, err := me.Schedule.MarshalHCL(decoder); err == nil {
+			result["schedule"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -133,8 +133,8 @@ func (me *Window) MarshalHCL() (map[string]interface{}, error) {
 		result["enabled"] = me.Enabled
 	}
 	if me.Scope != nil && !me.Scope.IsEmpty() {
-		if marshalled, err := me.Scope.MarshalHCL(); err == nil {
-			result["scope"] = []interface{}{marshalled}
+		if marshalled, err := me.Scope.MarshalHCL(decoder); err == nil {
+			result["scope"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

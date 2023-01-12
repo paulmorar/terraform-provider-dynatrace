@@ -48,15 +48,15 @@ var DisabledTests = map[string]bool{
 type ResourceTest interface {
 	ResourceKey() string
 	CreateTestCase(string, string, *testing.T) (*resource.TestCase, error)
-	Anonymize(m map[string]interface{})
+	Anonymize(m map[string]any)
 	URL(id string) string
 }
 
-func DeepEqual(a interface{}, b interface{}) bool {
+func DeepEqual(a any, b any) bool {
 	return deepEqual(a, b, "", nil)
 }
 
-func deepEqual(a interface{}, b interface{}, addr string, t *testing.T) bool {
+func deepEqual(a any, b any, addr string, t *testing.T) bool {
 	// if t != nil {
 	// 	t.Logf("deepEqual(%v)", addr)
 	// }
@@ -73,22 +73,22 @@ func deepEqual(a interface{}, b interface{}, addr string, t *testing.T) bool {
 		return false
 	}
 	switch ta := a.(type) {
-	case map[string]interface{}:
-		return deepEqualMap(ta, b.(map[string]interface{}), addr, t)
+	case map[string]any:
+		return deepEqualMap(ta, b.(map[string]any), addr, t)
 	case bool:
 		return ta == b.(bool)
 	case string:
 		return ta == b.(string)
 	case float64:
 		return ta == b.(float64)
-	case []interface{}:
-		return deepEqualSlice(ta, b.([]interface{}), addr, t)
+	case []any:
+		return deepEqualSlice(ta, b.([]any), addr, t)
 	default:
 		panic(fmt.Errorf("unsupported type %T", ta))
 	}
 }
 
-func deepEqualSlice(a []interface{}, b []interface{}, addr string, t *testing.T) bool {
+func deepEqualSlice(a []any, b []any, addr string, t *testing.T) bool {
 	if len(a) != len(b) {
 		return false
 	}
@@ -107,7 +107,7 @@ func deepEqualSlice(a []interface{}, b []interface{}, addr string, t *testing.T)
 	return true
 }
 
-func deepEqualMap(a map[string]interface{}, b map[string]interface{}, addr string, t *testing.T) bool {
+func deepEqualMap(a map[string]any, b map[string]any, addr string, t *testing.T) bool {
 	for k, va := range a {
 		vb, found := b[k]
 		if !found {
@@ -120,7 +120,7 @@ func deepEqualMap(a map[string]interface{}, b map[string]interface{}, addr strin
 	return true
 }
 
-func LoadHTTP(url string, token string) (map[string]interface{}, error) {
+func LoadHTTP(url string, token string) (map[string]any, error) {
 	var err error
 	var request *http.Request
 	var response *http.Response
@@ -141,27 +141,27 @@ func LoadHTTP(url string, token string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	m := map[string]interface{}{}
+	m := map[string]any{}
 	if err = json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func LoadLocal(file string) (map[string]interface{}, error) {
+func LoadLocal(file string) (map[string]any, error) {
 	var err error
 	var data []byte
 	if data, err = ioutil.ReadFile(file); err != nil {
 		return nil, err
 	}
-	m := map[string]interface{}{}
+	m := map[string]any{}
 	if err = json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func LoadLocalN(file string, n string) (map[string]interface{}, error) {
+func LoadLocalN(file string, n string) (map[string]any, error) {
 	var err error
 	var data []byte
 	if data, err = ioutil.ReadFile(file); err != nil {
@@ -174,7 +174,7 @@ func LoadLocalN(file string, n string) (map[string]interface{}, error) {
 		sData = strings.ReplaceAll(sData, "#name#", n)
 		data = []byte(sData)
 	}
-	m := map[string]interface{}{}
+	m := map[string]any{}
 	if err = json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
@@ -188,8 +188,8 @@ func CompareLocalRemote(test ResourceTest, n string, localJSONFile string, t *te
 func CompareLocalRemoteExt(test ResourceTest, n string, localJSONFile string, t *testing.T, loadHTTPOnly bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		var err error
-		var localMap map[string]interface{}
-		var remoteMap map[string]interface{}
+		var localMap map[string]any
+		var remoteMap map[string]any
 
 		if rs, ok := s.RootModule().Resources[n]; ok {
 			token := TestAccProvider.Meta().(*config.ProviderConfiguration).APIToken

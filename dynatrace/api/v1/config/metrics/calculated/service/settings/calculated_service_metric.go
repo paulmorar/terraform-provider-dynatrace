@@ -115,7 +115,7 @@ func (me *CalculatedServiceMetric) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CalculatedServiceMetric) MarshalHCL() (map[string]interface{}, error) {
+func (me *CalculatedServiceMetric) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err
@@ -124,7 +124,7 @@ func (me *CalculatedServiceMetric) MarshalHCL() (map[string]interface{}, error) 
 	if me.MetricDefinition != nil && me.MetricDefinition.Metric == nil && me.MetricDefinition.RequestAttribute == nil {
 		me.MetricDefinition = nil
 	}
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"entity_id":            me.EntityID,
 		"name":                 me.Name,
 		"description":          me.Description,
@@ -144,7 +144,7 @@ func (me *CalculatedServiceMetric) UnmarshalHCL(decoder hcl.Decoder) error {
 	if me.Unknowns != nil {
 		delete(me.Unknowns, "metadata")
 	}
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"entity_id":            &me.EntityID,
 		"name":                 &me.Name,
 		"description":          &me.Description,
@@ -172,7 +172,7 @@ func (me *CalculatedServiceMetric) MarshalJSON() ([]byte, error) {
 		delete(me.Unknowns, "metadata")
 	}
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"entityId":            me.EntityID,
 		"name":                me.Name,
 		"description":         me.Description,
@@ -198,7 +198,7 @@ func (me *CalculatedServiceMetric) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	err := properties.UnmarshalAll(map[string]interface{}{
+	err := properties.UnmarshalAll(map[string]any{
 		"entityId":            &me.EntityID,
 		"name":                &me.Name,
 		"description":         &me.Description,

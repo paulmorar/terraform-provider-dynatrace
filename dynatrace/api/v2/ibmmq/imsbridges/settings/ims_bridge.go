@@ -68,18 +68,18 @@ func (me *IMSBridge) EnsurePredictableOrder() {
 	}
 }
 
-func (me *IMSBridge) MarshalHCL() (map[string]interface{}, error) {
+func (me *IMSBridge) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	me.EnsurePredictableOrder()
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"name":           me.Name,
 		"queue_managers": me.QueueManagers,
 	})
 }
 
 func (me *IMSBridge) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":           &me.Name,
 		"queue_managers": &me.QueueManagers,
 	})

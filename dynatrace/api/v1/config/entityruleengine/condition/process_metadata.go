@@ -61,8 +61,8 @@ func (pmck *ProcessMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (pmck *ProcessMetadata) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (pmck *ProcessMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(pmck.Unknowns) > 0 {
 		data, err := json.Marshal(pmck.Unknowns)

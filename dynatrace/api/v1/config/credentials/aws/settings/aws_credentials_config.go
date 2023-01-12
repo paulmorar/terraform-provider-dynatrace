@@ -216,8 +216,8 @@ func (awscc *AWSCredentialsConfig) PrepareMarshalHCL(decoder hcl.Decoder) error 
 	return nil
 }
 
-func (awscc *AWSCredentialsConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (awscc *AWSCredentialsConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if awscc.Unknowns != nil {
 		data, err := json.Marshal(awscc.Unknowns)
@@ -227,9 +227,9 @@ func (awscc *AWSCredentialsConfig) MarshalHCL() (map[string]interface{}, error) 
 		result["unknowns"] = string(data)
 	}
 	if awscc.SupportingServicesToMonitor != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range awscc.SupportingServicesToMonitor {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -241,17 +241,17 @@ func (awscc *AWSCredentialsConfig) MarshalHCL() (map[string]interface{}, error) 
 	result["tagged_only"] = opt.Bool(awscc.TaggedOnly)
 
 	if awscc.AuthenticationData != nil {
-		if marshalled, err := awscc.AuthenticationData.MarshalHCL(); err == nil {
-			result["authentication_data"] = []interface{}{marshalled}
+		if marshalled, err := awscc.AuthenticationData.MarshalHCL(decoder); err == nil {
+			result["authentication_data"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	result["partition_type"] = awscc.PartitionType
 	if awscc.TagsToMonitor != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range awscc.TagsToMonitor {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

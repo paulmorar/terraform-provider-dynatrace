@@ -48,16 +48,16 @@ func (me *UniversalTagKey) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *UniversalTagKey) MarshalHCL() (map[string]interface{}, error) {
+func (me *UniversalTagKey) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"key":     me.Key,
 		"context": me.Context,
 	})
 }
 
 func (me *UniversalTagKey) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"key":     &me.Key,
 		"context": &me.Context,
 	})
@@ -65,7 +65,7 @@ func (me *UniversalTagKey) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *UniversalTagKey) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"key":     me.Key,
 		"context": me.Context,
 	}); err != nil {
@@ -79,7 +79,7 @@ func (me *UniversalTagKey) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	return properties.UnmarshalAll(map[string]interface{}{
+	return properties.UnmarshalAll(map[string]any{
 		"key":     me.Key,
 		"context": me.Context,
 	})

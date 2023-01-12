@@ -77,8 +77,8 @@ func (iac *IPAddress) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (iac *IPAddress) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (iac *IPAddress) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(iac.Unknowns) > 0 {
 		data, err := json.Marshal(iac.Unknowns)

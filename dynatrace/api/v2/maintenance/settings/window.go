@@ -100,11 +100,11 @@ func (me *MaintenanceWindow) EnsurePredictableOrder() {
 	}
 }
 
-func (me *MaintenanceWindow) MarshalHCL() (map[string]interface{}, error) {
+func (me *MaintenanceWindow) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	me.EnsurePredictableOrder()
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"enabled":            me.Enabled,
 		"general_properties": me.GeneralProperties,
 		"schedule":           me.Schedule,
@@ -114,7 +114,7 @@ func (me *MaintenanceWindow) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *MaintenanceWindow) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"enabled":            &me.Enabled,
 		"general_properties": &me.GeneralProperties,
 		"schedule":           &me.Schedule,

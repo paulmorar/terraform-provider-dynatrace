@@ -63,10 +63,10 @@ func (me *EventTemplate) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EventTemplate) MarshalHCL() (map[string]interface{}, error) {
+func (me *EventTemplate) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"title":       me.Title,
 		"description": me.Description,
 		"event_type":  me.EventType,
@@ -76,7 +76,7 @@ func (me *EventTemplate) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *EventTemplate) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"title":       &me.Title,
 		"description": &me.Description,
 		"event_type":  &me.EventType,

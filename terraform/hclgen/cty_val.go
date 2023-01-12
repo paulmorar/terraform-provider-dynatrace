@@ -21,7 +21,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-func ctyVal(v interface{}, indent string) cty.Value {
+func ctyVal(v any, indent string) cty.Value {
 	switch rv := v.(type) {
 	case string:
 		return cty.StringVal(rv)

@@ -80,8 +80,8 @@ func (me *JavaScriptFrameworkSupport) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *JavaScriptFrameworkSupport) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *JavaScriptFrameworkSupport) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"angular":         me.Angular,
 		"dojo":            me.Dojo,
 		"extjs":           me.ExtJS,
@@ -94,7 +94,7 @@ func (me *JavaScriptFrameworkSupport) MarshalHCL() (map[string]interface{}, erro
 }
 
 func (me *JavaScriptFrameworkSupport) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"angular":         &me.Angular,
 		"dojo":            &me.Dojo,
 		"extjs":           &me.ExtJS,

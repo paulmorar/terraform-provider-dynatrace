@@ -59,23 +59,23 @@ func (me *QueueManagers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *QueueManager) MarshalHCL() (map[string]interface{}, error) {
+func (me *QueueManager) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"name":                me.Name,
 		"queue_manager_queue": me.QueueManagerQueue,
 	})
 }
 
 func (me *QueueManager) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":                &me.Name,
 		"queue_manager_queue": &me.QueueManagerQueue,
 	})
 }
 
-func (me QueueManagers) MarshalHCL() (map[string]interface{}, error) {
+func (me QueueManagers) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("queue_manager", me)
 }
 

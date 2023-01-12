@@ -48,8 +48,8 @@ func (me *ConnectionFailureDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ConnectionFailureDetection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ConnectionFailureDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	result["connection_fails_count"] = int(*me.ConnectionFailsCount)
 	result["eval_period"] = int(*me.TimePeriodMinutes)

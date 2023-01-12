@@ -96,8 +96,8 @@ func (me *RequestAttribute) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RequestAttribute) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *RequestAttribute) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.Unknowns != nil {
 		delete(me.Unknowns, "metadata")
@@ -119,9 +119,9 @@ func (me *RequestAttribute) MarshalHCL() (map[string]interface{}, error) {
 		result["confidential"] = opt.Bool(me.Confidential)
 	}
 	if len(me.DataSources) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.DataSources {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

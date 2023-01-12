@@ -60,7 +60,7 @@ func (me *limits) Schema() map[string]*schema.Schema {
 		}}
 }
 
-func (me *limits) MarshalHCL() (map[string]interface{}, error) {
+func (me *limits) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	if me.Transactions != nil {
 		if err := properties.Encode("transactions", me.Transactions); err != nil {
@@ -86,7 +86,7 @@ func (me *limits) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *limits) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"transactions":   &me.Transactions,
 		"session_replay": &me.SessionReplay,
 		"symbol_files":   &me.SymbolFiles,
@@ -137,7 +137,7 @@ func (me *retent) Schema() map[string]*schema.Schema {
 		}}
 }
 
-func (me *retent) MarshalHCL() (map[string]interface{}, error) {
+func (me *retent) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	if me.ServiceCodeLevel != 0 {
 		if err := properties.Encode("service_code_level", me.ServiceCodeLevel); err != nil {
@@ -173,7 +173,7 @@ func (me *retent) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *retent) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"service_request_level": &me.ServiceRequestLevel,
 		"service_code_level":    &me.ServiceCodeLevel,
 		"rum":                   &me.RUM,
@@ -212,7 +212,7 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]interface{}, error) {
+func (me *Settings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	if !me.UserActionsPerMinute.IsEmpty() {
 		if err := properties.Encode("user_actions", me.UserActionsPerMinute.MaxLimit); err != nil {

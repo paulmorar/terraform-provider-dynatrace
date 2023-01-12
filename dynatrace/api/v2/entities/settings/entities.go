@@ -35,11 +35,11 @@ func (me Entities) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Entities) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
-	entries := []interface{}{}
+func (me *Entities) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
+	entries := []any{}
 	for _, entry := range *me {
-		if marshalled, err := entry.MarshalHCL(); err == nil {
+		if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 			entries = append(entries, marshalled)
 		} else {
 			return nil, err
@@ -91,10 +91,10 @@ func (me *Entity) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Entity) MarshalHCL() (map[string]interface{}, error) {
+func (me *Entity) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"entity_id":    me.EntityId,
 		"type":         me.Type,
 		"display_name": me.DisplayName,
@@ -103,7 +103,7 @@ func (me *Entity) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Entity) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"entity_id":    &me.EntityId,
 		"type":         &me.Type,
 		"display_name": &me.DisplayName,

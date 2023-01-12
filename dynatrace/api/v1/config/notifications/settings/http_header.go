@@ -50,8 +50,8 @@ func (me *HTTPHeader) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *HTTPHeader) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *HTTPHeader) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	result["name"] = me.Name
 	if me.Value != nil {
@@ -73,7 +73,7 @@ func (me *HTTPHeader) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *HTTPHeader) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"name":  me.Name,
 		"value": me.Value,
 	}); err != nil {
@@ -87,7 +87,7 @@ func (me *HTTPHeader) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"name":  &me.Name,
 		"value": &me.Value,
 	}); err != nil {

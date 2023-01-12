@@ -41,16 +41,16 @@ func (me *NetworkZones) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NetworkZones) MarshalHCL() (map[string]interface{}, error) {
+func (me *NetworkZones) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"enabled": me.Enabled,
 	})
 }
 
 func (me *NetworkZones) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"enabled": &me.Enabled,
 	})
 }

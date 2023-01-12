@@ -63,7 +63,7 @@ func (me *MobileCustomApdex) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *MobileCustomApdex) MarshalHCL() (map[string]interface{}, error) {
+func (me *MobileCustomApdex) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	if err := properties.Encode("tolerable", me.ToleratedThreshold); err != nil {
 		return nil, err

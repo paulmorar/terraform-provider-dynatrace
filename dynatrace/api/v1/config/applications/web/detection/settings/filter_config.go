@@ -49,10 +49,10 @@ func (me *FilterConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FilterConfig) MarshalHCL() (map[string]interface{}, error) {
+func (me *FilterConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"pattern":                  me.Pattern,
 		"application_match_type":   me.ApplicationMatchType,
 		"application_match_target": me.ApplicationMatchTarget,
@@ -60,7 +60,7 @@ func (me *FilterConfig) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *FilterConfig) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"pattern":                  &me.Pattern,
 		"application_match_type":   &me.ApplicationMatchType,
 		"application_match_target": &me.ApplicationMatchTarget,

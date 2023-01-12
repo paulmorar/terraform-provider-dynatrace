@@ -69,8 +69,8 @@ func (ddc *DCRumDecoder) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ddc *DCRumDecoder) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (ddc *DCRumDecoder) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(ddc.Unknowns) > 0 {
 		data, err := json.Marshal(ddc.Unknowns)

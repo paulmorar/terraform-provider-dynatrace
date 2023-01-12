@@ -131,8 +131,8 @@ func (me *AnsibleTowerConfig) PrepareMarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *AnsibleTowerConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *AnsibleTowerConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -208,7 +208,7 @@ func (me *AnsibleTowerConfig) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *AnsibleTowerConfig) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"id":                   me.ID,
 		"name":                 me.Name,
 		"type":                 me.GetType(),
@@ -231,7 +231,7 @@ func (me *AnsibleTowerConfig) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"id":                   &me.ID,
 		"name":                 &me.Name,
 		"type":                 &me.Type,

@@ -71,10 +71,10 @@ func (me *RemoteQueues) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RemoteQueue) MarshalHCL() (map[string]interface{}, error) {
+func (me *RemoteQueue) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"local_queue_name":     me.LocalQueueName,
 		"remote_queue_name":    me.RemoteQueueName,
 		"remote_queue_manager": me.RemoteQueueManager,
@@ -83,7 +83,7 @@ func (me *RemoteQueue) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *RemoteQueue) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"local_queue_name":     &me.LocalQueueName,
 		"remote_queue_name":    &me.RemoteQueueName,
 		"remote_queue_manager": &me.RemoteQueueManager,
@@ -91,7 +91,7 @@ func (me *RemoteQueue) UnmarshalHCL(decoder hcl.Decoder) error {
 	})
 }
 
-func (me RemoteQueues) MarshalHCL() (map[string]interface{}, error) {
+func (me RemoteQueues) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("remote_queue", me)
 }
 

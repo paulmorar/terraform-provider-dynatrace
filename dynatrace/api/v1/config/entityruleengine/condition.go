@@ -595,8 +595,8 @@ func (erec *Condition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (erec *Condition) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (erec *Condition) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(erec.Unknowns) > 0 {
 		data, err := json.Marshal(erec.Unknowns)
@@ -608,164 +608,164 @@ func (erec *Condition) MarshalHCL() (map[string]interface{}, error) {
 
 	switch comparison := erec.ComparisonInfo.(type) {
 	case *comparison.CustomApplicationType:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["custom_application_type"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["custom_application_type"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.MobilePlatform:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["mobile_platform"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["mobile_platform"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.ApplicationType:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["application_type"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["application_type"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.Bitness:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["bitness"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["bitness"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.PaasType:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["paas_type"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["paas_type"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.OSArchitecture:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["os_arch"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["os_arch"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.ServiceTopology:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["service_topology"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["service_topology"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.String:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["string"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["string"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.DatabaseTopology:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["database_topology"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["database_topology"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.DCRumDecoder:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["dcrum_decoder"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["dcrum_decoder"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.IndexedTag:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["indexed_tag"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["indexed_tag"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.Tag:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["tag"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["tag"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.HypervisorType:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["hypervisor"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["hypervisor"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.CloudType:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["cloud_type"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["cloud_type"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.IndexedName:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["indexed_name"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["indexed_name"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.IndexedString:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["indexed_string"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["indexed_string"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.SimpleTech:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["tech"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["tech"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.AzureSku:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["azure_sku"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["azure_sku"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.EntityID:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["entity"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["entity"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.SimpleHostTech:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["host_tech"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["host_tech"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.Integer:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["integer"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["integer"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.ServiceType:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["service_type"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["service_type"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.OSType:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["os_type"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["os_type"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.SyntheticEngineType:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["synthetic_engine"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["synthetic_engine"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.IPAddress:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["ipaddress"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["ipaddress"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *comparison.AzureComputeMode:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["azure_compute_mode"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["azure_compute_mode"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	default:
-		if marshalled, err := comparison.MarshalHCL(); err == nil {
-			result["comparison"] = []interface{}{marshalled}
+		if marshalled, err := comparison.MarshalHCL(decoder); err == nil {
+			result["comparison"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -773,32 +773,32 @@ func (erec *Condition) MarshalHCL() (map[string]interface{}, error) {
 
 	switch key := erec.Key.(type) {
 	case *condition.CustomHostMetadata:
-		if marshalled, err := key.MarshalHCL(); err == nil {
-			result["custom_host_metadata"] = []interface{}{marshalled}
+		if marshalled, err := key.MarshalHCL(decoder); err == nil {
+			result["custom_host_metadata"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *condition.String:
-		if marshalled, err := key.MarshalHCL(); err == nil {
-			result["string_key"] = []interface{}{marshalled}
+		if marshalled, err := key.MarshalHCL(decoder); err == nil {
+			result["string_key"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *condition.CustomProcessMetadata:
-		if marshalled, err := key.MarshalHCL(); err == nil {
-			result["custom_process_metadata"] = []interface{}{marshalled}
+		if marshalled, err := key.MarshalHCL(decoder); err == nil {
+			result["custom_process_metadata"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	case *condition.ProcessMetadata:
-		if marshalled, err := key.MarshalHCL(); err == nil {
-			result["process_metadata"] = []interface{}{marshalled}
+		if marshalled, err := key.MarshalHCL(decoder); err == nil {
+			result["process_metadata"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	default:
-		if marshalled, err := key.MarshalHCL(); err == nil {
-			result["key"] = []interface{}{marshalled}
+		if marshalled, err := key.MarshalHCL(decoder); err == nil {
+			result["key"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

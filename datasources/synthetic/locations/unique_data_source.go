@@ -23,6 +23,7 @@ import (
 	settings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -33,7 +34,7 @@ func UniqueDataSource() *schema.Resource {
 	}
 }
 
-func UniqueDataSourceRead(d *schema.ResourceData, m interface{}) (err error) {
+func UniqueDataSourceRead(d *schema.ResourceData, m any) (err error) {
 	var id *string
 	var name *string
 	var typeLoc *string
@@ -109,7 +110,7 @@ func UniqueDataSourceRead(d *schema.ResourceData, m interface{}) (err error) {
 			}
 		}
 
-		marshalled, err := value.MarshalHCL()
+		marshalled, err := value.MarshalHCL(hcl.DecoderFrom(d))
 		if err != nil {
 			return err
 		}

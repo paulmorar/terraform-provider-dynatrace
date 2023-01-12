@@ -69,8 +69,8 @@ func (catc *CustomApplicationType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (catc *CustomApplicationType) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (catc *CustomApplicationType) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(catc.Unknowns) > 0 {
 		data, err := json.Marshal(catc.Unknowns)

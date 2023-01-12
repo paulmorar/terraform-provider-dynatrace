@@ -80,8 +80,8 @@ func (me *Dashboard) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Dashboard) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Dashboard) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		delete(me.Unknowns, "id")
@@ -93,16 +93,16 @@ func (me *Dashboard) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	if me.Metadata != nil {
-		if marshalled, err := me.Metadata.MarshalHCL(); err == nil {
-			result["dashboard_metadata"] = []interface{}{marshalled}
+		if marshalled, err := me.Metadata.MarshalHCL(decoder); err == nil {
+			result["dashboard_metadata"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if len(me.Tiles) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.Tiles {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

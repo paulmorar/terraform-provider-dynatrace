@@ -123,79 +123,79 @@ func (me *NotificationRecord) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NotificationRecord) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *NotificationRecord) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if me.NotificationConfig != nil {
 		switch config := me.NotificationConfig.(type) {
 		case *AnsibleTowerConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["ansible_tower"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["ansible_tower"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *EmailConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["email"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["email"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *JiraConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["jira"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["jira"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *OpsGenieConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["ops_genie"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["ops_genie"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *PagerDutyConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["pager_duty"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["pager_duty"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *ServiceNowConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["service_now"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["service_now"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *SlackConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["slack"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["slack"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *TrelloConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["trello"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["trello"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *VictorOpsConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["victor_ops"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["victor_ops"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *WebHookConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["web_hook"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["web_hook"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		case *XMattersConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["xmatters"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["xmatters"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
 		default:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["config"] = []interface{}{marshalled}
+			if marshalled, err := config.MarshalHCL(decoder); err == nil {
+				result["config"] = []any{marshalled}
 			} else {
 				return nil, err
 			}

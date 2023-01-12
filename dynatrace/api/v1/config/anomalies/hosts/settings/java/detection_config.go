@@ -60,19 +60,19 @@ func (me *DetectionConfig) IsConfigured() bool {
 	return false
 }
 
-func (me *DetectionConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *DetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.OutOfMemoryDetection != nil && me.OutOfMemoryDetection.Enabled {
-		if marshalled, err := me.OutOfMemoryDetection.MarshalHCL(); err == nil {
-			result["out_of_memory"] = []interface{}{marshalled}
+		if marshalled, err := me.OutOfMemoryDetection.MarshalHCL(decoder); err == nil {
+			result["out_of_memory"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.OutOfThreadsDetection != nil && me.OutOfThreadsDetection.Enabled {
-		if marshalled, err := me.OutOfThreadsDetection.MarshalHCL(); err == nil {
-			result["out_of_threads"] = []interface{}{marshalled}
+		if marshalled, err := me.OutOfThreadsDetection.MarshalHCL(decoder); err == nil {
+			result["out_of_threads"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

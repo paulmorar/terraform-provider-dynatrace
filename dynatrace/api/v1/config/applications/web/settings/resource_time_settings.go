@@ -62,8 +62,8 @@ func (me *ResourceTimingSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ResourceTimingSettings) MarshalHCL() (map[string]interface{}, error) {
-	res, err := hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *ResourceTimingSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	res, err := hcl.Properties{}.EncodeAll(map[string]any{
 		"w3c_resource_timings":          me.W3CResourceTimings,
 		"non_w3c_resource_timings":      me.NonW3CResourceTimings,
 		"instrumentation_delay":         me.NonW3CResourceTimingsInstrumentationDelay,
@@ -80,7 +80,7 @@ func (me *ResourceTimingSettings) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *ResourceTimingSettings) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"w3c_resource_timings":          &me.W3CResourceTimings,
 		"non_w3c_resource_timings":      &me.NonW3CResourceTimings,
 		"instrumentation_delay":         &me.NonW3CResourceTimingsInstrumentationDelay,

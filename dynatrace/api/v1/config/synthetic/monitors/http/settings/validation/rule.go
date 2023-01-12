@@ -52,8 +52,8 @@ func (me *Rule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Rule) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Rule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["type"] = string(me.Type)
 	result["pass_if_found"] = me.PassIfFound
 	result["value"] = me.Value

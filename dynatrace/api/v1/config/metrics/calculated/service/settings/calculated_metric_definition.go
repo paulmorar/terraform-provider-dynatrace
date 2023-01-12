@@ -48,8 +48,8 @@ func (me *CalculatedMetricDefinition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CalculatedMetricDefinition) MarshalHCL() (map[string]interface{}, error) {
-	res, err := hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *CalculatedMetricDefinition) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	res, err := hcl.Properties{}.EncodeAll(map[string]any{
 		"metric":            me.Metric,
 		"request_attribute": me.RequestAttribute,
 	})
@@ -57,7 +57,7 @@ func (me *CalculatedMetricDefinition) MarshalHCL() (map[string]interface{}, erro
 }
 
 func (me *CalculatedMetricDefinition) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"metric":            &me.Metric,
 		"request_attribute": &me.RequestAttribute,
 	})
@@ -66,7 +66,7 @@ func (me *CalculatedMetricDefinition) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *CalculatedMetricDefinition) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"metric":           me.Metric,
 		"requestAttribute": me.RequestAttribute,
 	}); err != nil {
@@ -80,7 +80,7 @@ func (me *CalculatedMetricDefinition) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	return properties.UnmarshalAll(map[string]interface{}{
+	return properties.UnmarshalAll(map[string]any{
 		"metric":           &me.Metric,
 		"requestAttribute": &me.RequestAttribute,
 	})

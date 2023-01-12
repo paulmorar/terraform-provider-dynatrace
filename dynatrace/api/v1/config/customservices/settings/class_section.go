@@ -46,8 +46,8 @@ func (me *ClassSection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ClassSection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ClassSection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.Name != nil {
 		result["name"] = opt.String(me.Name)

@@ -38,14 +38,14 @@ func (me *DurationDetails) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DurationDetails) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *DurationDetails) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"duration": me.DurationInMillis,
 	})
 }
 
 func (me *DurationDetails) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"duration": &me.DurationInMillis,
 	})
 }

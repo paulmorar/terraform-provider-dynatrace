@@ -36,8 +36,8 @@ func (me *PropagationSetting) Schema() map[string]*schema.Schema {
 	return new(PropagationRule).Schema()
 }
 
-func (me *PropagationSetting) MarshalHCL() (map[string]interface{}, error) {
-	return me.PropagationRule.MarshalHCL()
+func (me *PropagationSetting) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return me.PropagationRule.MarshalHCL(decoder)
 }
 
 func (me *PropagationSetting) UnmarshalHCL(decoder hcl.Decoder) error {

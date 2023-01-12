@@ -86,10 +86,10 @@ func (me *MetricEvents) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MetricEvents) MarshalHCL() (map[string]interface{}, error) {
+func (me *MetricEvents) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"enabled":                    me.Enabled,
 		"summary":                    me.Summary,
 		"query_definition":           me.QueryDefinition,
@@ -101,7 +101,7 @@ func (me *MetricEvents) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *MetricEvents) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"enabled":                    &me.Enabled,
 		"summary":                    &me.Summary,
 		"query_definition":           &me.QueryDefinition,

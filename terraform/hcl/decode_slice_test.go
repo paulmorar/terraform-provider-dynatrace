@@ -45,30 +45,30 @@ func (me *records) UnmarshalHCL(decoder hcl.Decoder) error {
 }
 
 type testDecoder struct {
-	Values map[string]interface{}
+	Values map[string]any
 }
 
-func (me *testDecoder) Decode(key string, v interface{}) error {
+func (me *testDecoder) Decode(key string, v any) error {
 	return fmt.Errorf("Decode(%v, %T)", key, v)
 }
 
-func (me *testDecoder) DecodeAll(map[string]interface{}) error {
+func (me *testDecoder) DecodeAll(map[string]any) error {
 	return fmt.Errorf("DecodeAll(%v)", "...")
 }
 
-func (me *testDecoder) DecodeSlice(key string, v interface{}) error {
+func (me *testDecoder) DecodeSlice(key string, v any) error {
 	return fmt.Errorf("DecodeSlice(%v, %T)", key, v)
 }
 
-func (me *testDecoder) Get(key string) interface{} {
+func (me *testDecoder) Get(key string) any {
 	return nil
 }
 
-func (me *testDecoder) GetChange(key string) (interface{}, interface{}) {
+func (me *testDecoder) GetChange(key string) (any, any) {
 	return nil, nil
 }
 
-func (me *testDecoder) GetOk(key string) (interface{}, bool) {
+func (me *testDecoder) GetOk(key string) (any, bool) {
 	if value, found := me.Values[key]; found {
 		// fmt.Printf("GetOk(%v) => %v\n", key, value)
 		return value, true
@@ -81,14 +81,14 @@ func (me *testDecoder) GetStringSet(key string) []string {
 	return nil
 }
 
-func (me *testDecoder) DecodeAny(map[string]interface{}) (interface{}, error) {
+func (me *testDecoder) DecodeAny(map[string]any) (any, error) {
 	return nil, nil
 }
 
 func TestDecodeSlice(t *testing.T) {
 	recs := records{}
 	decoder := hcl.NewDecoder(&testDecoder{
-		Values: map[string]interface{}{
+		Values: map[string]any{
 			"rectangle":       2,
 			"records.0.value": "value0",
 			"records.1.value": "value1",

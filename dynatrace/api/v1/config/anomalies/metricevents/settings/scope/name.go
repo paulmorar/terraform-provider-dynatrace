@@ -54,8 +54,8 @@ func (me *Name) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Name) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Name) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -65,8 +65,8 @@ func (me *Name) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	if me.NameFilter != nil {
-		if marshalled, err := me.NameFilter.MarshalHCL(); err == nil {
-			result["filter"] = []interface{}{marshalled}
+		if marshalled, err := me.NameFilter.MarshalHCL(decoder); err == nil {
+			result["filter"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -100,7 +100,7 @@ func (me *Name) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *Name) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"filterType": me.GetType(),
 		"nameFilter": me.NameFilter,
 	}); err != nil {
@@ -114,7 +114,7 @@ func (me *Name) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"filterType": &me.FilterType,
 		"nameFilter": &me.NameFilter,
 	}); err != nil {

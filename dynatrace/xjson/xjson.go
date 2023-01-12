@@ -44,7 +44,7 @@ func NewProperties(m map[string]json.RawMessage) Properties {
 	return props
 }
 
-func (p Properties) UnmarshalAll(m map[string]interface{}) error {
+func (p Properties) UnmarshalAll(m map[string]any) error {
 	for k, v := range m {
 		if err := p.Unmarshal(k, v); err != nil {
 			return err
@@ -53,7 +53,7 @@ func (p Properties) UnmarshalAll(m map[string]interface{}) error {
 	return nil
 }
 
-func (p Properties) Unmarshal(key string, target interface{}) error {
+func (p Properties) Unmarshal(key string, target any) error {
 	if v, found := p[key]; found {
 		if err := json.Unmarshal(v, target); err != nil {
 			return err
@@ -63,7 +63,7 @@ func (p Properties) Unmarshal(key string, target interface{}) error {
 	return nil
 }
 
-func (p Properties) MarshalAll(m map[string]interface{}) error {
+func (p Properties) MarshalAll(m map[string]any) error {
 	if m == nil {
 		return nil
 	}
@@ -76,7 +76,7 @@ func (p Properties) MarshalAll(m map[string]interface{}) error {
 	return nil
 }
 
-func (p Properties) Marshal(key string, v interface{}) error {
+func (p Properties) Marshal(key string, v any) error {
 	isNil := (v == nil || (reflect.ValueOf(v).Kind() == reflect.Ptr && reflect.ValueOf(v).IsNil()))
 	if isNil {
 		return nil

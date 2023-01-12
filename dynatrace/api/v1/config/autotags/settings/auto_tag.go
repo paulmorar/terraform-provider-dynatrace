@@ -85,8 +85,8 @@ func (me *AutoTag) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AutoTag) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *AutoTag) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -100,9 +100,9 @@ func (me *AutoTag) MarshalHCL() (map[string]interface{}, error) {
 		result["description"] = me.Description
 	}
 	if len(me.Rules) > 0 {
-		entries := make([]interface{}, 0)
+		entries := make([]any, 0)
 		for _, rule := range me.Rules {
-			if marshalled, err := rule.MarshalHCL(); err == nil {
+			if marshalled, err := rule.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -113,9 +113,9 @@ func (me *AutoTag) MarshalHCL() (map[string]interface{}, error) {
 		result["rules"] = nil
 	}
 	if me.EntitySelectorBasedRules != nil {
-		entries := make([]interface{}, 0)
+		entries := make([]any, 0)
 		for _, rule := range me.EntitySelectorBasedRules {
-			if marshalled, err := rule.MarshalHCL(); err == nil {
+			if marshalled, err := rule.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

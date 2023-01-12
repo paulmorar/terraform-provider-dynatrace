@@ -59,7 +59,7 @@ type ShapeWrapper struct {
 	Shape Shape
 }
 
-func (me *ShapeWrapper) MarshalHCL() (map[string]interface{}, error) {
+func (me *ShapeWrapper) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	switch cmp := me.Shape.(type) {
 	case *Square:
@@ -84,8 +84,8 @@ func (me *ShapeWrapper) MarshalHCL() (map[string]interface{}, error) {
 
 func (me *ShapeWrapper) UnmarshalHCL(decoder hcl.Decoder) error {
 	var err error
-	var shape interface{}
-	if shape, err = decoder.DecodeAny(map[string]interface{}{
+	var shape any
+	if shape, err = decoder.DecodeAny(map[string]any{
 		"square":    new(Square),
 		"rectangle": new(Rectangle),
 		"generic":   new(BaseShape),
@@ -98,7 +98,7 @@ func (me *ShapeWrapper) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func TestDecodeInheritance(t *testing.T) {
 	decoder := hcl.NewDecoder(&testDecoder{
-		Values: map[string]interface{}{
+		Values: map[string]any{
 			"square.#":        1,
 			"square.0.length": 3,
 		},

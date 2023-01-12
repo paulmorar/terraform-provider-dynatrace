@@ -36,7 +36,7 @@ func DataSource() *schema.Resource {
 	}
 }
 
-func DataSourceRead(d *schema.ResourceData, m interface{}) (err error) {
+func DataSourceRead(d *schema.ResourceData, m any) (err error) {
 	name := d.Get("name").(string)
 
 	d.SetId("dynatrace_v2_alerting_profiles")

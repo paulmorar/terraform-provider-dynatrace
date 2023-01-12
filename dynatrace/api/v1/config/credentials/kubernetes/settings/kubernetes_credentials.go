@@ -129,8 +129,8 @@ func (kc *KubernetesCredentials) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (kc *KubernetesCredentials) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (kc *KubernetesCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if kc.Unknowns != nil {
 		if data, ok := kc.Unknowns["activeGateGroup"]; ok {
@@ -162,9 +162,9 @@ func (kc *KubernetesCredentials) MarshalHCL() (map[string]interface{}, error) {
 	}
 	result["endpoint_url"] = kc.EndpointURL
 	if kc.EventsFieldSelectors != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, eventPattern := range kc.EventsFieldSelectors {
-			if marshalled, err := eventPattern.MarshalHCL(); err == nil {
+			if marshalled, err := eventPattern.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

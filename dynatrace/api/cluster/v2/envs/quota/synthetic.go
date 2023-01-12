@@ -31,15 +31,15 @@ func (me *Synthetic) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Synthetic) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *Synthetic) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"monthly": me.MonthlyLimit,
 		"annual":  me.AnnualLimit,
 	})
 }
 
 func (me *Synthetic) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"monthly": &me.MonthlyLimit,
 		"annual":  &me.AnnualLimit,
 	})

@@ -66,8 +66,8 @@ func (me *ApdexSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ApdexSettings) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *ApdexSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"threshold":                      me.Threshold,
 		"tolerated_threshold":            me.ToleratedThreshold,
 		"frustrating_threshold":          me.FrustratingThreshold,
@@ -77,7 +77,7 @@ func (me *ApdexSettings) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *ApdexSettings) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"threshold":                      &me.Threshold,
 		"tolerated_threshold":            &me.ToleratedThreshold,
 		"frustrating_threshold":          &me.FrustratingThreshold,

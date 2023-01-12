@@ -84,10 +84,10 @@ func (me *Filters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Filters) MarshalHCL() (map[string]interface{}, error) {
+func (me *Filters) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"cics_mq_queue_id_includes": me.CICSMQQueueIdIncludes,
 		"cics_mq_queue_id_excludes": me.CICSMQQueueIdExcludes,
 		"ims_mq_queue_id_includes":  me.IMSMQQueueIdIncludes,
@@ -98,7 +98,7 @@ func (me *Filters) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Filters) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"cics_mq_queue_id_includes": &me.CICSMQQueueIdIncludes,
 		"cics_mq_queue_id_excludes": &me.CICSMQQueueIdExcludes,
 		"ims_mq_queue_id_includes":  &me.IMSMQQueueIdIncludes,

@@ -142,8 +142,8 @@ func (me *Credentials) EnsurePredictableOrder() {
 	me.CredentialUsageSummary = conds
 }
 
-func (me *Credentials) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Credentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["name"] = me.Name
 	if me.Description != nil && len(*me.Description) > 0 {
 		result["description"] = *me.Description
@@ -168,16 +168,16 @@ func (me *Credentials) MarshalHCL() (map[string]interface{}, error) {
 		result["format"] = *me.CertificateFormat
 	}
 	if me.ExternalVault != nil {
-		marshalled, err := me.ExternalVault.MarshalHCL()
+		marshalled, err := me.ExternalVault.MarshalHCL(decoder)
 		if err != nil {
 			return nil, err
 		}
-		result["external"] = []interface{}{marshalled}
+		result["external"] = []any{marshalled}
 	}
 	if me.CredentialUsageSummary != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.CredentialUsageSummary {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

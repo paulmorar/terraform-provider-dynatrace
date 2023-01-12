@@ -199,7 +199,7 @@ func (me Properties) EncodeSlice(key string, v any) (Properties, error) {
 		vElem := rv.Index(idx)
 		elem := vElem.Interface()
 		if marshaler, ok := elem.(Marshaler); ok {
-			if marshalled, err := marshaler.MarshalHCL(); err == nil {
+			if marshalled, err := marshaler.MarshalHCL(nil); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -391,7 +391,7 @@ func (me Properties) Encode(key string, v any) error {
 			if reflect.ValueOf(v).IsNil() {
 				return nil
 			}
-			if marshalled, err := marshaller.MarshalHCL(); err == nil {
+			if marshalled, err := marshaller.MarshalHCL(nil); err == nil {
 				me[key] = []any{marshalled}
 				return nil
 			} else {

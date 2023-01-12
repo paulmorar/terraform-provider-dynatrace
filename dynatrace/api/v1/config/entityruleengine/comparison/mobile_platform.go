@@ -69,8 +69,8 @@ func (mpc *MobilePlatform) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (mpc *MobilePlatform) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (mpc *MobilePlatform) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(mpc.Unknowns) > 0 {
 		data, err := json.Marshal(mpc.Unknowns)

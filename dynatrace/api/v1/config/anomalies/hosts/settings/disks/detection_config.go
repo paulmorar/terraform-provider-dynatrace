@@ -72,26 +72,26 @@ func (me *DetectionConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DetectionConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *DetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.Space != nil {
-		if marshalled, err := me.Space.MarshalHCL(); err == nil {
-			result["space"] = []interface{}{marshalled}
+		if marshalled, err := me.Space.MarshalHCL(decoder); err == nil {
+			result["space"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Speed != nil {
-		if marshalled, err := me.Speed.MarshalHCL(); err == nil {
-			result["speed"] = []interface{}{marshalled}
+		if marshalled, err := me.Speed.MarshalHCL(decoder); err == nil {
+			result["speed"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Inodes != nil {
-		if marshalled, err := me.Inodes.MarshalHCL(); err == nil {
-			result["inodes"] = []interface{}{marshalled}
+		if marshalled, err := me.Inodes.MarshalHCL(decoder); err == nil {
+			result["inodes"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

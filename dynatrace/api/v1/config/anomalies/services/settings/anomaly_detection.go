@@ -105,37 +105,37 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnomalyDetection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	loadDetection := &load.Detection{
 		Drops:  me.LoadDrop,
 		Spikes: me.LoadSpike,
 	}
 	if !loadDetection.IsEmpty() {
-		if marshalled, err := loadDetection.MarshalHCL(); err == nil {
-			result["load"] = []interface{}{marshalled}
+		if marshalled, err := loadDetection.MarshalHCL(decoder); err == nil {
+			result["load"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.ResponseTimeDegradation != nil && string(me.ResponseTimeDegradation.DetectionMode) != string(detection.Modes.DontDetect) {
-		if marshalled, err := me.ResponseTimeDegradation.MarshalHCL(); err == nil {
-			result["response_times"] = []interface{}{marshalled}
+		if marshalled, err := me.ResponseTimeDegradation.MarshalHCL(decoder); err == nil {
+			result["response_times"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.FailureRateIncrease != nil && string(me.FailureRateIncrease.DetectionMode) != string(detection.Modes.DontDetect) {
-		if marshalled, err := me.FailureRateIncrease.MarshalHCL(); err == nil {
-			result["failure_rates"] = []interface{}{marshalled}
+		if marshalled, err := me.FailureRateIncrease.MarshalHCL(decoder); err == nil {
+			result["failure_rates"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.LoadDrop != nil && me.LoadDrop.Enabled {
-		if marshalled, err := me.LoadDrop.MarshalHCL(); err == nil {
-			result["load_drops"] = []interface{}{marshalled}
+		if marshalled, err := me.LoadDrop.MarshalHCL(decoder); err == nil {
+			result["load_drops"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -183,7 +183,7 @@ func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *AnomalyDetection) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"loadSpike":               me.getLoadSpike(),
 		"responseTimeDegradation": me.getResponseTimeDegradation(),
 		"failureRateIncrease":     me.getFailureRateIncrease(),
@@ -199,7 +199,7 @@ func (me *AnomalyDetection) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"loadSpike":               &me.LoadSpike,
 		"responseTimeDegradation": &me.ResponseTimeDegradation,
 		"failureRateIncrease":     &me.FailureRateIncrease,

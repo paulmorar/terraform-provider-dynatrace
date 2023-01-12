@@ -37,7 +37,7 @@ func (me *EventFilters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me EventFilters) MarshalHCL() (map[string]interface{}, error) {
+func (me EventFilters) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("filter", me)
 }
 
@@ -75,19 +75,19 @@ func (me *EventFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EventFilter) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *EventFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.Custom != nil {
-		if marshalled, err := me.Custom.MarshalHCL(); err == nil {
-			result["custom"] = []interface{}{marshalled}
+		if marshalled, err := me.Custom.MarshalHCL(decoder); err == nil {
+			result["custom"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Predefined != nil {
-		if marshalled, err := me.Predefined.MarshalHCL(); err == nil {
-			result["predefined"] = []interface{}{marshalled}
+		if marshalled, err := me.Predefined.MarshalHCL(decoder); err == nil {
+			result["predefined"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

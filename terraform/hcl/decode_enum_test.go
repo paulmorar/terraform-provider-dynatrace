@@ -42,7 +42,7 @@ func (me *EnumContainer) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func TestDecodeEnum(t *testing.T) {
 	decoder := hcl.NewDecoder(&testDecoder{
-		Values: map[string]interface{}{
+		Values: map[string]any{
 			"enum":     "Test",
 			"opt_enum": "OptTest",
 		},

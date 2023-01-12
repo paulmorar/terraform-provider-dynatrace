@@ -79,10 +79,10 @@ func (me *QueryDefinition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *QueryDefinition) MarshalHCL() (map[string]interface{}, error) {
+func (me *QueryDefinition) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"type":             me.Type,
 		"metric_selector":  me.MetricSelector,
 		"metric_key":       me.MetricKey,
@@ -94,7 +94,7 @@ func (me *QueryDefinition) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *QueryDefinition) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"type":             &me.Type,
 		"metric_selector":  &me.MetricSelector,
 		"metric_key":       &me.MetricKey,

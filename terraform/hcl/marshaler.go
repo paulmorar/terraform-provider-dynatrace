@@ -21,7 +21,7 @@ import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 // Marshaler has no documentation
 type Marshaler interface {
-	MarshalHCL() (map[string]interface{}, error)
+	MarshalHCL(Decoder) (map[string]any, error)
 }
 
 type Unmarshaler interface {

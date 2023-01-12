@@ -46,13 +46,13 @@ func DataSource() *schema.Resource {
 	}
 }
 
-func DataSourceRead(d *schema.ResourceData, m interface{}) (err error) {
+func DataSourceRead(d *schema.ResourceData, m any) (err error) {
 	var name string
 	if v, ok := d.GetOk("name"); ok {
 		name = v.(string)
 	}
 
-	var tagList []interface{}
+	var tagList []any
 	var tags []tagapi.Tag
 	if v, ok := d.GetOk("tags"); ok {
 		sTags := v.(*schema.Set)

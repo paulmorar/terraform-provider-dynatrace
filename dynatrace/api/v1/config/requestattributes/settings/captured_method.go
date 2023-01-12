@@ -72,8 +72,8 @@ func (me *CapturedMethod) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CapturedMethod) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *CapturedMethod) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -90,8 +90,8 @@ func (me *CapturedMethod) MarshalHCL() (map[string]interface{}, error) {
 		result["deep_object_access"] = *me.DeepObjectAccess
 	}
 	if me.Method != nil {
-		if marshalled, err := me.Method.MarshalHCL(); err == nil {
-			result["method"] = []interface{}{marshalled}
+		if marshalled, err := me.Method.MarshalHCL(decoder); err == nil {
+			result["method"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

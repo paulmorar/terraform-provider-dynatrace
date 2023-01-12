@@ -46,8 +46,8 @@ func (me *DropDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DropDetection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *DropDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	result["enabled"] = me.Enabled
 	if me.TrafficDropPercent != nil {

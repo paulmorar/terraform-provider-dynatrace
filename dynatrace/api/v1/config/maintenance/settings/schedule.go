@@ -76,8 +76,8 @@ func (me *Schedule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Schedule) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Schedule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -90,8 +90,8 @@ func (me *Schedule) MarshalHCL() (map[string]interface{}, error) {
 	result["end"] = me.End
 	result["zone_id"] = me.ZoneID
 	if me.Recurrence != nil {
-		if marshalled, err := me.Recurrence.MarshalHCL(); err == nil {
-			result["recurrence"] = []interface{}{marshalled}
+		if marshalled, err := me.Recurrence.MarshalHCL(decoder); err == nil {
+			result["recurrence"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

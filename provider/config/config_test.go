@@ -24,9 +24,9 @@ import (
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
 )
 
-type mockResourceData map[string]interface{}
+type mockResourceData map[string]any
 
-func (mrd mockResourceData) Get(k string) interface{} {
+func (mrd mockResourceData) Get(k string) any {
 	return mrd[k]
 }
 

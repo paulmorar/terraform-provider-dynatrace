@@ -46,15 +46,15 @@ func (me *RestrictionSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RestrictionSettings) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *RestrictionSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"mode":         me.Mode,
 		"restrictions": me.BrowserRestrictions,
 	})
 }
 
 func (me *RestrictionSettings) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"mode":         &me.Mode,
 		"restrictions": &me.BrowserRestrictions,
 	})

@@ -49,10 +49,10 @@ func (me *OnceRecurrence) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *OnceRecurrence) MarshalHCL() (map[string]interface{}, error) {
+func (me *OnceRecurrence) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"start_time": me.StartTime,
 		"end_time":   me.EndTime,
 		"time_zone":  me.TimeZone,
@@ -60,7 +60,7 @@ func (me *OnceRecurrence) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *OnceRecurrence) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"start_time": &me.StartTime,
 		"end_time":   &me.EndTime,
 		"time_zone":  &me.TimeZone,

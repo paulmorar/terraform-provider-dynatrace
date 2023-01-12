@@ -121,8 +121,8 @@ func (assm *AWSSupportingServiceMetric) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (assm *AWSSupportingServiceMetric) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (assm *AWSSupportingServiceMetric) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(assm.Unknowns) > 0 {
 		data, err := json.Marshal(assm.Unknowns)
@@ -134,7 +134,7 @@ func (assm *AWSSupportingServiceMetric) MarshalHCL() (map[string]interface{}, er
 	result["name"] = assm.Name
 	result["statistic"] = assm.Statistic
 	if assm.Dimensions != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, dimension := range assm.Dimensions {
 			entries = append(entries, dimension)
 		}
@@ -167,7 +167,7 @@ func (assm *AWSSupportingServiceMetric) UnmarshalHCL(decoder hcl.Decoder) error 
 	if _, ok := decoder.GetOk("dimensions.#"); ok {
 		assm.Dimensions = []string{}
 		if dims, ok := decoder.GetOk("dimensions"); ok {
-			for _, dim := range dims.([]interface{}) {
+			for _, dim := range dims.([]any) {
 				assm.Dimensions = append(assm.Dimensions, dim.(string))
 			}
 		}

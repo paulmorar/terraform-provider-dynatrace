@@ -52,8 +52,8 @@ func (me *DestinationDetails) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DestinationDetails) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *DestinationDetails) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"url_or_path":    me.URLOrPath,
 		"match_type":     me.MatchType,
 		"case_sensitive": me.CaseSensitive,
@@ -61,7 +61,7 @@ func (me *DestinationDetails) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *DestinationDetails) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"url_or_path":    &me.URLOrPath,
 		"match_type":     &me.MatchType,
 		"case_sensitive": &me.CaseSensitive,

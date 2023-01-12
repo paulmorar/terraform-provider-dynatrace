@@ -90,8 +90,8 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *Settings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"placeholders":                   me.Placeholders,
 		"load_action_naming_rules":       me.LoadActionNamingRules,
 		"xhr_action_naming_rules":        me.XHRActionNamingRules,
@@ -104,7 +104,7 @@ func (me *Settings) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Settings) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeAll(map[string]interface{}{
+	if err := decoder.DecodeAll(map[string]any{
 		"placeholders":                   &me.Placeholders,
 		"load_action_naming_rules":       &me.LoadActionNamingRules,
 		"xhr_action_naming_rules":        &me.XHRActionNamingRules,

@@ -55,19 +55,19 @@ func (me *Detection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Detection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Detection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.AutomaticDetection != nil {
-		if marshalled, err := me.AutomaticDetection.MarshalHCL(); err == nil {
-			result["auto"] = []interface{}{marshalled}
+		if marshalled, err := me.AutomaticDetection.MarshalHCL(decoder); err == nil {
+			result["auto"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Thresholds != nil {
-		if marshalled, err := me.Thresholds.MarshalHCL(); err == nil {
-			result["thresholds"] = []interface{}{marshalled}
+		if marshalled, err := me.Thresholds.MarshalHCL(decoder); err == nil {
+			result["thresholds"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -96,7 +96,7 @@ func (me *Detection) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *Detection) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"automaticDetection": me.AutomaticDetection,
 		"detectionMode":      me.DetectionMode,
 		"thresholds":         me.Thresholds,
@@ -111,7 +111,7 @@ func (me *Detection) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"automaticDetection": &me.AutomaticDetection,
 		"detectionMode":      &me.DetectionMode,
 		"thresholds":         &me.Thresholds,

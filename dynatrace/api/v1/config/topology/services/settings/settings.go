@@ -60,7 +60,7 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]interface{}, error) {
+func (me *Settings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	if err := properties.Encode("name", me.DisplayName); err != nil {
 		return nil, err
@@ -86,7 +86,7 @@ func (me *Settings) UnmarshalHCL(decoder hcl.Decoder) error {
 	if err := decoder.Decode("name", &me.DisplayName); err != nil {
 		return err
 	}
-	var tagList []interface{}
+	var tagList []any
 	if v, ok := decoder.GetOk("tags"); ok {
 		sTags := v.(*schema.Set)
 		tagList = sTags.List()

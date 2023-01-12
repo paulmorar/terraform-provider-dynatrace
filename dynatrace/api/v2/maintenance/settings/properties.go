@@ -62,10 +62,10 @@ func (me *GeneralProperties) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *GeneralProperties) MarshalHCL() (map[string]interface{}, error) {
+func (me *GeneralProperties) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"name":              me.Name,
 		"description":       me.Description,
 		"type":              me.Type,
@@ -75,7 +75,7 @@ func (me *GeneralProperties) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *GeneralProperties) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":              &me.Name,
 		"description":       &me.Description,
 		"type":              &me.Type,

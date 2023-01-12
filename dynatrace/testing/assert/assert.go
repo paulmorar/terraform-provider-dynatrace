@@ -32,9 +32,9 @@ type Assert interface {
 	Error(error)
 	Fail()
 	True(v bool)
-	Nil(v interface{})
-	Equals(expected interface{}, actual interface{})
-	Equalsf(expected interface{}, actual interface{}, format string, args ...any)
+	Nil(v any)
+	Equals(expected any, actual any)
+	Equalsf(expected any, actual any, format string, args ...any)
 	Success(err error)
 }
 
@@ -92,7 +92,7 @@ func (a *assert) Nil(v any) {
 	}
 }
 
-func (a *assert) Equals(expected interface{}, actual interface{}) {
+func (a *assert) Equals(expected any, actual any) {
 	a.t.Helper()
 	if ve, ok := expected.(Equaler); ok {
 		if !ve.Equals(actual) {
@@ -108,12 +108,12 @@ func (a *assert) Equals(expected interface{}, actual interface{}) {
 	}
 }
 
-func Equals(expected interface{}, actual interface{}) (string, bool) {
+func Equals(expected any, actual any) (string, bool) {
 	res := equals(reflect.ValueOf(expected), reflect.ValueOf(actual), "")
 	return res, res == ""
 }
 
-func (a *assert) Equalsf(expected interface{}, actual interface{}, format string, args ...any) {
+func (a *assert) Equalsf(expected any, actual any, format string, args ...any) {
 	a.t.Helper()
 	if res := equals(reflect.ValueOf(expected), reflect.ValueOf(actual), ""); res != "" {
 		a.Errorf("%s: %s", fmt.Sprintf(format, args...), res)
@@ -121,7 +121,7 @@ func (a *assert) Equalsf(expected interface{}, actual interface{}, format string
 }
 
 type Lister interface {
-	List() []interface{}
+	List() []any
 }
 
 type BreadCrumbs string

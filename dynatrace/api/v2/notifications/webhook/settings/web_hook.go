@@ -115,8 +115,8 @@ func (me *WebHook) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *WebHook) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *WebHook) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"active":  me.Enabled,
 		"profile": me.ProfileID,
@@ -131,7 +131,7 @@ func (me *WebHook) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *WebHook) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":    &me.Name,
 		"active":  &me.Enabled,
 		"profile": &me.ProfileID,

@@ -71,20 +71,20 @@ func (me *BaseComparisonInfo) GetType() Type {
 	return me.Type
 }
 
-func (me *BaseComparisonInfo) MarshalHCL() (map[string]interface{}, error) {
+func (me *BaseComparisonInfo) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Printf("BaseComparisonInfo.Unknowns: %v", me.Unknowns)
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"type":     me.Type,
 		"unknowns": me.Unknowns,
 	})
 }
 
 func (me *BaseComparisonInfo) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"type":     &me.Type,
 		"unknowns": &me.Unknowns,
 	})
@@ -92,7 +92,7 @@ func (me *BaseComparisonInfo) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *BaseComparisonInfo) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"negate": me.Negate,
 		"type":   me.Type,
 	}); err != nil {
@@ -106,7 +106,7 @@ func (me *BaseComparisonInfo) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"negate": &me.Negate,
 		"type":   &me.Type,
 	}); err != nil {

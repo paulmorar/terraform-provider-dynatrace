@@ -54,8 +54,8 @@ func (me *EntitySelectorBasedRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EntitySelectorBasedRule) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *EntitySelectorBasedRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)

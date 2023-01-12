@@ -158,9 +158,9 @@ func (me *APIToken) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *APIToken) MarshalHCL() (map[string]interface{}, error) {
+func (me *APIToken) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
-	if _, err := properties.EncodeAll(map[string]interface{}{
+	if _, err := properties.EncodeAll(map[string]any{
 		"name":                  me.Name,
 		"enabled":               me.Enabled,
 		"personal_access_token": me.PersonalAccessToken,
@@ -183,7 +183,7 @@ func (me *APIToken) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *APIToken) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":                  &me.Name,
 		"enabled":               &me.Enabled,
 		"personal_access_token": &me.PersonalAccessToken,

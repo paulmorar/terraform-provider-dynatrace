@@ -100,7 +100,7 @@ func (me *ServerSideRequestAttribute) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *ServerSideRequestAttribute) MarshalHCL() (map[string]interface{}, error) {
+func (me *ServerSideRequestAttribute) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	if err := properties.Encode("key", me.Key); err != nil {
 		return nil, err

@@ -61,8 +61,8 @@ func (sck *String) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (sck *String) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (sck *String) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(sck.Unknowns) > 0 {
 		data, err := json.Marshal(sck.Unknowns)

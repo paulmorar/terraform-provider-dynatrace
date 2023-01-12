@@ -38,12 +38,12 @@ func (me *Order) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Order) MarshalHCL() (map[string]interface{}, error) {
-	refs := []interface{}{}
+func (me *Order) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	refs := []any{}
 	for _, ref := range me.Values {
 		refs = append(refs, ref.ID)
 	}
-	return map[string]interface{}{
+	return map[string]any{
 		"ids": refs,
 	}, nil
 }
@@ -52,7 +52,7 @@ func (me *Order) UnmarshalHCL(decoder hcl.Decoder) error {
 	me.Values = []Ref{}
 	values, ok := decoder.GetOk("ids")
 	if ok {
-		vals := values.([]interface{})
+		vals := values.([]any)
 		for _, val := range vals {
 			me.Values = append(me.Values, Ref{ID: val.(string)})
 		}

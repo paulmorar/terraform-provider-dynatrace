@@ -75,8 +75,8 @@ func (me *JSONDashboard) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *JSONDashboard) MarshalHCL() (map[string]interface{}, error) {
-	m := map[string]interface{}{}
+func (me *JSONDashboard) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	m := map[string]any{}
 	m["contents"] = me.Contents
 	return m, nil
 }
@@ -95,8 +95,8 @@ func (me *JSONDashboard) MarshalJSON() ([]byte, error) {
 
 func (me *JSONDashboard) UnmarshalJSON(data []byte) error {
 	reduced := struct {
-		Metadata *DashboardMetadata       `json:"dashboardMetadata"`
-		Tiles    []map[string]interface{} `json:"tiles"`
+		Metadata *DashboardMetadata `json:"dashboardMetadata"`
+		Tiles    []map[string]any   `json:"tiles"`
 	}{}
 
 	if err := json.Unmarshal(data, &reduced); err != nil {
@@ -128,18 +128,18 @@ func (me *JSONDashboard) UnmarshalJSON(data []byte) error {
 				}
 			}
 		}
-		var untypedQueries interface{}
+		var untypedQueries any
 		var found bool
 		if untypedQueries, found = tile["queries"]; found {
-			queriesArr := untypedQueries.([]interface{})
+			queriesArr := untypedQueries.([]any)
 			for _, untypedQuery := range queriesArr {
-				query := untypedQuery.(map[string]interface{})
-				var untypedFilterBy interface{}
+				query := untypedQuery.(map[string]any)
+				var untypedFilterBy any
 				if untypedFilterBy, found = query["filterBy"]; found && untypedFilterBy != nil {
-					filterBy := untypedFilterBy.(map[string]interface{})
-					var untypedNestedFilters interface{}
+					filterBy := untypedFilterBy.(map[string]any)
+					var untypedNestedFilters any
 					if untypedNestedFilters, found = filterBy["nestedFilters"]; found {
-						nestedFilters := untypedNestedFilters.([]interface{})
+						nestedFilters := untypedNestedFilters.([]any)
 						strs := []string{}
 						for _, nestedFilter := range nestedFilters {
 							var data []byte
@@ -148,7 +148,7 @@ func (me *JSONDashboard) UnmarshalJSON(data []byte) error {
 							}
 							strs = append(strs, string(data))
 							sort.Strings(strs)
-							nestedFilters = []interface{}{}
+							nestedFilters = []any{}
 							for _, str := range strs {
 								nestedFilters = append(nestedFilters, json.RawMessage([]byte(str)))
 							}

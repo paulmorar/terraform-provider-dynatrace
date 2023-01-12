@@ -45,7 +45,7 @@ func (me *bootstrapDecoder) getRaw(key string) (any, bool) {
 	return result.Value, result.Exists
 }
 
-func (me *bootstrapDecoder) GetOk(key string) (interface{}, bool) {
+func (me *bootstrapDecoder) GetOk(key string) (any, bool) {
 	res, ok := me.getRaw(key)
 	if debugGetOk {
 		log.Println("GetOK("+key+")", "=>", res, ok)
@@ -53,17 +53,17 @@ func (me *bootstrapDecoder) GetOk(key string) (interface{}, bool) {
 	return res, ok
 }
 
-func (me *bootstrapDecoder) Get(key string) interface{} {
+func (me *bootstrapDecoder) Get(key string) any {
 	v, _ := me.getRaw(key)
 	return v
 }
 
-func (me *bootstrapDecoder) GetChange(key string) (interface{}, interface{}) {
+func (me *bootstrapDecoder) GetChange(key string) (any, any) {
 	v := me.Get(key)
 	return v, v
 }
 
-func (me *bootstrapDecoder) GetOkExists(key string) (interface{}, bool) {
+func (me *bootstrapDecoder) GetOkExists(key string) (any, bool) {
 	return me.GetOk(key)
 }
 

@@ -43,17 +43,17 @@ func (me *MetadataItem) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MetadataItem) MarshalHCL() (map[string]interface{}, error) {
+func (me *MetadataItem) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"metadata_key":   me.MetadataKey,
 		"metadata_value": me.MetadataValue,
 	})
 }
 
 func (me *MetadataItem) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"metadata_key":   &me.MetadataKey,
 		"metadata_value": &me.MetadataValue,
 	})

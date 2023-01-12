@@ -51,8 +51,8 @@ func (me *ProfileSeverityRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ProfileSeverityRule) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ProfileSeverityRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -62,8 +62,8 @@ func (me *ProfileSeverityRule) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	if me.TagFilter != nil {
-		if marshalled, err := me.TagFilter.MarshalHCL(); err == nil {
-			result["tag_filter"] = []interface{}{marshalled}
+		if marshalled, err := me.TagFilter.MarshalHCL(decoder); err == nil {
+			result["tag_filter"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

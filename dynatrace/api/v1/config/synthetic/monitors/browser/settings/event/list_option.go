@@ -37,11 +37,11 @@ func (me *ListOptions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me ListOptions) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
-	entries := []interface{}{}
+func (me ListOptions) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
+	entries := []any{}
 	for _, entry := range me {
-		if marshalled, err := entry.MarshalHCL(); err == nil {
+		if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 			entries = append(entries, marshalled)
 		} else {
 			return nil, err
@@ -79,8 +79,8 @@ func (me *ListOption) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ListOption) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ListOption) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["index"] = me.Index
 	result["value"] = me.Value
 

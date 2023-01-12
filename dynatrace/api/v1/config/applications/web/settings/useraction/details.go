@@ -64,8 +64,8 @@ func (me *Details) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Details) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *Details) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"value":          me.Value,
 		"case_sensitive": me.CaseSensitive,
 		"match_type":     me.MatchType,
@@ -75,7 +75,7 @@ func (me *Details) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Details) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"value":          &me.Value,
 		"case_sensitive": &me.CaseSensitive,
 		"match_type":     &me.MatchType,

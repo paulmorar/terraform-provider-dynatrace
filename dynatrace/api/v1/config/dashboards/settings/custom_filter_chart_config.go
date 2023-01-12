@@ -93,8 +93,8 @@ func (me *CustomFilterChartConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomFilterChartConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *CustomFilterChartConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -108,9 +108,9 @@ func (me *CustomFilterChartConfig) MarshalHCL() (map[string]interface{}, error) 
 	}
 	result["type"] = string(me.Type)
 	if len(me.Series) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.Series {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -127,8 +127,8 @@ func (me *CustomFilterChartConfig) MarshalHCL() (map[string]interface{}, error) 
 			}
 			resultMetadata.Entries = append(resultMetadata.Entries, entry)
 		}
-		if marshalled, err := resultMetadata.MarshalHCL(); err == nil {
-			result["result_metadata"] = []interface{}{marshalled}
+		if marshalled, err := resultMetadata.MarshalHCL(decoder); err == nil {
+			result["result_metadata"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

@@ -72,8 +72,8 @@ func (me *Authentication) Schema() map[string]*schema.Schema {
 }
 
 // MarshalHCL serializes the fields of an Authentication struct into a map, using the keys specified within the Schema function
-func (me *Authentication) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Authentication) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["type"] = string(me.Type)
 	result["credentials"] = me.Credentials
 	if me.RealmName != nil {

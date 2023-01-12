@@ -42,8 +42,8 @@ func (me *EventTypeFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EventTypeFilter) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *EventTypeFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -53,15 +53,15 @@ func (me *EventTypeFilter) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	if me.CustomEventFilter != nil {
-		if marshalled, err := me.CustomEventFilter.MarshalHCL(); err == nil {
-			result["custom_event_filter"] = []interface{}{marshalled}
+		if marshalled, err := me.CustomEventFilter.MarshalHCL(decoder); err == nil {
+			result["custom_event_filter"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.PredefinedEventFilter != nil {
-		if marshalled, err := me.PredefinedEventFilter.MarshalHCL(); err == nil {
-			result["predefined_event_filter"] = []interface{}{marshalled}
+		if marshalled, err := me.PredefinedEventFilter.MarshalHCL(decoder); err == nil {
+			result["predefined_event_filter"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

@@ -124,8 +124,8 @@ func (me *DashboardMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DashboardMetadata) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *DashboardMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		delete(me.Unknowns, "hasConsistentColors")
@@ -156,22 +156,22 @@ func (me *DashboardMetadata) MarshalHCL() (map[string]interface{}, error) {
 		result["valid_filter_keys"] = me.ValidFilterKeys
 	}
 	if me.SharingDetails != nil {
-		if marshalled, err := me.SharingDetails.MarshalHCL(); err == nil {
-			result["name"] = []interface{}{marshalled}
+		if marshalled, err := me.SharingDetails.MarshalHCL(decoder); err == nil {
+			result["name"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Filter != nil {
-		if marshalled, err := me.Filter.MarshalHCL(); err == nil {
-			result["filter"] = []interface{}{marshalled}
+		if marshalled, err := me.Filter.MarshalHCL(decoder); err == nil {
+			result["filter"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.DynamicFilters != nil {
-		if marshalled, err := me.DynamicFilters.MarshalHCL(); err == nil {
-			result["dynamic_filters"] = []interface{}{marshalled}
+		if marshalled, err := me.DynamicFilters.MarshalHCL(decoder); err == nil {
+			result["dynamic_filters"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

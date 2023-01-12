@@ -114,8 +114,8 @@ func (me *ScriptConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ScriptConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ScriptConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["disable_web_security"] = me.DisableWebSecurity
 	result["bypass_csp"] = me.BypassCSP
 	if me.MonitorFrames != nil && me.MonitorFrames.Enabled {
@@ -127,36 +127,36 @@ func (me *ScriptConfig) MarshalHCL() (map[string]interface{}, error) {
 		result["user_agent"] = me.UserAgent
 	}
 	if me.IgnoredErrorCodes != nil {
-		if marshalled, err := me.IgnoredErrorCodes.MarshalHCL(); err == nil {
-			result["ignored_error_codes"] = []interface{}{marshalled}
+		if marshalled, err := me.IgnoredErrorCodes.MarshalHCL(decoder); err == nil {
+			result["ignored_error_codes"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.JavascriptSettings != nil {
-		if marshalled, err := me.JavascriptSettings.MarshalHCL(); err == nil {
-			result["javascript_setttings"] = []interface{}{marshalled}
+		if marshalled, err := me.JavascriptSettings.MarshalHCL(decoder); err == nil {
+			result["javascript_setttings"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Device != nil {
-		if marshalled, err := me.Device.MarshalHCL(); err == nil {
-			result["device"] = []interface{}{marshalled}
+		if marshalled, err := me.Device.MarshalHCL(decoder); err == nil {
+			result["device"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Bandwidth != nil {
-		if marshalled, err := me.Bandwidth.MarshalHCL(); err == nil {
-			result["bandwidth"] = []interface{}{marshalled}
+		if marshalled, err := me.Bandwidth.MarshalHCL(decoder); err == nil {
+			result["bandwidth"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.RequestHeaders != nil {
-		if marshalled, err := me.RequestHeaders.MarshalHCL(); err == nil {
-			result["headers"] = []interface{}{marshalled}
+		if marshalled, err := me.RequestHeaders.MarshalHCL(decoder); err == nil {
+			result["headers"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -165,8 +165,8 @@ func (me *ScriptConfig) MarshalHCL() (map[string]interface{}, error) {
 		result["block"] = me.BlockRequests
 	}
 	if len(me.Cookies) > 0 {
-		if marshalled, err := me.Cookies.MarshalHCL(); err == nil {
-			result["cookies"] = []interface{}{marshalled}
+		if marshalled, err := me.Cookies.MarshalHCL(decoder); err == nil {
+			result["cookies"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -241,8 +241,8 @@ func (me *IgnoredErrorCodes) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *IgnoredErrorCodes) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *IgnoredErrorCodes) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["status_codes"] = me.StatusCodes
 	if me.MatchingDocumentRequests != nil {
 		result["matching_document_requests"] = *me.MatchingDocumentRequests
@@ -290,18 +290,18 @@ func (me *JavascriptSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *JavascriptSettings) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *JavascriptSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if me.TimeoutSettings != nil {
-		if marshalled, err := me.TimeoutSettings.MarshalHCL(); err == nil {
-			result["timeout_settings"] = []interface{}{marshalled}
+		if marshalled, err := me.TimeoutSettings.MarshalHCL(decoder); err == nil {
+			result["timeout_settings"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.VisuallyCompleteOptions != nil {
-		if marshalled, err := me.VisuallyCompleteOptions.MarshalHCL(); err == nil {
-			result["visually_complete_options"] = []interface{}{marshalled}
+		if marshalled, err := me.VisuallyCompleteOptions.MarshalHCL(decoder); err == nil {
+			result["visually_complete_options"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -365,8 +365,8 @@ func (me *VisuallyCompleteOptions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *VisuallyCompleteOptions) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *VisuallyCompleteOptions) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["image_size_threshold"] = me.ImageSizeThreshold
 	result["inactivity_timeout"] = me.InactivityTimeout
 	result["mutation_timeout"] = me.MutationTimeout
@@ -391,13 +391,13 @@ func (me *VisuallyCompleteOptions) UnmarshalHCL(decoder hcl.Decoder) error {
 	}
 	if value, ok := decoder.GetOk("excluded_urls"); ok {
 		me.ExcludedURLs = []string{}
-		for _, e := range value.([]interface{}) {
+		for _, e := range value.([]any) {
 			me.ExcludedURLs = append(me.ExcludedURLs, e.(string))
 		}
 	}
 	if value, ok := decoder.GetOk("excluded_elements"); ok {
 		me.ExcludedElements = []string{}
-		for _, e := range value.([]interface{}) {
+		for _, e := range value.([]any) {
 			me.ExcludedElements = append(me.ExcludedElements, e.(string))
 		}
 	}
@@ -424,8 +424,8 @@ func (me *TimeoutSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TimeoutSettings) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *TimeoutSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["action_limit"] = int(me.TemporaryActionLimit)
 	result["total_timeout"] = int(me.TemporaryActionTotalTimeout)
 	return result, nil

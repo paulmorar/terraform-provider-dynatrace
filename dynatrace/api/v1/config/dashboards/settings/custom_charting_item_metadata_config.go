@@ -54,8 +54,8 @@ func (me *CustomChartingItemMetadataConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomChartingItemMetadataConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *CustomChartingItemMetadataConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)

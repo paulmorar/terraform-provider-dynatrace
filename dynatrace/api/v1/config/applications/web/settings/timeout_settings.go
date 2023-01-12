@@ -50,8 +50,8 @@ func (me *TimeoutSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TimeoutSettings) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *TimeoutSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"timed_action_support":           me.TimedActionSupport,
 		"temporary_action_limit":         me.TemporaryActionLimit,
 		"temporary_action_total_timeout": me.TemporaryActionTotalTimeout,
@@ -59,7 +59,7 @@ func (me *TimeoutSettings) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *TimeoutSettings) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"timed_action_support":           &me.TimedActionSupport,
 		"temporary_action_limit":         &me.TemporaryActionLimit,
 		"temporary_action_total_timeout": &me.TemporaryActionTotalTimeout,

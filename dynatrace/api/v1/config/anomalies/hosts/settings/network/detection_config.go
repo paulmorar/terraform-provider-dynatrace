@@ -96,39 +96,39 @@ func (me *DetectionConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DetectionConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *DetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if me.NetworkDroppedPacketsDetection != nil && me.NetworkDroppedPacketsDetection.Enabled {
-		if marshalled, err := me.NetworkDroppedPacketsDetection.MarshalHCL(); err == nil {
-			result["dropped_packets"] = []interface{}{marshalled}
+		if marshalled, err := me.NetworkDroppedPacketsDetection.MarshalHCL(decoder); err == nil {
+			result["dropped_packets"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.HighNetworkDetection != nil && me.HighNetworkDetection.Enabled {
-		if marshalled, err := me.HighNetworkDetection.MarshalHCL(); err == nil {
-			result["utilization"] = []interface{}{marshalled}
+		if marshalled, err := me.HighNetworkDetection.MarshalHCL(decoder); err == nil {
+			result["utilization"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.NetworkHighRetransmissionDetection != nil && me.NetworkHighRetransmissionDetection.Enabled {
-		if marshalled, err := me.NetworkHighRetransmissionDetection.MarshalHCL(); err == nil {
-			result["retransmission"] = []interface{}{marshalled}
+		if marshalled, err := me.NetworkHighRetransmissionDetection.MarshalHCL(decoder); err == nil {
+			result["retransmission"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.NetworkTcpProblemsDetection != nil && me.NetworkTcpProblemsDetection.Enabled {
-		if marshalled, err := me.NetworkTcpProblemsDetection.MarshalHCL(); err == nil {
-			result["connectivity"] = []interface{}{marshalled}
+		if marshalled, err := me.NetworkTcpProblemsDetection.MarshalHCL(decoder); err == nil {
+			result["connectivity"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.NetworkErrorsDetection != nil && me.NetworkErrorsDetection.Enabled {
-		if marshalled, err := me.NetworkErrorsDetection.MarshalHCL(); err == nil {
-			result["errors"] = []interface{}{marshalled}
+		if marshalled, err := me.NetworkErrorsDetection.MarshalHCL(decoder); err == nil {
+			result["errors"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

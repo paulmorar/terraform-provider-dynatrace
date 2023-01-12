@@ -51,8 +51,8 @@ func (me *DropDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DropDetection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *DropDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.LoadDropPercent != nil {
 		result["percent"] = int(*me.LoadDropPercent)
@@ -76,7 +76,7 @@ func (me *DropDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *DropDetection) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"enabled":                           me.Enabled,
 		"loadDropPercent":                   me.LoadDropPercent,
 		"minAbnormalStateDurationInMinutes": me.AbnormalMinutes,
@@ -91,7 +91,7 @@ func (me *DropDetection) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"enabled":                           &me.Enabled,
 		"loadDropPercent":                   &me.LoadDropPercent,
 		"minAbnormalStateDurationInMinutes": &me.AbnormalMinutes,

@@ -37,12 +37,12 @@ func (me *EntityFilterConditions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me EntityFilterConditions) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me EntityFilterConditions) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -96,10 +96,10 @@ func (me *EntityFilterCondition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EntityFilterCondition) MarshalHCL() (map[string]interface{}, error) {
+func (me *EntityFilterCondition) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"type":     me.Type,
 		"operator": me.Operator,
 		"value":    me.Value,
@@ -107,7 +107,7 @@ func (me *EntityFilterCondition) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *EntityFilterCondition) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"type":     &me.Type,
 		"operator": &me.Operator,
 		"value":    &me.Value,

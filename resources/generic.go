@@ -69,7 +69,7 @@ func (me *Generic) Service(m any) api.CRUDService[api.Settings] {
 	return me.Descriptor.Service(me.createCredentials(m))
 }
 
-func (me *Generic) Create(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func (me *Generic) Create(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	settings := me.Settings()
 	if err := settings.UnmarshalHCL(hcl.DecoderFrom(d)); err != nil {
 		return diag.FromErr(err)
@@ -82,7 +82,7 @@ func (me *Generic) Create(ctx context.Context, d *schema.ResourceData, m interfa
 	return me.Read(ctx, d, m)
 }
 
-func (me *Generic) Update(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func (me *Generic) Update(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	settings := me.Settings()
 	if err := settings.UnmarshalHCL(hcl.DecoderFrom(d)); err != nil {
 		return diag.FromErr(err)
@@ -93,7 +93,7 @@ func (me *Generic) Update(ctx context.Context, d *schema.ResourceData, m interfa
 	return me.Read(ctx, d, m)
 }
 
-func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var err error
 	var restLogFile *os.File
 	restLogFileName := os.Getenv("DT_REST_DEBUG_LOG")
@@ -130,7 +130,7 @@ func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m interface
 			demoSettings.FillDemoValues()
 		}
 	}
-	marshalled, err := settings.MarshalHCL()
+	marshalled, err := settings.MarshalHCL(hcl.DecoderFrom(d))
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -140,7 +140,7 @@ func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m interface
 	return diag.Diagnostics{}
 }
 
-func (me *Generic) Delete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func (me *Generic) Delete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	if err := me.Service(m).Delete(d.Id()); err != nil {
 		if restError, ok := err.(rest.Error); ok {
 			if restError.Code == 404 {

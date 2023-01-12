@@ -69,7 +69,7 @@ func (me *Headers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Headers) MarshalHCL() (map[string]interface{}, error) {
+func (me Headers) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("header", me)
 }
 
@@ -159,8 +159,8 @@ func (me *Header) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Header) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Header) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["name"] = me.Name
 	if me.Value != nil {
 		result["value"] = me.Value

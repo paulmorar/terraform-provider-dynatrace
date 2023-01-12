@@ -43,17 +43,17 @@ func (me *RecurrenceRange) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RecurrenceRange) MarshalHCL() (map[string]interface{}, error) {
+func (me *RecurrenceRange) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"start_date": me.StartDate,
 		"end_date":   me.EndDate,
 	})
 }
 
 func (me *RecurrenceRange) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"start_date": &me.StartDate,
 		"end_date":   &me.EndDate,
 	})

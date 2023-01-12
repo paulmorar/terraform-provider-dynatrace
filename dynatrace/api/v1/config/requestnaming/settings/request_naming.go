@@ -91,11 +91,11 @@ func (me *RequestNaming) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RequestNaming) MarshalHCL() (map[string]interface{}, error) {
+func (me *RequestNaming) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	if properties, err := hcl.NewProperties(me, me.Unknowns); err != nil {
 		return nil, err
 	} else {
-		return properties.EncodeAll(map[string]interface{}{
+		return properties.EncodeAll(map[string]any{
 			// "order":            me.Order,
 			"enabled":          me.Enabled,
 			"naming_pattern":   me.NamingPattern,
@@ -108,7 +108,7 @@ func (me *RequestNaming) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *RequestNaming) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		// "order":            &me.Order,
 		"enabled":          &me.Enabled,
 		"naming_pattern":   &me.NamingPattern,
@@ -122,7 +122,7 @@ func (me *RequestNaming) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *RequestNaming) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		// "order":           me.Order,
 		"enabled":         me.Enabled,
 		"namingPattern":   me.NamingPattern,
@@ -140,7 +140,7 @@ func (me *RequestNaming) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	return properties.UnmarshalAll(map[string]interface{}{
+	return properties.UnmarshalAll(map[string]any{
 		// "order":           &me.Order,
 		"enabled":         &me.Enabled,
 		"namingPattern":   &me.NamingPattern,

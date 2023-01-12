@@ -58,8 +58,8 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]interface{}, error) {
-	res, err := hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *Settings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	res, err := hcl.Properties{}.EncodeAll(map[string]any{
 		"enabled":                                me.Enabled,
 		"cost_control_percentage":                me.CostControlPercentage,
 		"enable_css_resource_capturing":          me.EnableCSSResourceCapturing,
@@ -77,7 +77,7 @@ func (me *Settings) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Settings) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"enabled":                                &me.Enabled,
 		"cost_control_percentage":                &me.CostControlPercentage,
 		"enable_css_resource_capturing":          &me.EnableCSSResourceCapturing,

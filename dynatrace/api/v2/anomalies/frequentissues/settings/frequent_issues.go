@@ -53,10 +53,10 @@ func (me *FrequentIssues) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FrequentIssues) MarshalHCL() (map[string]interface{}, error) {
+func (me *FrequentIssues) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"detect_apps":  me.DetectApps,
 		"detect_txn":   me.DetectTxn,
 		"detect_infra": me.DetectInfra,
@@ -64,7 +64,7 @@ func (me *FrequentIssues) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *FrequentIssues) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"detect_apps":  &me.DetectApps,
 		"detect_txn":   &me.DetectTxn,
 		"detect_infra": &me.DetectInfra,

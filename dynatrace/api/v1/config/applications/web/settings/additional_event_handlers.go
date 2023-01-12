@@ -74,8 +74,8 @@ func (me *AdditionalEventHandlers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AdditionalEventHandlers) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *AdditionalEventHandlers) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"use_mouse_up_event_for_clicks": me.UseMouseUpEventForClicks,
 		"click":                         me.ClickEventHandler,
 		"mouseup":                       me.MouseUpEventHandler,
@@ -87,7 +87,7 @@ func (me *AdditionalEventHandlers) MarshalHCL() (map[string]interface{}, error) 
 }
 
 func (me *AdditionalEventHandlers) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"use_mouse_up_event_for_clicks": &me.UseMouseUpEventForClicks,
 		"click":                         &me.ClickEventHandler,
 		"mouseup":                       &me.MouseUpEventHandler,

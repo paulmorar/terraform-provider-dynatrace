@@ -55,10 +55,10 @@ func (me *SpanCaptureRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpanCaptureRule) MarshalHCL() (map[string]interface{}, error) {
+func (me *SpanCaptureRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"action":  me.Action,
 		"matches": me.Matchers,
@@ -66,7 +66,7 @@ func (me *SpanCaptureRule) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *SpanCaptureRule) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":    &me.Name,
 		"action":  &me.Action,
 		"matches": &me.Matchers,

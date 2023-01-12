@@ -54,10 +54,10 @@ func (me *QueueSharingGroup) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *QueueSharingGroup) MarshalHCL() (map[string]interface{}, error) {
+func (me *QueueSharingGroup) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"name":           me.Name,
 		"queue_managers": me.QueueManagers,
 		"shared_queues":  me.SharedQueues,
@@ -65,7 +65,7 @@ func (me *QueueSharingGroup) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *QueueSharingGroup) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":           &me.Name,
 		"queue_managers": &me.QueueManagers,
 		"shared_queues":  &me.SharedQueues,

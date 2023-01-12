@@ -96,8 +96,8 @@ func (me *MethodReference) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MethodReference) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *MethodReference) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -159,7 +159,7 @@ func (me *MethodReference) UnmarshalHCL(decoder hcl.Decoder) error {
 	}
 	if value, ok := decoder.GetOk("argument_types"); ok {
 		me.ArgumentTypes = []string{}
-		for _, e := range value.([]interface{}) {
+		for _, e := range value.([]any) {
 			me.ArgumentTypes = append(me.ArgumentTypes, e.(string))
 		}
 	}

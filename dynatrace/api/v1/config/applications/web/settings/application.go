@@ -176,8 +176,8 @@ func (me *Application) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Application) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *Application) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"name":                                 me.Name,
 		"type":                                 me.Type,
 		"real_user_monitoring_enabled":         me.RealUserMonitoringEnabled,
@@ -201,7 +201,7 @@ func (me *Application) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Application) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeAll(map[string]interface{}{
+	if err := decoder.DecodeAll(map[string]any{
 		"name":                                 &me.Name,
 		"type":                                 &me.Type,
 		"real_user_monitoring_enabled":         &me.RealUserMonitoringEnabled,

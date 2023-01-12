@@ -54,8 +54,8 @@ func (me *ConfigMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ConfigMetadata) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ConfigMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.ClusterVersion != nil && len(*me.ClusterVersion) > 0 {
 		result["cluster_version"] = *me.ClusterVersion
@@ -76,7 +76,7 @@ func (me *ConfigMetadata) UnmarshalHCL(decoder hcl.Decoder) error {
 	if _, ok := decoder.GetOk("configuration_versions.#"); ok {
 		me.ConfigurationVersions = []int64{}
 		if entries, ok := decoder.GetOk("configuration_versions"); ok {
-			for _, entry := range entries.([]interface{}) {
+			for _, entry := range entries.([]any) {
 				me.ConfigurationVersions = append(me.ConfigurationVersions, int64(entry.(int)))
 			}
 		}
@@ -84,7 +84,7 @@ func (me *ConfigMetadata) UnmarshalHCL(decoder hcl.Decoder) error {
 	if _, ok := decoder.GetOk("current_configuration_versions.#"); ok {
 		me.CurrentConfigurationVersions = []string{}
 		if entries, ok := decoder.GetOk("current_configuration_versions"); ok {
-			for _, entry := range entries.([]interface{}) {
+			for _, entry := range entries.([]any) {
 				me.CurrentConfigurationVersions = append(me.CurrentConfigurationVersions, entry.(string))
 			}
 		}

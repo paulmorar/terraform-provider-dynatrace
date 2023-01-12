@@ -71,8 +71,8 @@ func (inc *IndexedName) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (inc *IndexedName) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (inc *IndexedName) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(inc.Unknowns) > 0 {
 		data, err := json.Marshal(inc.Unknowns)

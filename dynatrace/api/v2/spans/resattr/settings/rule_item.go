@@ -49,8 +49,8 @@ func (me *RuleItem) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RuleItem) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *RuleItem) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	result["enabled"] = me.Enabled
 	result["attribute_key"] = me.AttributeKey

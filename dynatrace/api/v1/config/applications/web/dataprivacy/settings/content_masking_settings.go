@@ -49,8 +49,8 @@ func (me *ContentMaskingSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ContentMaskingSettings) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *ContentMaskingSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"recording": me.RecordingMaskingSettings,
 		"playback":  me.PlaybackMaskingSettings,
 	})
@@ -58,7 +58,7 @@ func (me *ContentMaskingSettings) MarshalHCL() (map[string]interface{}, error) {
 
 func (me *ContentMaskingSettings) UnmarshalHCL(decoder hcl.Decoder) error {
 	me.RecordingMaskingSettingsVersion = 2
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"recording": &me.RecordingMaskingSettings,
 		"playback":  &me.PlaybackMaskingSettings,
 	})

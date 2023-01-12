@@ -61,8 +61,8 @@ func (me *BaseMonitoringStrategy) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *BaseMonitoringStrategy) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *BaseMonitoringStrategy) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -97,7 +97,7 @@ func (me *BaseMonitoringStrategy) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *BaseMonitoringStrategy) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"type": me.Type,
 	}); err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (me *BaseMonitoringStrategy) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"type": &me.Type,
 	}); err != nil {
 		return err

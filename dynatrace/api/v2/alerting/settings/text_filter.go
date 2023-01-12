@@ -61,8 +61,8 @@ func (me *TextFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TextFilter) MarshalHCL() (map[string]interface{}, error) {
-	return map[string]interface{}{
+func (me *TextFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return map[string]any{
 		"enabled":        me.Enabled,
 		"negate":         me.Negate,
 		"operator":       string(me.Operator),

@@ -92,8 +92,8 @@ func (me *AdvancedJavaScriptTagSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AdvancedJavaScriptTagSettings) MarshalHCL() (map[string]interface{}, error) {
-	res, err := hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *AdvancedJavaScriptTagSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	res, err := hcl.Properties{}.EncodeAll(map[string]any{
 		"sync_beacon_firefox":                    me.SyncBeaconFirefox,
 		"sync_beacon_internet_explorer":          me.SyncBeaconInternetExplorer,
 		"instrument_unsupported_ajax_frameworks": me.InstrumentUnsupportedAjaxFrameworks,
@@ -114,7 +114,7 @@ func (me *AdvancedJavaScriptTagSettings) MarshalHCL() (map[string]interface{}, e
 }
 
 func (me *AdvancedJavaScriptTagSettings) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"sync_beacon_firefox":                    &me.SyncBeaconFirefox,
 		"sync_beacon_internet_explorer":          &me.SyncBeaconInternetExplorer,
 		"instrument_unsupported_ajax_frameworks": &me.InstrumentUnsupportedAjaxFrameworks,

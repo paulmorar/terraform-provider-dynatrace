@@ -127,11 +127,11 @@ func (me *QueueManager) EnsurePredictableOrder() {
 	}
 }
 
-func (me *QueueManager) MarshalHCL() (map[string]interface{}, error) {
+func (me *QueueManager) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	me.EnsurePredictableOrder()
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"name":           me.Name,
 		"clusters":       me.Clusters,
 		"alias_queues":   me.AliasQueues,
@@ -141,7 +141,7 @@ func (me *QueueManager) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *QueueManager) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":           &me.Name,
 		"clusters":       &me.Clusters,
 		"alias_queues":   &me.AliasQueues,

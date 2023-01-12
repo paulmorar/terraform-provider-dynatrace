@@ -46,8 +46,8 @@ func (me *SpikeDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpikeDetection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *SpikeDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	result["enabled"] = me.Enabled
 	if me.TrafficSpikePercent != nil {

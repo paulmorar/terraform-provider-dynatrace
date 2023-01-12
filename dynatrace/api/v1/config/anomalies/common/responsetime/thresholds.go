@@ -71,8 +71,8 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Thresholds) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -121,7 +121,7 @@ func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *Thresholds) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"loadThreshold":                            me.LoadThreshold,
 		"sensitivity":                              me.Sensitivity,
 		"responseTimeThresholdMilliseconds":        me.Milliseconds,
@@ -137,7 +137,7 @@ func (me *Thresholds) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"loadThreshold":                            &me.LoadThreshold,
 		"sensitivity":                              &me.Sensitivity,
 		"responseTimeThresholdMilliseconds":        &me.Milliseconds,

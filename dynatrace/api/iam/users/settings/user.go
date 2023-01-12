@@ -26,8 +26,8 @@ func (me *User) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *User) MarshalHCL() (map[string]interface{}, error) {
-	return map[string]interface{}{
+func (me *User) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return map[string]any{
 		"email":  me.Email,
 		"groups": me.Groups,
 	}, nil

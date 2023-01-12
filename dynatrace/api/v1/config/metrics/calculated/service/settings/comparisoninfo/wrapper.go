@@ -179,7 +179,7 @@ func (me *Wrapper) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Wrapper) MarshalHCL() (map[string]interface{}, error) {
+func (me *Wrapper) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	properties.Encode("negate", me.Comparison.IsNegate())
 	switch cmp := me.Comparison.(type) {
@@ -278,8 +278,8 @@ func (me *Wrapper) UnmarshalHCL(decoder hcl.Decoder) error {
 		return err
 	}
 	var err error
-	var cmp interface{}
-	if cmp, err = decoder.DecodeAny(map[string]interface{}{
+	var cmp any
+	if cmp, err = decoder.DecodeAny(map[string]any{
 		"boolean":                  new(Boolean),
 		"esb_input_node_type":      new(ESBInputNodeType),
 		"failed_state":             new(FailedState),
@@ -312,7 +312,7 @@ func (me *Wrapper) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	var compType string
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"negate": &me.Negate,
 		"type":   &compType,
 	}); err != nil {

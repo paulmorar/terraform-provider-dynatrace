@@ -67,12 +67,12 @@ func (me *HTTPMethod) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *HTTPMethod) MarshalHCL() (map[string]interface{}, error) {
+func (me *HTTPMethod) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err
 	}
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"values":   me.Values,
 		"value":    me.Value,
 		"operator": me.Comparison,
@@ -81,7 +81,7 @@ func (me *HTTPMethod) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *HTTPMethod) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"values":   &me.Values,
 		"value":    &me.Value,
 		"operator": &me.Comparison,
@@ -93,7 +93,7 @@ func (me *HTTPMethod) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *HTTPMethod) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"type":       me.GetType(),
 		"negate":     me.Negate,
 		"values":     me.Values,
@@ -110,7 +110,7 @@ func (me *HTTPMethod) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	return properties.UnmarshalAll(map[string]interface{}{
+	return properties.UnmarshalAll(map[string]any{
 		"negate":     &me.Negate,
 		"values":     &me.Values,
 		"value":      &me.Value,

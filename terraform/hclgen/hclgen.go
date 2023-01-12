@@ -109,7 +109,7 @@ func (e exportEntries) Less(i, j int) bool {
 	return e[i].IsLessThan(e[j])
 }
 
-func (e *exportEntries) eval(key string, value interface{}, breadCrumbs string, schema map[string]*schema.Schema) {
+func (e *exportEntries) eval(key string, value any, breadCrumbs string, schema map[string]*schema.Schema) {
 	if value == nil {
 		return
 	}
@@ -123,15 +123,15 @@ func (e *exportEntries) eval(key string, value interface{}, breadCrumbs string, 
 		}
 		entry := &primitiveEntry{Key: key, Value: v, BreadCrumbs: breadCrumbs, Optional: resOpt(breadCrumbs, schema)}
 		*e = append(*e, entry)
-	case []interface{}:
+	case []any:
 		if len(v) == 0 {
 			return
 		}
 		switch typedElem := v[0].(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			for _, elem := range v {
 				entry := &resourceEntry{Key: key, Entries: exportEntries{}}
-				entry.Entries.handle(elem.(map[string]interface{}), breadCrumbs, schema)
+				entry.Entries.handle(elem.(map[string]any), breadCrumbs, schema)
 				*e = append(*e, entry)
 			}
 		case string:
@@ -253,7 +253,7 @@ func (e *exportEntries) eval(key string, value interface{}, breadCrumbs string, 
 		}
 		entry := &primitiveEntry{Key: key, Value: value, Optional: resOpt(breadCrumbs, schema)}
 		*e = append(*e, entry)
-	case map[string]interface{}:
+	case map[string]any:
 		if len(v) == 0 {
 			return
 		}
@@ -274,7 +274,7 @@ func (e *exportEntries) eval(key string, value interface{}, breadCrumbs string, 
 	}
 }
 
-func (e *exportEntries) handle(m map[string]interface{}, breadCrumbs string, schema map[string]*schema.Schema) {
+func (e *exportEntries) handle(m map[string]any, breadCrumbs string, schema map[string]*schema.Schema) {
 	for k, v := range m {
 		e.eval(k, v, breadCrumbs+"."+k, schema)
 	}
@@ -289,9 +289,9 @@ func ExportDataSource(marshaler hcl.Marshaler, w io.Writer, resourceType string,
 }
 
 func (me *HCLGen) Export(marshaler hcl.Marshaler, w io.Writer, resourceType string, resourceName string, comments ...string) error {
-	var m map[string]interface{}
+	var m map[string]any
 	var err error
-	if m, err = marshaler.MarshalHCL(); err != nil {
+	if m, err = marshaler.MarshalHCL(nil); err != nil {
 		return err
 	}
 	var schema map[string]*schema.Schema
@@ -301,7 +301,7 @@ func (me *HCLGen) Export(marshaler hcl.Marshaler, w io.Writer, resourceType stri
 	return me.export(m, schema, w, resourceType, resourceName, comments...)
 }
 
-func (me *HCLGen) export(m map[string]interface{}, schema map[string]*schema.Schema, w io.Writer, resourceType string, resourceName string, comments ...string) error {
+func (me *HCLGen) export(m map[string]any, schema map[string]*schema.Schema, w io.Writer, resourceType string, resourceName string, comments ...string) error {
 	var err error
 	ents := exportEntries{}
 	ents.handle(m, "", schema)

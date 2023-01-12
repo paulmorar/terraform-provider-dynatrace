@@ -104,8 +104,8 @@ func (assc *AWSSupportingServiceConfig) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (assc *AWSSupportingServiceConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (assc *AWSSupportingServiceConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(assc.Unknowns) > 0 {
 		data, err := json.Marshal(assc.Unknowns)
@@ -116,9 +116,9 @@ func (assc *AWSSupportingServiceConfig) MarshalHCL() (map[string]interface{}, er
 	}
 	result["name"] = assc.Name
 	if assc.MonitoredMetrics != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, monitoredMetric := range assc.MonitoredMetrics {
-			if marshalled, err := monitoredMetric.MarshalHCL(); err == nil {
+			if marshalled, err := monitoredMetric.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

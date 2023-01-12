@@ -117,8 +117,8 @@ func (me *JiraConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *JiraConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *JiraConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -199,7 +199,7 @@ func (me *JiraConfig) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *JiraConfig) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"id":              me.ID,
 		"name":            me.Name,
 		"type":            me.GetType(),
@@ -223,7 +223,7 @@ func (me *JiraConfig) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"id":              &me.ID,
 		"name":            &me.Name,
 		"type":            &me.Type,

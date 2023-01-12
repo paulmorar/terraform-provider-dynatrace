@@ -74,8 +74,8 @@ func (itc *IndexedTag) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (itc *IndexedTag) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (itc *IndexedTag) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(itc.Unknowns) > 0 {
 		data, err := json.Marshal(itc.Unknowns)
@@ -87,8 +87,8 @@ func (itc *IndexedTag) MarshalHCL() (map[string]interface{}, error) {
 	result["negate"] = itc.Negate
 	result["operator"] = string(itc.Operator)
 	if itc.Value != nil {
-		if marshalled, err := itc.Value.MarshalHCL(); err == nil {
-			result["value"] = []interface{}{marshalled}
+		if marshalled, err := itc.Value.MarshalHCL(decoder); err == nil {
+			result["value"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

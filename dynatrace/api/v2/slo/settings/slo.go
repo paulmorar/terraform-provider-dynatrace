@@ -124,10 +124,10 @@ func empty2Nil(s *string) *string {
 	return s
 }
 
-func (me *SLO) MarshalHCL() (map[string]interface{}, error) {
+func (me *SLO) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	res, err := properties.EncodeAll(map[string]interface{}{
+	res, err := properties.EncodeAll(map[string]any{
 		"name":              me.Name,
 		"description":       me.Description,
 		"disabled":          !me.Enabled,
@@ -182,7 +182,7 @@ func nonNil(s *string) *string {
 }
 
 func (me *SLO) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"name":              &me.Name,
 		"description":       &me.Description,
 		"disabled":          &me.Enabled,

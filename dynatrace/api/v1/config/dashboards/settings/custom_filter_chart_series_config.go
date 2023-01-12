@@ -100,8 +100,8 @@ func (me *CustomFilterChartSeriesConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomFilterChartSeriesConfig) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *CustomFilterChartSeriesConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -123,9 +123,9 @@ func (me *CustomFilterChartSeriesConfig) MarshalHCL() (map[string]interface{}, e
 		result["aggregation_rate"] = string(*me.AggregationRate)
 	}
 	if len(me.Dimensions) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.Dimensions {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

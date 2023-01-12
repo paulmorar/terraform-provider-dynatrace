@@ -31,15 +31,15 @@ func (me *DEMUnits) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DEMUnits) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *DEMUnits) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"monthly": me.MonthlyLimit,
 		"annual":  me.AnnualLimit,
 	})
 }
 
 func (me *DEMUnits) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"monthly": &me.MonthlyLimit,
 		"annual":  &me.AnnualLimit,
 	})

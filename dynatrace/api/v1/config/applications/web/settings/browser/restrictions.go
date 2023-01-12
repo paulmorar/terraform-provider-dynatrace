@@ -37,12 +37,12 @@ func (me *Restrictions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Restrictions) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me Restrictions) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -93,8 +93,8 @@ func (me *Restriction) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Restriction) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *Restriction) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"browser_version": me.BrowserVersion,
 		"browser_type":    me.BrowserType,
 		"platform":        me.Platform,
@@ -103,7 +103,7 @@ func (me *Restriction) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Restriction) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"browser_version": &me.BrowserVersion,
 		"browser_type":    &me.BrowserType,
 		"platform":        &me.Platform,

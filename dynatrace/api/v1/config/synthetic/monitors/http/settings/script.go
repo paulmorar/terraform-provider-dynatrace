@@ -44,12 +44,12 @@ func (me *Script) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Script) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Script) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me.Requests) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, request := range me.Requests {
-			if marshalled, err := request.MarshalHCL(); err == nil {
+			if marshalled, err := request.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

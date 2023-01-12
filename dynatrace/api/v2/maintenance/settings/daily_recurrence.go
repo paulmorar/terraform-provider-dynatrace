@@ -51,17 +51,17 @@ func (me *DailyRecurrence) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DailyRecurrence) MarshalHCL() (map[string]interface{}, error) {
+func (me *DailyRecurrence) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"time_window":      me.TimeWindow,
 		"recurrence_range": me.RecurrenceRange,
 	})
 }
 
 func (me *DailyRecurrence) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"time_window":      &me.TimeWindow,
 		"recurrence_range": &me.RecurrenceRange,
 	})

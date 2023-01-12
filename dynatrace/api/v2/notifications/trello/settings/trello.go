@@ -111,12 +111,12 @@ func (me *Trello) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Trello) MarshalHCL() (map[string]interface{}, error) {
+func (me *Trello) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	// The authorization_token field MUST NOT get serialized into HCL here
 	// The Dynatrace Settings 2.0 API delivers a scrambled version of any previously stored authorization_token here
 	// Evaluation at this point would lead to that scrambled version to make it into the Terraform State
 	// As a result any plans would be non-empty
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"active":  me.Enabled,
 		"profile": me.ProfileID,
@@ -132,7 +132,7 @@ func (me *Trello) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Trello) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":    &me.Name,
 		"active":  &me.Enabled,
 		"profile": &me.ProfileID,

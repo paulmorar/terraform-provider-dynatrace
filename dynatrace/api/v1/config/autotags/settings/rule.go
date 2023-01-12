@@ -87,8 +87,8 @@ func (me *Rule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Rule) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Rule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -100,16 +100,16 @@ func (me *Rule) MarshalHCL() (map[string]interface{}, error) {
 	result["enabled"] = me.Enabled
 	result["type"] = me.Type
 	if len(me.PropagationTypes) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.PropagationTypes {
 			entries = append(entries, string(entry))
 		}
 		result["propagation_types"] = entries
 	}
 	if len(me.Conditions) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.Conditions {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -153,7 +153,7 @@ func (me *Rule) UnmarshalHCL(decoder hcl.Decoder) error {
 	if _, ok := decoder.GetOk("propagation_types.#"); ok {
 		me.PropagationTypes = []PropagationType{}
 		if entries, ok := decoder.GetOk("propagation_types"); ok {
-			for _, entry := range entries.([]interface{}) {
+			for _, entry := range entries.([]any) {
 				me.PropagationTypes = append(me.PropagationTypes, PropagationType(entry.(string)))
 			}
 		}

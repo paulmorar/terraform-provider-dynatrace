@@ -37,12 +37,12 @@ func (me *DimensionFilters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me DimensionFilters) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me DimensionFilters) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -90,17 +90,17 @@ func (me *DimensionFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DimensionFilter) MarshalHCL() (map[string]interface{}, error) {
+func (me *DimensionFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"dimension_key":   me.DimensionKey,
 		"dimension_value": me.DimensionValue,
 	})
 }
 
 func (me *DimensionFilter) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"dimension_key":   &me.DimensionKey,
 		"dimension_value": &me.DimensionValue,
 	})

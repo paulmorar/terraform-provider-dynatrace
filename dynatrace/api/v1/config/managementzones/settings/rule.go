@@ -91,8 +91,8 @@ func (mzr *Rule) SortConditions() {
 	}
 }
 
-func (mzr *Rule) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (mzr *Rule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(mzr.Unknowns) > 0 {
 		data, err := json.Marshal(mzr.Unknowns)
@@ -104,7 +104,7 @@ func (mzr *Rule) MarshalHCL() (map[string]interface{}, error) {
 	result["enabled"] = mzr.Enabled
 	result["type"] = string(mzr.Type)
 	if len(mzr.PropagationTypes) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range mzr.PropagationTypes {
 			entries = append(entries, string(entry))
 		}
@@ -112,9 +112,9 @@ func (mzr *Rule) MarshalHCL() (map[string]interface{}, error) {
 	}
 	if len(mzr.Conditions) > 0 {
 		mzr.SortConditions()
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range mzr.Conditions {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

@@ -78,7 +78,7 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]interface{}, error) {
+func (me *Settings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 	if !me.HostUnits.IsEmpty() {
 		if err := properties.Encode("host_units", me.HostUnits.MaxLimit); err != nil {

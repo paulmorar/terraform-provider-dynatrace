@@ -58,8 +58,8 @@ func (me *Autodetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Autodetection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Autodetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -98,7 +98,7 @@ func (me *Autodetection) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *Autodetection) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"failingServiceCallPercentageIncreaseAbsolute": me.PercentAbsolute,
 		"failingServiceCallPercentageIncreaseRelative": me.PercentRelative,
 	}); err != nil {
@@ -112,7 +112,7 @@ func (me *Autodetection) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"failingServiceCallPercentageIncreaseAbsolute": &me.PercentAbsolute,
 		"failingServiceCallPercentageIncreaseRelative": &me.PercentRelative,
 	}); err != nil {

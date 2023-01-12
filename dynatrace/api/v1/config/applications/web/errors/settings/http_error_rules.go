@@ -37,12 +37,12 @@ func (me *HTTPErrorRules) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me HTTPErrorRules) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me HTTPErrorRules) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -123,8 +123,8 @@ func (me *HTTPErrorRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *HTTPErrorRule) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *HTTPErrorRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"consider_unknown_error_code": me.ConsiderUnknownErrorCode,
 		"consider_blocked_requests":   me.ConsiderBlockedRequests,
 		"error_codes":                 me.ErrorCodes,
@@ -138,7 +138,7 @@ func (me *HTTPErrorRule) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *HTTPErrorRule) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"consider_unknown_error_code": &me.ConsiderUnknownErrorCode,
 		"consider_blocked_requests":   &me.ConsiderBlockedRequests,
 		"error_codes":                 &me.ErrorCodes,

@@ -45,17 +45,17 @@ func (me *EntityFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EntityFilter) MarshalHCL() (map[string]interface{}, error) {
+func (me *EntityFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"dimension_key": me.DimensionKey,
 		"conditions":    me.Conditions,
 	})
 }
 
 func (me *EntityFilter) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"dimension_key": &me.DimensionKey,
 		"conditions":    &me.Conditions,
 	})

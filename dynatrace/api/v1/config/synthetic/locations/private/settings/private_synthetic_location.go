@@ -115,8 +115,8 @@ func (me *PrivateSyntheticLocation) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *PrivateSyntheticLocation) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *PrivateSyntheticLocation) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["name"] = me.Name
 	if me.CountryCode != nil {
 		result["country_code"] = me.CountryCode

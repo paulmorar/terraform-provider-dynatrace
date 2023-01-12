@@ -133,8 +133,8 @@ func (me *SyntheticMonitor) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SyntheticMonitor) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *SyntheticMonitor) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["name"] = me.Name
 	result["frequency"] = me.FrequencyMin
 	if len(me.Locations) > 0 {
@@ -145,29 +145,29 @@ func (me *SyntheticMonitor) MarshalHCL() (map[string]interface{}, error) {
 		result["manually_assigned_apps"] = me.ManuallyAssignedApps
 	}
 	if len(me.Tags) > 0 {
-		if marshalled, err := me.Tags.MarshalHCL(); err == nil {
-			result["tags"] = []interface{}{marshalled}
+		if marshalled, err := me.Tags.MarshalHCL(decoder); err == nil {
+			result["tags"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.AnomalyDetection != nil {
-		if marshalled, err := me.AnomalyDetection.MarshalHCL(); err == nil {
-			result["anomaly_detection"] = []interface{}{marshalled}
+		if marshalled, err := me.AnomalyDetection.MarshalHCL(decoder); err == nil {
+			result["anomaly_detection"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.KeyPerformanceMetrics != nil {
-		if marshalled, err := me.KeyPerformanceMetrics.MarshalHCL(); err == nil {
-			result["key_performance_metrics"] = []interface{}{marshalled}
+		if marshalled, err := me.KeyPerformanceMetrics.MarshalHCL(decoder); err == nil {
+			result["key_performance_metrics"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Script != nil {
-		if marshalled, err := me.Script.MarshalHCL(); err == nil {
-			result["script"] = []interface{}{marshalled}
+		if marshalled, err := me.Script.MarshalHCL(decoder); err == nil {
+			result["script"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

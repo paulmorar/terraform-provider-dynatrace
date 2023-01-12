@@ -81,8 +81,8 @@ func (me *MethodRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MethodRule) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *MethodRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -138,13 +138,13 @@ func (me *MethodRule) UnmarshalHCL(decoder hcl.Decoder) error {
 	}
 	if value, ok := decoder.GetOk("arguments"); ok {
 		me.ArgumentTypes = []string{}
-		for _, v := range value.([]interface{}) {
+		for _, v := range value.([]any) {
 			me.ArgumentTypes = append(me.ArgumentTypes, v.(string))
 		}
 	}
 	if value, ok := decoder.GetOk("modifiers"); ok {
 		me.Modifiers = []Modifier{}
-		for _, v := range value.([]interface{}) {
+		for _, v := range value.([]any) {
 			me.Modifiers = append(me.Modifiers, Modifier(v.(string)))
 		}
 		if len(me.Modifiers) == 0 {

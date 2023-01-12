@@ -46,12 +46,12 @@ func (me *HeadersSection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *HeadersSection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *HeadersSection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me.Headers) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, header := range me.Headers {
-			if marshalled, err := header.MarshalHCL(); err == nil {
+			if marshalled, err := header.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -97,12 +97,12 @@ func (me *Headers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Headers) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me Headers) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, header := range me {
-			if marshalled, err := header.MarshalHCL(); err == nil {
+			if marshalled, err := header.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -147,8 +147,8 @@ func (me *Header) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Header) MarshalHCL() (map[string]interface{}, error) {
-	return map[string]interface{}{"name": me.Name, "value": me.Value}, nil
+func (me *Header) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return map[string]any{"name": me.Name, "value": me.Value}, nil
 }
 
 func (me *Header) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -58,8 +58,8 @@ func (me *ResultMetadataEntry) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ResultMetadataEntry) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ResultMetadataEntry) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)

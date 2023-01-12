@@ -126,8 +126,8 @@ func (aad *AWSAuthenticationData) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (aad *AWSAuthenticationData) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (aad *AWSAuthenticationData) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(aad.Unknowns) > 0 {
 		data, err := json.Marshal(aad.Unknowns)

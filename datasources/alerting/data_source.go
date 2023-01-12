@@ -37,7 +37,7 @@ func DataSource() *schema.Resource {
 	}
 }
 
-func DataSourceRead(d *schema.ResourceData, m interface{}) (err error) {
+func DataSourceRead(d *schema.ResourceData, m any) (err error) {
 	d.SetId("dynatrace_alerting_profiles")
 	service := export.Service(config.Credentials(m), export.ResourceTypes.AlertingProfile)
 	var stubs api.Stubs
@@ -45,7 +45,7 @@ func DataSourceRead(d *schema.ResourceData, m interface{}) (err error) {
 		return err
 	}
 	if len(stubs) > 0 {
-		profiles := map[string]interface{}{}
+		profiles := map[string]any{}
 		for _, stub := range stubs {
 			profiles[stub.Name] = stub.ID
 		}

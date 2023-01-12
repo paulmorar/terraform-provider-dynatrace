@@ -38,11 +38,11 @@ func (me *Locators) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Locators) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
-	entries := []interface{}{}
+func (me Locators) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
+	entries := []any{}
 	for _, entry := range me {
-		if marshalled, err := entry.MarshalHCL(); err == nil {
+		if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 			entries = append(entries, marshalled)
 		} else {
 			return nil, err
@@ -79,8 +79,8 @@ func (me *Locator) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Locator) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Locator) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["type"] = string(me.Type)
 	result["value"] = me.Value
 	return result, nil

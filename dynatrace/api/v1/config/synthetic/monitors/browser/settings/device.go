@@ -75,8 +75,8 @@ func (me *Device) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Device) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Device) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if me.Name != nil && len(*me.Name) > 0 {
 		result["name"] = *me.Name
 	}

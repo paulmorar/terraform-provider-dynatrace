@@ -62,19 +62,19 @@ func (me *Script) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Script) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Script) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["type"] = string(me.Type)
 	if me.Configuration != nil {
-		if marshalled, err := me.Configuration.MarshalHCL(); err == nil {
-			result["configuration"] = []interface{}{marshalled}
+		if marshalled, err := me.Configuration.MarshalHCL(decoder); err == nil {
+			result["configuration"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if len(me.Events) > 0 {
-		if marshalled, err := me.Events.MarshalHCL(); err == nil {
-			result["events"] = []interface{}{marshalled}
+		if marshalled, err := me.Events.MarshalHCL(decoder); err == nil {
+			result["events"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

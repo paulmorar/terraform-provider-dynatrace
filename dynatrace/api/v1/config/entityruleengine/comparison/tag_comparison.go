@@ -73,8 +73,8 @@ func (tc *Tag) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (tc *Tag) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (tc *Tag) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(tc.Unknowns) > 0 {
 		data, err := json.Marshal(tc.Unknowns)
@@ -86,8 +86,8 @@ func (tc *Tag) MarshalHCL() (map[string]interface{}, error) {
 	result["negate"] = tc.Negate
 	result["operator"] = string(tc.Operator)
 	if tc.Value != nil {
-		if marshalled, err := tc.Value.MarshalHCL(); err == nil {
-			result["value"] = []interface{}{marshalled}
+		if marshalled, err := tc.Value.MarshalHCL(decoder); err == nil {
+			result["value"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

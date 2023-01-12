@@ -87,10 +87,10 @@ func (me *ModelProperties) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ModelProperties) MarshalHCL() (map[string]interface{}, error) {
+func (me *ModelProperties) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"type":               me.Type,
 		"threshold":          me.Threshold,
 		"alert_on_no_data":   me.AlertOnNoData,
@@ -104,7 +104,7 @@ func (me *ModelProperties) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *ModelProperties) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"type":               &me.Type,
 		"threshold":          &me.Threshold,
 		"alert_on_no_data":   &me.AlertOnNoData,

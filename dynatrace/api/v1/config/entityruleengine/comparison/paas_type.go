@@ -69,8 +69,8 @@ func (ptc *PaasType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ptc *PaasType) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (ptc *PaasType) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(ptc.Unknowns) > 0 {
 		data, err := json.Marshal(ptc.Unknowns)

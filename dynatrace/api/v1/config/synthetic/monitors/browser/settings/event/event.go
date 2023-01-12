@@ -97,24 +97,24 @@ func (me *EventWrapper) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EventWrapper) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *EventWrapper) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["description"] = me.Event.GetDescription()
-	if marshalled, err := me.Event.MarshalHCL(); err == nil {
+	if marshalled, err := me.Event.MarshalHCL(decoder); err == nil {
 		if me.Event.GetType() == Types.Click {
-			result["click"] = []interface{}{marshalled}
+			result["click"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.Tap {
-			result["tap"] = []interface{}{marshalled}
+			result["tap"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.Cookie {
-			result["cookie"] = []interface{}{marshalled}
+			result["cookie"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.Javascript {
-			result["javascript"] = []interface{}{marshalled}
+			result["javascript"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.KeyStrokes {
-			result["keystrokes"] = []interface{}{marshalled}
+			result["keystrokes"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.Navigate {
-			result["navigate"] = []interface{}{marshalled}
+			result["navigate"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.SelectOption {
-			result["select"] = []interface{}{marshalled}
+			result["select"] = []any{marshalled}
 		} else {
 			return nil, fmt.Errorf("events of type %s are not supported", me.Event.GetType())
 		}
@@ -211,12 +211,12 @@ func (me *Events) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me Events) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
-	entries := []interface{}{}
+func (me Events) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
+	entries := []any{}
 	for _, event := range me {
 		evtw := &EventWrapper{Event: event}
-		if marshalled, err := evtw.MarshalHCL(); err == nil {
+		if marshalled, err := evtw.MarshalHCL(decoder); err == nil {
 			entries = append(entries, marshalled)
 		} else {
 			return nil, err
@@ -291,7 +291,7 @@ type Event interface {
 	GetType() Type
 	GetDescription() string
 	SetDescription(string)
-	MarshalHCL() (map[string]interface{}, error)
+	MarshalHCL(hcl.Decoder) (map[string]any, error)
 }
 
 type EventBase struct {

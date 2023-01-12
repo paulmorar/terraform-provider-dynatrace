@@ -37,12 +37,12 @@ func (me *ProcessingSteps) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me ProcessingSteps) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me ProcessingSteps) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -122,8 +122,8 @@ func (me *ProcessingStep) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ProcessingStep) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *ProcessingStep) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"type":                       me.Type,
 		"pattern_before":             me.PatternBefore,
 		"pattern_before_search_type": me.PatternBeforeSearchType,
@@ -137,7 +137,7 @@ func (me *ProcessingStep) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *ProcessingStep) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"type":                       &me.Type,
 		"pattern_before":             &me.PatternBefore,
 		"pattern_before_search_type": &me.PatternBeforeSearchType,

@@ -47,17 +47,17 @@ func (me *DimensionRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DimensionRule) MarshalHCL() (map[string]interface{}, error) {
+func (me *DimensionRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"applies_to":           me.AppliesTo,
 		"dimension_conditions": me.Conditions,
 	})
 }
 
 func (me *DimensionRule) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"applies_to":           &me.AppliesTo,
 		"dimension_conditions": &me.Conditions,
 	})

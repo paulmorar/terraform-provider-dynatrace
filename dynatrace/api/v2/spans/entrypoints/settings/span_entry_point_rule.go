@@ -55,10 +55,10 @@ func (me *SpanEntrypointRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpanEntrypointRule) MarshalHCL() (map[string]interface{}, error) {
+func (me *SpanEntrypointRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"action":  me.Action,
 		"matches": me.Matchers,
@@ -66,7 +66,7 @@ func (me *SpanEntrypointRule) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *SpanEntrypointRule) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"name":    &me.Name,
 		"action":  &me.Action,
 		"matches": &me.Matchers,

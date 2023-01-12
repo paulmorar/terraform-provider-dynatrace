@@ -59,8 +59,8 @@ func (me *ProfileTagFilter) EnsurePredictableOrder() {
 	}
 }
 
-func (me *ProfileTagFilter) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ProfileTagFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -71,9 +71,9 @@ func (me *ProfileTagFilter) MarshalHCL() (map[string]interface{}, error) {
 	}
 	result["include_mode"] = string(me.IncludeMode)
 	if me.TagFilters != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.TagFilters {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

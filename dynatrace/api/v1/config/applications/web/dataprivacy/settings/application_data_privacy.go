@@ -66,8 +66,8 @@ func (me *ApplicationDataPrivacy) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ApplicationDataPrivacy) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *ApplicationDataPrivacy) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"web_application_id":                  me.WebApplicationID,
 		"data_capture_opt_in":                 me.DataCaptureOptInEnabled,
 		"persistent_cookie_for_user_tracking": me.PersistentCookieForUserTracking,
@@ -77,7 +77,7 @@ func (me *ApplicationDataPrivacy) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *ApplicationDataPrivacy) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"web_application_id":                  &me.WebApplicationID,
 		"data_capture_opt_in":                 &me.DataCaptureOptInEnabled,
 		"persistent_cookie_for_user_tracking": &me.PersistentCookieForUserTracking,

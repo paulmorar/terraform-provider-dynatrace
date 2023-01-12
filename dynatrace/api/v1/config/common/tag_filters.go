@@ -39,8 +39,8 @@ func (me TagFilters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me TagFilters) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me TagFilters) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	tagFilters := TagFilters{}
 	tagFilters = append(tagFilters, me...)
@@ -49,9 +49,9 @@ func (me TagFilters) MarshalHCL() (map[string]interface{}, error) {
 		b := tagFilters[j]
 		return strings.Compare(a.Key, b.Key) > 0
 	})
-	filters := []interface{}{}
+	filters := []any{}
 	for _, filter := range tagFilters {
-		if marshalled, err := filter.MarshalHCL(); err == nil {
+		if marshalled, err := filter.MarshalHCL(decoder); err == nil {
 			filters = append(filters, marshalled)
 		} else {
 			return nil, err

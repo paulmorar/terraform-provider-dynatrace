@@ -46,13 +46,13 @@ func (me *AnonymousAccess) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnonymousAccess) MarshalHCL() (map[string]interface{}, error) {
+func (me *AnonymousAccess) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	if len(me.ManagementZoneIDs) > 0 {
-		return map[string]interface{}{
+		return map[string]any{
 			"management_zones": me.ManagementZoneIDs,
 		}, nil
 	}
-	return map[string]interface{}{}, nil
+	return map[string]any{}, nil
 }
 
 func (me *AnonymousAccess) UnmarshalHCL(decoder hcl.Decoder) error {

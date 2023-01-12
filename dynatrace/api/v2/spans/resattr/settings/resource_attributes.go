@@ -67,15 +67,15 @@ func (me *ResourceAttributes) EnsurePredictableOrder() {
 	me.AttributeKeys = conds
 }
 
-func (me *ResourceAttributes) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ResourceAttributes) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me.AttributeKeys) > 0 {
 		me.EnsurePredictableOrder()
-		marshalled, err := me.AttributeKeys.MarshalHCL()
+		marshalled, err := me.AttributeKeys.MarshalHCL(decoder)
 		if err != nil {
 			return nil, err
 		}
-		result["keys"] = []interface{}{marshalled}
+		result["keys"] = []any{marshalled}
 	}
 	return result, nil
 }

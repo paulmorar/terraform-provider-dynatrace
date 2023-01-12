@@ -61,10 +61,10 @@ func (me *Filter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Filter) MarshalHCL() (map[string]interface{}, error) {
+func (me *Filter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"entity_type":      me.EntityType,
 		"entity_id":        me.EntityId,
 		"entity_tags":      me.EntityTags,
@@ -73,7 +73,7 @@ func (me *Filter) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Filter) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"entity_type":      &me.EntityType,
 		"entity_id":        &me.EntityId,
 		"entity_tags":      &me.EntityTags,
@@ -93,7 +93,7 @@ func (me *Filters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Filters) MarshalHCL() (map[string]interface{}, error) {
+func (me Filters) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("filter", me)
 }
 

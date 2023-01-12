@@ -90,8 +90,8 @@ func (me *Static) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Static) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Static) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -159,7 +159,7 @@ func (me *Static) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *Static) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"type":                  me.GetType(),
 		"alertCondition":        me.AlertCondition,
 		"alertingOnMissingData": me.AlertingOnMissingData,
@@ -179,7 +179,7 @@ func (me *Static) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"type":                  &me.Type,
 		"alertCondition":        &me.AlertCondition,
 		"alertingOnMissingData": &me.AlertingOnMissingData,

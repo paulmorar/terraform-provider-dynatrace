@@ -71,8 +71,8 @@ func (ic *Integer) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ic *Integer) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (ic *Integer) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(ic.Unknowns) > 0 {
 		data, err := json.Marshal(ic.Unknowns)

@@ -137,8 +137,8 @@ func (me *MetricEvent) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MetricEvent) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *MetricEvent) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -172,23 +172,23 @@ func (me *MetricEvent) MarshalHCL() (map[string]interface{}, error) {
 		result["severity"] = string(*me.Severity)
 	}
 	if me.MetricDimensions != nil {
-		if marshalled, err := me.MetricDimensions.MarshalHCL(); err == nil {
-			result["dimensions"] = []interface{}{marshalled}
+		if marshalled, err := me.MetricDimensions.MarshalHCL(decoder); err == nil {
+			result["dimensions"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.AlertingScope != nil {
-		if marshalled, err := me.AlertingScope.MarshalHCL(); err == nil {
-			result["scopes"] = []interface{}{marshalled}
+		if marshalled, err := me.AlertingScope.MarshalHCL(decoder); err == nil {
+			result["scopes"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.MonitoringStrategy != nil {
 		wrapper := &strategy.Wrapper{Strategy: me.MonitoringStrategy}
-		if marshalled, err := wrapper.MarshalHCL(); err == nil {
-			result["strategy"] = []interface{}{marshalled}
+		if marshalled, err := wrapper.MarshalHCL(decoder); err == nil {
+			result["strategy"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -281,7 +281,7 @@ func (me *MetricEvent) MarshalJSON() ([]byte, error) {
 	delete(me.Unknowns, "id")
 	delete(me.Unknowns, "metadata")
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"metricId":            me.MetricID,
 		"aggregationType":     me.AggregationType,
 		"description":         me.Description,
@@ -309,7 +309,7 @@ func (me *MetricEvent) UnmarshalJSON(data []byte) error {
 	delete(me.Unknowns, "id")
 	delete(me.Unknowns, "metadata")
 	wrapper := strategy.Wrapper{}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"metricId":            &me.MetricID,
 		"aggregationType":     &me.AggregationType,
 		"description":         &me.Description,

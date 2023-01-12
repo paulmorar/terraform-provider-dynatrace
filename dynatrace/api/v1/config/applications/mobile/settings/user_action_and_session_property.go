@@ -58,7 +58,7 @@ func (me UserActionAndSessionProperties) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me UserActionAndSessionProperties) MarshalHCL() (map[string]interface{}, error) {
+func (me UserActionAndSessionProperties) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	var err error
 	properties := hcl.Properties{}
 	api_values := []*APIValue{}

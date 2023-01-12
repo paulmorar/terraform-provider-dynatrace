@@ -173,8 +173,8 @@ func (me *MonitoringSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MonitoringSettings) MarshalHCL() (map[string]interface{}, error) {
-	res, err := hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *MonitoringSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	res, err := hcl.Properties{}.EncodeAll(map[string]any{
 		"fetch_requests":                       me.FetchRequests,
 		"xml_http_request":                     me.XmlHttpRequest,
 		"javascript_framework_support":         me.JavaScriptFrameworkSupport,
@@ -214,7 +214,7 @@ func (me *MonitoringSettings) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *MonitoringSettings) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"fetch_requests":                       &me.FetchRequests,
 		"xml_http_request":                     &me.XmlHttpRequest,
 		"javascript_framework_support":         &me.JavaScriptFrameworkSupport,

@@ -60,17 +60,17 @@ func (me *KeyRequest) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *KeyRequest) MarshalHCL() (map[string]interface{}, error) {
+func (me *KeyRequest) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"names":   me.Names,
 		"service": me.ServiceID,
 	})
 }
 
 func (me *KeyRequest) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"names":   &me.Names,
 		"service": &me.ServiceID,
 	})

@@ -59,9 +59,9 @@ func (me *TagInfo) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TagInfo) MarshalHCL() (map[string]interface{}, error) {
+func (me *TagInfo) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"key":     me.Key,
 		"value":   me.Value,
 		"context": me.Context,
@@ -69,7 +69,7 @@ func (me *TagInfo) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *TagInfo) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"key":     &me.Key,
 		"value":   &me.Value,
 		"context": &me.Context,
@@ -78,7 +78,7 @@ func (me *TagInfo) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *TagInfo) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"key":     me.Key,
 		"value":   me.Value,
 		"context": me.Context,
@@ -93,7 +93,7 @@ func (me *TagInfo) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	return properties.UnmarshalAll(map[string]interface{}{
+	return properties.UnmarshalAll(map[string]any{
 		"key":     &me.Key,
 		"value":   &me.Value,
 		"context": &me.Context,
@@ -140,7 +140,7 @@ func (me TagInfos) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me TagInfos) MarshalHCL() (map[string]interface{}, error) {
+func (me TagInfos) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("value", me)
 }
 

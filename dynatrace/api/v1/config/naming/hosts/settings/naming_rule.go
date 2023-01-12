@@ -68,13 +68,13 @@ func (me *NamingRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NamingRule) MarshalHCL() (map[string]interface{}, error) {
+func (me *NamingRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err
 	}
 	delete(me.Unknowns, "metadata")
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"name":       me.Name,
 		"enabled":    me.Enabled,
 		"format":     me.Format,
@@ -84,7 +84,7 @@ func (me *NamingRule) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *NamingRule) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"name":       &me.Name,
 		"enabled":    &me.Enabled,
 		"format":     &me.Format,
@@ -99,7 +99,7 @@ func (me *NamingRule) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	delete(properties, "id")
 	delete(properties, "metadata")
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"type":        "HOST",
 		"displayName": me.Name,
 		"enabled":     me.Enabled,
@@ -119,7 +119,7 @@ func (me *NamingRule) UnmarshalJSON(data []byte) error {
 	delete(me.Unknowns, "id")
 	delete(me.Unknowns, "metadata")
 	var typ string
-	err := properties.UnmarshalAll(map[string]interface{}{
+	err := properties.UnmarshalAll(map[string]any{
 		"type":        &typ,
 		"displayName": &me.Name,
 		"enabled":     &me.Enabled,

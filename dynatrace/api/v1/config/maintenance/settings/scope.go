@@ -66,8 +66,8 @@ func (me *Scope) IsEmpty() bool {
 	return len(me.Entities) == 0 && len(me.Matches) == 0
 }
 
-func (me *Scope) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Scope) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -80,9 +80,9 @@ func (me *Scope) MarshalHCL() (map[string]interface{}, error) {
 		result["entities"] = me.Entities
 	}
 	if len(me.Matches) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.Matches {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

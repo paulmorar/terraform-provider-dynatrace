@@ -81,12 +81,12 @@ func (me *CloudFoundryCredentials) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CloudFoundryCredentials) MarshalHCL() (map[string]interface{}, error) {
+func (me *CloudFoundryCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err
 	}
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"login_url": me.LoginURL,
 		"api_url":   me.APIURL,
 		"password":  me.Password,
@@ -98,7 +98,7 @@ func (me *CloudFoundryCredentials) MarshalHCL() (map[string]interface{}, error) 
 }
 
 func (me *CloudFoundryCredentials) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"login_url": &me.LoginURL,
 		"api_url":   &me.APIURL,
 		"password":  &me.Password,
@@ -112,7 +112,7 @@ func (me *CloudFoundryCredentials) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *CloudFoundryCredentials) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"loginUrl": me.LoginURL,
 		"apiUrl":   me.APIURL,
 		"password": me.Password,
@@ -130,7 +130,7 @@ func (me *CloudFoundryCredentials) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	err := properties.UnmarshalAll(map[string]interface{}{
+	err := properties.UnmarshalAll(map[string]any{
 		"loginUrl": &me.LoginURL,
 		"apiUrl":   &me.APIURL,
 		"password": &me.Password,

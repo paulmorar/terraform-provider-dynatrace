@@ -96,8 +96,8 @@ func (me *CustomService) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomService) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *CustomService) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -113,9 +113,9 @@ func (me *CustomService) MarshalHCL() (map[string]interface{}, error) {
 	result["technology"] = string(me.Technology)
 	result["enabled"] = me.Enabled
 	if len(me.Rules) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.Rules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

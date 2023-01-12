@@ -39,7 +39,7 @@ func (me *Conditions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Conditions) MarshalHCL() (map[string]interface{}, error) {
+func (me Conditions) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("condition", me)
 }
 

@@ -57,10 +57,10 @@ func (me *MonthlyRecurrence) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MonthlyRecurrence) MarshalHCL() (map[string]interface{}, error) {
+func (me *MonthlyRecurrence) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"day_of_month":     me.DayOfMonth,
 		"time_window":      me.TimeWindow,
 		"recurrence_range": me.RecurrenceRange,
@@ -68,7 +68,7 @@ func (me *MonthlyRecurrence) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *MonthlyRecurrence) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"day_of_month":     &me.DayOfMonth,
 		"time_window":      &me.TimeWindow,
 		"recurrence_range": &me.RecurrenceRange,

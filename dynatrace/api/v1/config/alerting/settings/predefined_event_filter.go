@@ -35,8 +35,8 @@ func (me *PredefinedEventFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *PredefinedEventFilter) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *PredefinedEventFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)

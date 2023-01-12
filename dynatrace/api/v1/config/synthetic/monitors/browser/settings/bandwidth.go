@@ -55,8 +55,8 @@ func (me *Bandwidth) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Bandwidth) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Bandwidth) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if me.NetworkType != nil {
 		result["network_type"] = string(*me.NetworkType)
 	}

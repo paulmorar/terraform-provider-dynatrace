@@ -81,8 +81,8 @@ func (me *BaseDimension) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *BaseDimension) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *BaseDimension) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -138,7 +138,7 @@ func (me *BaseDimension) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *BaseDimension) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"filterType": me.FilterType,
 		"key":        me.Key,
 		"name":       me.Name,
@@ -154,7 +154,7 @@ func (me *BaseDimension) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"filterType": &me.FilterType,
 		"key":        &me.Key,
 		"name":       &me.Name,

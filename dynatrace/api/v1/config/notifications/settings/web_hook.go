@@ -94,7 +94,7 @@ func (me *WebHookConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *WebHookConfig) MarshalHCL() (map[string]interface{}, error) {
+func (me *WebHookConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	result := hcl.Properties{}
 
 	if len(me.Unknowns) > 0 {
@@ -171,7 +171,7 @@ func (me *WebHookConfig) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *WebHookConfig) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"id":                       me.ID,
 		"name":                     me.Name,
 		"type":                     me.GetType(),
@@ -193,7 +193,7 @@ func (me *WebHookConfig) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"id":                       &me.ID,
 		"name":                     &me.Name,
 		"type":                     &me.Type,

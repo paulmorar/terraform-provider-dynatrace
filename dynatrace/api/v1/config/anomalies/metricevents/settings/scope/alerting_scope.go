@@ -61,8 +61,8 @@ func (me *BaseAlertingScope) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *BaseAlertingScope) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *BaseAlertingScope) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -97,7 +97,7 @@ func (me *BaseAlertingScope) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *BaseAlertingScope) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"filterType": me.FilterType,
 	}); err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (me *BaseAlertingScope) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"filterType": &me.FilterType,
 	}); err != nil {
 		return err

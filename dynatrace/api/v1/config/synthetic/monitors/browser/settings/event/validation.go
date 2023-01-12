@@ -37,11 +37,11 @@ func (me *Validations) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Validations) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
-	entries := []interface{}{}
+func (me Validations) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
+	entries := []any{}
 	for _, entry := range me {
-		if marshalled, err := entry.MarshalHCL(); err == nil {
+		if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 			entries = append(entries, marshalled)
 		} else {
 			return nil, err
@@ -99,8 +99,8 @@ func (me *Validation) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Validation) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Validation) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["type"] = string(me.Type)
 	if len(me.Match) > 0 {
 		result["match"] = me.Match
@@ -108,8 +108,8 @@ func (me *Validation) MarshalHCL() (map[string]interface{}, error) {
 	result["regex"] = me.IsRegex
 	result["fail_if_found"] = me.FailIfFound
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(); err == nil {
-			result["target"] = []interface{}{marshalled}
+		if marshalled, err := me.Target.MarshalHCL(decoder); err == nil {
+			result["target"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

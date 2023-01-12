@@ -57,14 +57,14 @@ type ProviderConfiguration struct {
 }
 
 type Getter interface {
-	Get(key string) interface{}
+	Get(key string) any
 }
 
-func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.Diagnostics) {
 	return ProviderConfigureGeneric(ctx, d)
 }
 
-func ProviderConfigureGeneric(ctx context.Context, d Getter) (interface{}, diag.Diagnostics) {
+func ProviderConfigureGeneric(ctx context.Context, d Getter) (any, diag.Diagnostics) {
 	dtEnvURL := d.Get("dt_env_url").(string)
 	apiToken := d.Get("dt_api_token").(string)
 	clusterAPIToken := getString(d, "dt_cluster_api_token")

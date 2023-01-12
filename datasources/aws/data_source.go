@@ -31,7 +31,7 @@ func DataSource() *schema.Resource {
 	}
 }
 
-func DataSourceRead(d *schema.ResourceData, m interface{}) (err error) {
+func DataSourceRead(d *schema.ResourceData, m any) (err error) {
 	service := export.DSService(config.Credentials(m), export.DataSourceTypes.AWSIAMExternalID)
 
 	var settings iam.Settings

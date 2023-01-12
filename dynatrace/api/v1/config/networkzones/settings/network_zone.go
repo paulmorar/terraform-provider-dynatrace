@@ -78,9 +78,9 @@ func (me *NetworkZone) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NetworkZone) MarshalHCL() (map[string]interface{}, error) {
+func (me *NetworkZone) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"description":                       me.Description,
 		"alternative_zones":                 me.AltZones,
 		"num_of_oneagents_from_other_zones": me.NumOfOneAgentsFromOtherZones,
@@ -91,7 +91,7 @@ func (me *NetworkZone) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *NetworkZone) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"description":       &me.Description,
 		"alternative_zones": &me.AltZones,
 	})

@@ -97,10 +97,10 @@ func (me *ManagementZoneAttributeRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ManagementZoneAttributeRule) MarshalHCL() (map[string]interface{}, error) {
+func (me *ManagementZoneAttributeRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"pg_to_service_propagation":                        me.PgToServicePropagation,
 		"entity_type":                                      me.EntityType,
 		"service_to_host_propagation":                      me.ServiceToHostPropagation,
@@ -115,7 +115,7 @@ func (me *ManagementZoneAttributeRule) MarshalHCL() (map[string]interface{}, err
 }
 
 func (me *ManagementZoneAttributeRule) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"pg_to_service_propagation":                        &me.PgToServicePropagation,
 		"entity_type":                                      &me.EntityType,
 		"service_to_host_propagation":                      &me.ServiceToHostPropagation,

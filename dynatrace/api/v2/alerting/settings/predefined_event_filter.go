@@ -43,8 +43,8 @@ func (me *PredefinedEventFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *PredefinedEventFilter) MarshalHCL() (map[string]interface{}, error) {
-	return map[string]interface{}{
+func (me *PredefinedEventFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return map[string]any{
 		"type":   string(me.EventType),
 		"negate": me.Negate,
 	}, nil

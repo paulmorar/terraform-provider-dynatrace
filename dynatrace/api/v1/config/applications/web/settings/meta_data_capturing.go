@@ -36,12 +36,12 @@ func (me *MetaDataCaptureSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me MetaDataCaptureSettings) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me MetaDataCaptureSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -103,8 +103,8 @@ func (me *MetaDataCapturing) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MetaDataCapturing) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *MetaDataCapturing) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"type":            me.Type,
 		"capturing_name":  me.CapturingName,
 		"name":            me.Name,
@@ -115,7 +115,7 @@ func (me *MetaDataCapturing) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *MetaDataCapturing) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"type":            &me.Type,
 		"capturing_name":  &me.CapturingName,
 		"name":            &me.Name,

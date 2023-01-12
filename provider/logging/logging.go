@@ -71,15 +71,15 @@ func (odl *onDemandLogger) Write(p []byte) (int, error) {
 }
 
 // Enable redirects logging into a an output file
-func Enable(fn func(context.Context, *schema.ResourceData, interface{}) diag.Diagnostics) func(context.Context, *schema.ResourceData, interface{}) diag.Diagnostics {
-	return func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func Enable(fn func(context.Context, *schema.ResourceData, any) diag.Diagnostics) func(context.Context, *schema.ResourceData, any) diag.Diagnostics {
+	return func(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 		log.SetOutput(odl)
 		return fn(ctx, d, m)
 	}
 }
 
-func EnableSchemaSetFunc(fn func(v interface{}) int) func(v interface{}) int {
-	return func(v interface{}) int {
+func EnableSchemaSetFunc(fn func(v any) int) func(v any) int {
+	return func(v any) int {
 		log.SetOutput(odl)
 		return fn(v)
 	}
@@ -99,8 +99,8 @@ func EnableSchemaDiff(fn func(k, old, new string, d *schema.ResourceData) bool) 
 }
 
 // EnableCustomizeDiff redirects logging into a an output file
-func EnableCustomizeDiff(fn func(context.Context, *schema.ResourceDiff, interface{}) error) func(context.Context, *schema.ResourceDiff, interface{}) error {
-	return func(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
+func EnableCustomizeDiff(fn func(context.Context, *schema.ResourceDiff, any) error) func(context.Context, *schema.ResourceDiff, any) error {
+	return func(ctx context.Context, d *schema.ResourceDiff, meta any) error {
 		log.SetOutput(odl)
 		return fn(ctx, d, meta)
 	}

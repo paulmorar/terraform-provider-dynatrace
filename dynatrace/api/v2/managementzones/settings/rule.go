@@ -37,12 +37,12 @@ func (me *Rules) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Rules) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me Rules) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -115,10 +115,10 @@ func (me *Rule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Rule) MarshalHCL() (map[string]interface{}, error) {
+func (me *Rule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"enabled":         me.Enabled,
 		"type":            me.Type,
 		"attribute_rule":  me.AttributeRule,
@@ -128,7 +128,7 @@ func (me *Rule) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Rule) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"enabled":         &me.Enabled,
 		"type":            &me.Type,
 		"attribute_rule":  &me.AttributeRule,

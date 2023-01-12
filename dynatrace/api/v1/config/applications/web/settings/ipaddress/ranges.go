@@ -37,12 +37,12 @@ func (me *Ranges) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Ranges) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me Ranges) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -87,8 +87,8 @@ func (me *Range) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Range) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *Range) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"subnet_mask": me.SubNetMask,
 		"address":     me.Address,
 		"address_to":  me.ToAddress,
@@ -96,7 +96,7 @@ func (me *Range) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Range) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"subnet_mask": &me.SubNetMask,
 		"address":     &me.Address,
 		"address_to":  &me.ToAddress,

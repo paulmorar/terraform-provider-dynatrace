@@ -77,10 +77,10 @@ func (me *Schedule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Schedule) MarshalHCL() (map[string]interface{}, error) {
+func (me *Schedule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"type":               me.Type,
 		"once_recurrence":    me.OnceRecurrence,
 		"daily_recurrence":   me.DailyRecurrence,
@@ -90,7 +90,7 @@ func (me *Schedule) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Schedule) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"type":               &me.Type,
 		"once_recurrence":    &me.OnceRecurrence,
 		"daily_recurrence":   &me.DailyRecurrence,

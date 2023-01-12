@@ -86,7 +86,7 @@ func (me *XMattersConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *XMattersConfig) MarshalHCL() (map[string]interface{}, error) {
+func (me *XMattersConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	result := hcl.Properties{}
 
 	if len(me.Unknowns) > 0 {
@@ -157,7 +157,7 @@ func (me *XMattersConfig) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *XMattersConfig) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"id":                   me.ID,
 		"name":                 me.Name,
 		"type":                 me.GetType(),
@@ -178,7 +178,7 @@ func (me *XMattersConfig) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"id":                   &me.ID,
 		"name":                 &me.Name,
 		"type":                 &me.Type,

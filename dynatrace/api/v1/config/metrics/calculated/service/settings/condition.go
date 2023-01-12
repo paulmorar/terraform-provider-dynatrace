@@ -54,12 +54,12 @@ func (me *Condition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Condition) MarshalHCL() (map[string]interface{}, error) {
+func (me *Condition) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err
 	}
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"attribute":  me.Attribute,
 		"comparison": &comparisoninfo.Wrapper{Comparison: me.ComparisonInfo},
 		"unknowns":   me.Unknowns,
@@ -68,7 +68,7 @@ func (me *Condition) MarshalHCL() (map[string]interface{}, error) {
 
 func (me *Condition) UnmarshalHCL(decoder hcl.Decoder) error {
 	compWrap := comparisoninfo.Wrapper{Comparison: me.ComparisonInfo}
-	if err := decoder.DecodeAll(map[string]interface{}{
+	if err := decoder.DecodeAll(map[string]any{
 		"attribute":  &me.Attribute,
 		"comparison": &compWrap,
 		"unknowns":   &me.Unknowns,
@@ -81,7 +81,7 @@ func (me *Condition) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *Condition) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"attribute":      me.Attribute,
 		"comparisonInfo": me.ComparisonInfo,
 	}); err != nil {
@@ -96,7 +96,7 @@ func (me *Condition) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	compWrap := comparisoninfo.Wrapper{Comparison: me.ComparisonInfo}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"attribute":      &me.Attribute,
 		"comparisonInfo": &compWrap,
 	}); err != nil {

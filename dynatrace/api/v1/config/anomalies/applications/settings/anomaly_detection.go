@@ -98,30 +98,30 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnomalyDetection) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	trafficDetection := &traffic.Detection{
 		Drops:  me.TrafficDrop,
 		Spikes: me.TrafficSpike,
 	}
 	if !trafficDetection.IsEmpty() {
-		if marshalled, err := trafficDetection.MarshalHCL(); err == nil {
-			result["traffic"] = []interface{}{marshalled}
+		if marshalled, err := trafficDetection.MarshalHCL(decoder); err == nil {
+			result["traffic"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.ResponseTimeDegradation != nil {
-		if marshalled, err := me.ResponseTimeDegradation.MarshalHCL(); err == nil {
-			result["response_time"] = []interface{}{marshalled}
+		if marshalled, err := me.ResponseTimeDegradation.MarshalHCL(decoder); err == nil {
+			result["response_time"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.FailureRateIncrease != nil {
-		if marshalled, err := me.FailureRateIncrease.MarshalHCL(); err == nil {
-			result["failure_rate"] = []interface{}{marshalled}
+		if marshalled, err := me.FailureRateIncrease.MarshalHCL(decoder); err == nil {
+			result["failure_rate"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -159,7 +159,7 @@ func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *AnomalyDetection) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"trafficSpike":            me.GetTrafficSpike(),
 		"responseTimeDegradation": me.getResponseTimeDegradation(),
 		"failureRateIncrease":     me.getFailureRateIncrease(),
@@ -175,7 +175,7 @@ func (me *AnomalyDetection) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	if err := properties.UnmarshalAll(map[string]interface{}{
+	if err := properties.UnmarshalAll(map[string]any{
 		"trafficSpike":            &me.TrafficSpike,
 		"responseTimeDegradation": &me.ResponseTimeDegradation,
 		"failureRateIncrease":     &me.FailureRateIncrease,

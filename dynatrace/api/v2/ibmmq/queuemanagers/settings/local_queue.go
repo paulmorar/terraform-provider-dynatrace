@@ -37,16 +37,16 @@ func (me *LocalQueue) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *LocalQueue) MarshalHCL() (map[string]interface{}, error) {
+func (me *LocalQueue) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
 
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"local_queue_name": me.LocalQueueName,
 	})
 }
 
 func (me *LocalQueue) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"local_queue_name": &me.LocalQueueName,
 	})
 }

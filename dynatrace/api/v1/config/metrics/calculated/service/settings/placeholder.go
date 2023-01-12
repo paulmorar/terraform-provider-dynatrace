@@ -109,12 +109,12 @@ func (me *Placeholder) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Placeholder) MarshalHCL() (map[string]interface{}, error) {
+func (me *Placeholder) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err
 	}
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"name":                 me.Name,
 		"aggregation":          me.Aggregation,
 		"attribute":            me.Attribute,
@@ -130,7 +130,7 @@ func (me *Placeholder) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Placeholder) UnmarshalHCL(decoder hcl.Decoder) error {
-	err := decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]any{
 		"name":                 &me.Name,
 		"aggregation":          &me.Aggregation,
 		"attribute":            &me.Attribute,
@@ -148,7 +148,7 @@ func (me *Placeholder) UnmarshalHCL(decoder hcl.Decoder) error {
 
 func (me *Placeholder) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
-	if err := properties.MarshalAll(map[string]interface{}{
+	if err := properties.MarshalAll(map[string]any{
 		"name":              me.Name,
 		"aggregation":       me.Aggregation,
 		"attribute":         me.Attribute,
@@ -170,7 +170,7 @@ func (me *Placeholder) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	return properties.UnmarshalAll(map[string]interface{}{
+	return properties.UnmarshalAll(map[string]any{
 		"name":              &me.Name,
 		"aggregation":       &me.Aggregation,
 		"attribute":         &me.Attribute,

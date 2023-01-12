@@ -45,12 +45,12 @@ func (me *ResultMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ResultMetadata) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ResultMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me.Entries) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.Entries {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

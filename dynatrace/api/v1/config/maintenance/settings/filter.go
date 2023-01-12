@@ -71,8 +71,8 @@ func (me *Filter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Filter) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Filter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -95,9 +95,9 @@ func (me *Filter) MarshalHCL() (map[string]interface{}, error) {
 		result["tag_combination"] = string(*me.TagCombination)
 	}
 	if len(me.Tags) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range sortTags(me.Tags) {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

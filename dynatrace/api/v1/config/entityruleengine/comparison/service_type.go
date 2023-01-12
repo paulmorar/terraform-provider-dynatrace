@@ -69,8 +69,8 @@ func (stc *ServiceType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (stc *ServiceType) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (stc *ServiceType) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(stc.Unknowns) > 0 {
 		data, err := json.Marshal(stc.Unknowns)

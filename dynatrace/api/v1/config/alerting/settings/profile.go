@@ -84,8 +84,8 @@ func (me *Profile) EnsurePredictableOrder() {
 	}
 }
 
-func (me *Profile) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Profile) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -100,9 +100,9 @@ func (me *Profile) MarshalHCL() (map[string]interface{}, error) {
 	}
 	if me.Rules != nil {
 		me.EnsurePredictableOrder()
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.Rules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -118,9 +118,9 @@ func (me *Profile) MarshalHCL() (map[string]interface{}, error) {
 			cmp := strings.Compare(string(d1), string(d2))
 			return (cmp == -1)
 		})
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range filters {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -309,8 +309,8 @@ func (me *ConfigMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ConfigMetadata) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *ConfigMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if me.ClusterVersion != nil && len(*me.ClusterVersion) > 0 {
 		result["cluster_version"] = *me.ClusterVersion
@@ -331,7 +331,7 @@ func (me *ConfigMetadata) UnmarshalHCL(decoder hcl.Decoder) error {
 	if _, ok := decoder.GetOk("configuration_versions.#"); ok {
 		me.ConfigurationVersions = []int64{}
 		if entries, ok := decoder.GetOk("configuration_versions"); ok {
-			for _, entry := range entries.([]interface{}) {
+			for _, entry := range entries.([]any) {
 				me.ConfigurationVersions = append(me.ConfigurationVersions, int64(entry.(int)))
 			}
 		}
@@ -339,7 +339,7 @@ func (me *ConfigMetadata) UnmarshalHCL(decoder hcl.Decoder) error {
 	if _, ok := decoder.GetOk("current_configuration_versions.#"); ok {
 		me.CurrentConfigurationVersions = []string{}
 		if entries, ok := decoder.GetOk("current_configuration_versions"); ok {
-			for _, entry := range entries.([]interface{}) {
+			for _, entry := range entries.([]any) {
 				me.CurrentConfigurationVersions = append(me.CurrentConfigurationVersions, entry.(string))
 			}
 		}

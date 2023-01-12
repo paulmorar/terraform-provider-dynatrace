@@ -284,8 +284,8 @@ func (ac *AzureCredentials) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (ac *AzureCredentials) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (ac *AzureCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(ac.Unknowns) > 0 {
 		delete(ac.Unknowns, "id")
@@ -301,9 +301,9 @@ func (ac *AzureCredentials) MarshalHCL() (map[string]interface{}, error) {
 	result["directory_id"] = ac.DirectoryID
 	result["auto_tagging"] = opt.Bool(ac.AutoTagging)
 	if ac.MonitorOnlyTagPairs != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range ac.MonitorOnlyTagPairs {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -312,9 +312,9 @@ func (ac *AzureCredentials) MarshalHCL() (map[string]interface{}, error) {
 		result["monitor_only_tag_pairs"] = entries
 	}
 	if ac.MonitorOnlyExcludingTagPairs != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range ac.MonitorOnlyExcludingTagPairs {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -329,9 +329,9 @@ func (ac *AzureCredentials) MarshalHCL() (map[string]interface{}, error) {
 	}
 	result["monitor_only_tagged_entities"] = opt.Bool(ac.MonitorOnlyTaggedEntities)
 	if ac.SupportingServices != nil {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range ac.SupportingServices {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

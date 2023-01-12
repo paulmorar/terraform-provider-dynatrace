@@ -38,11 +38,11 @@ func (me *Cookies) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Cookies) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
-	entries := []interface{}{}
+func (me Cookies) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
+	entries := []any{}
 	for _, cookie := range me {
-		if marshalled, err := cookie.MarshalHCL(); err == nil {
+		if marshalled, err := cookie.MarshalHCL(decoder); err == nil {
 			entries = append(entries, marshalled)
 		} else {
 			return nil, err
@@ -92,8 +92,8 @@ func (me *Cookie) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Cookie) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *Cookie) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	result["name"] = me.Name
 	result["value"] = me.Value
 	result["domain"] = me.Domain

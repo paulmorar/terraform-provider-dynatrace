@@ -37,12 +37,12 @@ func (me *JavaScriptInjectionRules) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me JavaScriptInjectionRules) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me JavaScriptInjectionRules) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 	if len(me) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -104,8 +104,8 @@ func (me *JavaScriptInjectionRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *JavaScriptInjectionRule) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *JavaScriptInjectionRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"enabled":      me.Enabled,
 		"url_operator": me.URLOperator,
 		"url_pattern":  me.URLPattern,
@@ -116,7 +116,7 @@ func (me *JavaScriptInjectionRule) MarshalHCL() (map[string]interface{}, error) 
 }
 
 func (me *JavaScriptInjectionRule) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"enabled":      &me.Enabled,
 		"url_operator": &me.URLOperator,
 		"url_pattern":  &me.URLPattern,

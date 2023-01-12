@@ -46,15 +46,15 @@ func (me *SessionReplayMaskingSetting) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SessionReplayMaskingSetting) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+func (me *SessionReplayMaskingSetting) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return hcl.Properties{}.EncodeAll(map[string]any{
 		"preset": me.Preset,
 		"rules":  me.Rules,
 	})
 }
 
 func (me *SessionReplayMaskingSetting) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"preset": &me.Preset,
 		"rules":  &me.Rules,
 	})

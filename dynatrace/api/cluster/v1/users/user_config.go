@@ -46,9 +46,9 @@ func (me *UserConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *UserConfig) MarshalHCL() (map[string]interface{}, error) {
+func (me *UserConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	properties := hcl.Properties{}
-	return properties.EncodeAll(map[string]interface{}{
+	return properties.EncodeAll(map[string]any{
 		"user_name":  me.UserName,
 		"email":      me.Email,
 		"first_name": me.FirstName,
@@ -58,7 +58,7 @@ func (me *UserConfig) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *UserConfig) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	return decoder.DecodeAll(map[string]any{
 		"user_name":  &me.UserName,
 		"email":      &me.Email,
 		"first_name": &me.FirstName,

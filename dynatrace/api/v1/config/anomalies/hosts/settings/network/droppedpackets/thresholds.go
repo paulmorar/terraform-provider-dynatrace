@@ -46,8 +46,8 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]interface{}, error) {
-	return map[string]interface{}{
+func (me *Thresholds) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	return map[string]any{
 		"dropped_packets":    int(me.DroppedPacketsPercentage),
 		"total_packets_rate": int(me.TotalPacketsRate),
 	}, nil

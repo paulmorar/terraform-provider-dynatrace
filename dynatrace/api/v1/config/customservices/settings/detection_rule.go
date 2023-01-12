@@ -86,8 +86,8 @@ func (me *DetectionRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DetectionRule) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *DetectionRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		delete(me.Unknowns, "id")
@@ -107,8 +107,8 @@ func (me *DetectionRule) MarshalHCL() (map[string]interface{}, error) {
 			Match: me.FileNameMatcher,
 		}
 		if !fileSection.IsEmpty() {
-			if marshalled, err := fileSection.MarshalHCL(); err == nil {
-				result["file"] = []interface{}{marshalled}
+			if marshalled, err := fileSection.MarshalHCL(decoder); err == nil {
+				result["file"] = []any{marshalled}
 			} else {
 				return nil, err
 			}
@@ -119,16 +119,16 @@ func (me *DetectionRule) MarshalHCL() (map[string]interface{}, error) {
 			Name:  me.ClassName,
 			Match: me.ClassNameMatcher,
 		}
-		if marshalled, err := classSection.MarshalHCL(); err == nil {
-			result["class"] = []interface{}{marshalled}
+		if marshalled, err := classSection.MarshalHCL(decoder); err == nil {
+			result["class"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if len(me.MethodRules) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.MethodRules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

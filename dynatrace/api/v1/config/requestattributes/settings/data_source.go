@@ -146,8 +146,8 @@ func (me *DataSource) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DataSource) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (me *DataSource) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
@@ -160,8 +160,8 @@ func (me *DataSource) MarshalHCL() (map[string]interface{}, error) {
 		result["capturing_and_storage_location"] = string(*me.CapturingAndStorageLocation)
 	}
 	if me.Scope != nil {
-		if marshalled, err := me.Scope.MarshalHCL(); err == nil {
-			result["scope"] = []interface{}{marshalled}
+		if marshalled, err := me.Scope.MarshalHCL(decoder); err == nil {
+			result["scope"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -170,16 +170,16 @@ func (me *DataSource) MarshalHCL() (map[string]interface{}, error) {
 		result["parameter_name"] = string(*me.ParameterName)
 	}
 	if me.IIBMethodNodeCondition != nil {
-		if marshalled, err := me.IIBMethodNodeCondition.MarshalHCL(); err == nil {
-			result["iib_method_node_condition"] = []interface{}{marshalled}
+		if marshalled, err := me.IIBMethodNodeCondition.MarshalHCL(decoder); err == nil {
+			result["iib_method_node_condition"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if len(me.Methods) > 0 {
-		entries := []interface{}{}
+		entries := []any{}
 		for _, entry := range me.Methods {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -194,15 +194,15 @@ func (me *DataSource) MarshalHCL() (map[string]interface{}, error) {
 		result["technology"] = string(*me.Technology)
 	}
 	if me.ValueProcessing != nil && !me.ValueProcessing.IsZero() {
-		if marshalled, err := me.ValueProcessing.MarshalHCL(); err == nil {
-			result["value_processing"] = []interface{}{marshalled}
+		if marshalled, err := me.ValueProcessing.MarshalHCL(decoder); err == nil {
+			result["value_processing"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.CICSSDKMethodNodeCondition != nil {
-		if marshalled, err := me.CICSSDKMethodNodeCondition.MarshalHCL(); err == nil {
-			result["cics_sdk_method_node_condition"] = []interface{}{marshalled}
+		if marshalled, err := me.CICSSDKMethodNodeCondition.MarshalHCL(decoder); err == nil {
+			result["cics_sdk_method_node_condition"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
@@ -210,8 +210,8 @@ func (me *DataSource) MarshalHCL() (map[string]interface{}, error) {
 	result["enabled"] = me.Enabled
 	result["source"] = string(me.Source)
 	if me.IIBLabelMethodNodeCondition != nil {
-		if marshalled, err := me.IIBLabelMethodNodeCondition.MarshalHCL(); err == nil {
-			result["iib_label_method_node_condition"] = []interface{}{marshalled}
+		if marshalled, err := me.IIBLabelMethodNodeCondition.MarshalHCL(decoder); err == nil {
+			result["iib_label_method_node_condition"] = []any{marshalled}
 		} else {
 			return nil, err
 		}

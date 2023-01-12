@@ -35,7 +35,7 @@ func DataSource() *schema.Resource {
 	}
 }
 
-func DataSourceRead(d *schema.ResourceData, m interface{}) error {
+func DataSourceRead(d *schema.ResourceData, m any) error {
 	var name string
 	if v, ok := d.GetOk("name"); ok {
 		name = v.(string)

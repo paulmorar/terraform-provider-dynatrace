@@ -69,8 +69,8 @@ func (setc *SyntheticEngineType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (setc *SyntheticEngineType) MarshalHCL() (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func (setc *SyntheticEngineType) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+	result := map[string]any{}
 
 	if len(setc.Unknowns) > 0 {
 		data, err := json.Marshal(setc.Unknowns)
