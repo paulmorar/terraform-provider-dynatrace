@@ -18,8 +18,6 @@
 package notifications
 
 import (
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/secret"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -35,6 +33,13 @@ type AnsibleTower struct {
 	Username       string `json:"username" hcl:"username"`                           // The username of the Ansible Tower account
 	Password       string `json:"password" hcl:"password,secret"`                    // The password for the Ansible Tower account
 	CustomMessage  string `json:"customMessage" hcl:"custom_message"`                // This message will be displayed in the Extra Variables **Message** field of your job template. Type '{' for placeholder suggestions
+}
+
+func (me *AnsibleTower) PrepareMarshalHCL(decoder hcl.Decoder) error {
+	if password, ok := decoder.GetOk("password"); ok && len(password.(string)) > 0 {
+		me.Password = password.(string)
+	}
+	return nil
 }
 
 func (me *AnsibleTower) FillDemoValues() []string {
@@ -108,7 +113,7 @@ func (me *AnsibleTower) MarshalHCL() (map[string]interface{}, error) {
 		"insecure":         me.Insecure,
 		"custom_message":   me.CustomMessage,
 		"job_template_url": me.JobTemplateURL,
-		"password":         secret.Secret(me.Password),
+		"password":         me.Password,
 		"username":         me.Username,
 	})
 }

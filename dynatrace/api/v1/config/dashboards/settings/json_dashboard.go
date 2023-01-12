@@ -59,6 +59,9 @@ func (me *JSONDashboard) Name() string {
 	}{}
 	json.Unmarshal([]byte(me.Contents), &c)
 
+	if c.Metadata.Owner == nil {
+		return fmt.Sprintf("%s owned by ", c.Metadata.Name)
+	}
 	return fmt.Sprintf("%s owned by %s", c.Metadata.Name, *c.Metadata.Owner)
 }
 
@@ -114,7 +117,7 @@ func (me *JSONDashboard) UnmarshalJSON(data []byte) error {
 				delete(vm, "timeframe")
 			}
 		}
-		if v, found := tile["filterConfig"]; found {
+		if v, found := tile["filterConfig"]; found && v != nil {
 			if v, found := v.(map[string]any)["chartConfig"]; found {
 				if v, found := v.(map[string]any)["series"]; found {
 					for _, elem := range v.([]any) {

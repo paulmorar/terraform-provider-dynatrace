@@ -18,8 +18,6 @@
 package notifications
 
 import (
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/secret"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -37,6 +35,13 @@ type Trello struct {
 	ResolvedListID     string `json:"resolvedListId"`     // Trello list ID resolved problem cards should be assigned to
 	Text               string `json:"text"`               // The card text and problem placeholders to appear on new problem cards. Type '{' for placeholder suggestions
 	Description        string `json:"description"`        // The description of the Trello card. Type '{' for placeholder suggestions
+}
+
+func (me *Trello) PrepareMarshalHCL(decoder hcl.Decoder) error {
+	if authorizationToken, ok := decoder.GetOk("authorization_token"); ok && len(authorizationToken.(string)) > 0 {
+		me.AuthorizationToken = authorizationToken.(string)
+	}
+	return nil
 }
 
 func (me *Trello) FillDemoValues() []string {
@@ -122,7 +127,7 @@ func (me *Trello) MarshalHCL() (map[string]interface{}, error) {
 		"board_id":            me.BoardID,
 		"description":         me.Description,
 		"list_id":             me.ListID,
-		"authorization_token": secret.Secret(me.AuthorizationToken),
+		"authorization_token": me.AuthorizationToken,
 	})
 }
 

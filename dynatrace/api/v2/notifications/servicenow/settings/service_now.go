@@ -18,8 +18,6 @@
 package notifications
 
 import (
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/secret"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -37,6 +35,13 @@ type ServiceNow struct {
 	Message       string  `json:"message"`       // The content of the ServiceNow description. Type '{' for placeholder suggestions
 	SendIncidents bool    `json:"sendIncidents"` // Send incidents into ServiceNow ITSM
 	SendEvents    bool    `json:"sendEvents"`    // Send events into ServiceNow ITOM
+}
+
+func (me *ServiceNow) PrepareMarshalHCL(decoder hcl.Decoder) error {
+	if password, ok := decoder.GetOk("password"); ok && len(password.(string)) > 0 {
+		me.Password = password.(string)
+	}
+	return nil
 }
 
 func (me *ServiceNow) FillDemoValues() []string {
@@ -123,7 +128,7 @@ func (me *ServiceNow) MarshalHCL() (map[string]interface{}, error) {
 		"username":  me.Username,
 		"instance":  me.InstanceName,
 		"message":   me.Message,
-		"password":  secret.Secret(me.Password),
+		"password":  me.Password,
 	})
 }
 

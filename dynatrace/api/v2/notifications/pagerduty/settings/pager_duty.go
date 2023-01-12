@@ -18,8 +18,6 @@
 package notifications
 
 import (
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/secret"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -33,6 +31,13 @@ type PagerDuty struct {
 	Account     string `json:"account"`       // The name of the PagerDuty account
 	ServiceName string `json:"serviceName"`   // The name of the service
 	APIKey      string `json:"serviceApiKey"` // The API key to access PagerDuty
+}
+
+func (me *PagerDuty) PrepareMarshalHCL(decoder hcl.Decoder) error {
+	if apiKey, ok := decoder.GetOk("api_key"); ok && len(apiKey.(string)) > 0 {
+		me.APIKey = apiKey.(string)
+	}
+	return nil
 }
 
 func (me *PagerDuty) FillDemoValues() []string {
@@ -95,7 +100,7 @@ func (me *PagerDuty) MarshalHCL() (map[string]interface{}, error) {
 
 		"account": me.Account,
 		"service": me.ServiceName,
-		"api_key": secret.Secret(me.APIKey),
+		"api_key": me.APIKey,
 	})
 }
 

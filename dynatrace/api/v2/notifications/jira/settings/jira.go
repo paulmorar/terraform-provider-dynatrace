@@ -18,8 +18,6 @@
 package notifications
 
 import (
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/secret"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -37,6 +35,13 @@ type Jira struct {
 	IssueType   string `json:"issueType"`   // The type of the Jira issue to be created by this notification.\n\nTo find all available issue types, or to create your own issue type, within JIRA go to Options > Issues
 	Summary     string `json:"summary"`     // The summary of the Jira issue to be created by this notification. Type '{' for placeholder suggestions
 	Description string `json:"description"` // The description of the Jira issue to be created by this notification. Type '{' for placeholder suggestions
+}
+
+func (me *Jira) PrepareMarshalHCL(decoder hcl.Decoder) error {
+	if apiToken, ok := decoder.GetOk("api_token"); ok && len(apiToken.(string)) > 0 {
+		me.APIToken = apiToken.(string)
+	}
+	return nil
 }
 
 func (me *Jira) FillDemoValues() []string {
@@ -122,7 +127,7 @@ func (me *Jira) MarshalHCL() (map[string]interface{}, error) {
 		"issue_type":  me.IssueType,
 		"summary":     me.Summary,
 		"description": me.Description,
-		"api_token":   secret.Secret(me.APIToken),
+		"api_token":   me.APIToken,
 	})
 }
 

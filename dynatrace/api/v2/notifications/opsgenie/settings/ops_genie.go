@@ -18,8 +18,6 @@
 package notifications
 
 import (
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/secret"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
@@ -35,6 +33,13 @@ type OpsGenie struct {
 	APIKey  *string `json:"apiKey"`  // The API key to access OpsGenie.\n\nGo to OpsGenie-Integrations and create a new Dynatrace integration. Copy the newly created API key
 	Domain  string  `json:"domain"`  // The region domain of the OpsGenie.\n\nFor example, **api.opsgenie.com** for US or **api.eu.opsgenie.com** for EU
 	Message string  `json:"message"` // The content of the message. Type '{' for placeholder suggestions
+}
+
+func (me *OpsGenie) PrepareMarshalHCL(decoder hcl.Decoder) error {
+	if apiKey, ok := decoder.GetOk("api_key"); ok && len(apiKey.(string)) > 0 {
+		me.APIKey = opt.NewString(apiKey.(string))
+	}
+	return nil
 }
 
 func (me *OpsGenie) FillDemoValues() []string {
@@ -97,7 +102,7 @@ func (me *OpsGenie) MarshalHCL() (map[string]interface{}, error) {
 
 		"domain":  me.Domain,
 		"message": me.Message,
-		"api_key": secret.PSecret(me.APIKey),
+		"api_key": me.APIKey,
 	})
 }
 

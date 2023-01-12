@@ -18,8 +18,6 @@
 package http
 
 import (
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/secret"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
@@ -167,7 +165,8 @@ func (me *Header) MarshalHCL() (map[string]interface{}, error) {
 	if me.Value != nil {
 		result["value"] = me.Value
 	}
-	if secret.PSecret(me.SecretValue) != nil {
+
+	if me.SecretValue != nil {
 		result["secret_value"] = *me.SecretValue
 	}
 

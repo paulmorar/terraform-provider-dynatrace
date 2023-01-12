@@ -117,7 +117,6 @@ func (kc *KubernetesCredentials) Schema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Description: "The check of SSL certificates is enabled (`true`) or disabled (`false`) for the Kubernetes cluster.  If not set on creation, the `true` value is used.  If the field is omitted during an update, the old value remains unaffected.",
 			Optional:    true,
-			Default:     true,
 		},
 		"events_field_selectors": {
 			Type:        schema.TypeList,

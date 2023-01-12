@@ -18,8 +18,6 @@
 package notifications
 
 import (
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/secret"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -33,6 +31,13 @@ type Slack struct {
 	URL     string `json:"url"`     // Set up an incoming WebHook integration within your Slack account. Copy and paste the generated WebHook URL into the field above
 	Channel string `json:"channel"` // The channel (for example, `#general`) or the user (for example, `@john.smith`) to send the message to
 	Message string `json:"message"` // The content of the message. Type '{' for placeholder suggestions
+}
+
+func (me *Slack) PrepareMarshalHCL(decoder hcl.Decoder) error {
+	if url, ok := decoder.GetOk("url"); ok && len(url.(string)) > 0 {
+		me.URL = url.(string)
+	}
+	return nil
 }
 
 func (me *Slack) FillDemoValues() []string {
@@ -95,7 +100,7 @@ func (me *Slack) MarshalHCL() (map[string]interface{}, error) {
 
 		"message": me.Message,
 		"channel": me.Channel,
-		"url":     secret.Usecret(me.URL),
+		"url":     me.URL,
 	})
 }
 

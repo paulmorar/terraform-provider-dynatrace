@@ -18,7 +18,7 @@
 package notifications
 
 import (
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/secret"
+	"log"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
@@ -35,7 +35,17 @@ type VictorOps struct {
 	Message    string `json:"message"`    // The content of the message. Type '{' for placeholder suggestions
 }
 
+func (me *VictorOps) PrepareMarshalHCL(decoder hcl.Decoder) error {
+	log.Println("VictorOps", "PrepareMarshalHCL")
+	if apiKey, ok := decoder.GetOk("api_key"); ok && len(apiKey.(string)) > 0 {
+		log.Println("  ", "me.APIKey <= %v", apiKey.(string))
+		me.APIKey = apiKey.(string)
+	}
+	return nil
+}
+
 func (me *VictorOps) FillDemoValues() []string {
+	log.Println("VictorOps", "PrepareMarshalHCL")
 	me.APIKey = "#######"
 	return []string{"Please fill in the API Key"}
 }
@@ -95,7 +105,7 @@ func (me *VictorOps) MarshalHCL() (map[string]interface{}, error) {
 
 		"message":     me.Message,
 		"routing_key": me.RoutingKey,
-		"api_key":     secret.Secret(me.APIKey),
+		"api_key":     me.APIKey,
 	})
 }
 

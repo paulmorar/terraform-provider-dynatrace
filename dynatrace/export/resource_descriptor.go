@@ -313,16 +313,23 @@ var AllResources = map[ResourceType]ResourceDescriptor{
 }
 
 var BlackListedResources = []ResourceType{
-	ResourceTypes.MaintenanceWindow,
-	ResourceTypes.ManagementZone,
+	ResourceTypes.MaintenanceWindow, // legacy
+	ResourceTypes.ManagementZone,    // legacy
+	ResourceTypes.Notification,      // legacy
+	ResourceTypes.AlertingProfile,   // legacy
+
 	ResourceTypes.Dashboard,
-	ResourceTypes.JSONDashboard,
 	ResourceTypes.DashboardSharing,
-	ResourceTypes.Notification,
-	ResourceTypes.APIToken,
-	ResourceTypes.AlertingProfile,
-	ResourceTypes.IAMUser,
-	ResourceTypes.IAMGroup,
+
+	ResourceTypes.APIToken,      // should never migrate
+	ResourceTypes.JSONDashboard, // may replace dynatrace_dashboard in the future
+	ResourceTypes.IAMUser,       // not sure whether to migrate
+	ResourceTypes.IAMGroup,      // not sure whether to migrate
+
+	ResourceTypes.XMattersNotification, // still issues with sensitive values
+	ResourceTypes.WebHookNotification,  // still issues with sensitive values
+	ResourceTypes.HTTPMonitor,          // non empty plan
+	ResourceTypes.BrowserMonitor,       // non empty plan
 }
 
 func Service(credentials *api.Credentials, resourceType ResourceType) api.CRUDService[api.Settings] {

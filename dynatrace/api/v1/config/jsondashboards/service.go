@@ -40,7 +40,17 @@ type service struct {
 }
 
 func (me *service) List() (api.Stubs, error) {
-	return me.service.List()
+	stubs, err := me.service.List()
+	if err != nil {
+		return stubs, err
+	}
+	var filteredStubs api.Stubs
+	for _, stub := range stubs {
+		if stub.Name != "Config owned by " {
+			filteredStubs = append(filteredStubs, stub)
+		}
+	}
+	return filteredStubs, nil
 }
 
 func (me *service) Get(id string, v *dashboards.JSONDashboard) error {
