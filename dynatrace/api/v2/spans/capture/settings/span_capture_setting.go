@@ -42,5 +42,5 @@ func (me *SpanCaptureSetting) MarshalHCL() (map[string]any, error) {
 
 func (me *SpanCaptureSetting) UnmarshalHCL(decoder hcl.Decoder) error {
 	me.SpanCaptureRule = new(SpanCaptureRule)
-	return me.SpanCaptureRule.UnMarshalHCL()
+	return me.SpanCaptureRule.UnmarshalHCL(decoder)
 }
