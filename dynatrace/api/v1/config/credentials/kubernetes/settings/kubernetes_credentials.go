@@ -129,7 +129,7 @@ func (kc *KubernetesCredentials) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (kc *KubernetesCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (kc *KubernetesCredentials) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if kc.Unknowns != nil {
@@ -164,7 +164,7 @@ func (kc *KubernetesCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any
 	if kc.EventsFieldSelectors != nil {
 		entries := []any{}
 		for _, eventPattern := range kc.EventsFieldSelectors {
-			if marshalled, err := eventPattern.MarshalHCL(decoder); err == nil {
+			if marshalled, err := eventPattern.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

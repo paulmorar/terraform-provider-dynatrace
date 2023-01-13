@@ -50,7 +50,7 @@ func (me *HTTPHeader) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *HTTPHeader) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *HTTPHeader) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	result["name"] = me.Name

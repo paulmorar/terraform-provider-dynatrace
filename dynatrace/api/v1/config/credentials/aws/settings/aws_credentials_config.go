@@ -216,7 +216,7 @@ func (awscc *AWSCredentialsConfig) PrepareMarshalHCL(decoder hcl.Decoder) error 
 	return nil
 }
 
-func (awscc *AWSCredentialsConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (awscc *AWSCredentialsConfig) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if awscc.Unknowns != nil {
@@ -229,7 +229,7 @@ func (awscc *AWSCredentialsConfig) MarshalHCL(decoder hcl.Decoder) (map[string]a
 	if awscc.SupportingServicesToMonitor != nil {
 		entries := []any{}
 		for _, entry := range awscc.SupportingServicesToMonitor {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -241,7 +241,7 @@ func (awscc *AWSCredentialsConfig) MarshalHCL(decoder hcl.Decoder) (map[string]a
 	result["tagged_only"] = opt.Bool(awscc.TaggedOnly)
 
 	if awscc.AuthenticationData != nil {
-		if marshalled, err := awscc.AuthenticationData.MarshalHCL(decoder); err == nil {
+		if marshalled, err := awscc.AuthenticationData.MarshalHCL(); err == nil {
 			result["authentication_data"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -251,7 +251,7 @@ func (awscc *AWSCredentialsConfig) MarshalHCL(decoder hcl.Decoder) (map[string]a
 	if awscc.TagsToMonitor != nil {
 		entries := []any{}
 		for _, entry := range awscc.TagsToMonitor {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

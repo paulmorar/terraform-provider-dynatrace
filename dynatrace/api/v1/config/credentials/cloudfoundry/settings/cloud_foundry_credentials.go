@@ -81,7 +81,7 @@ func (me *CloudFoundryCredentials) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CloudFoundryCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *CloudFoundryCredentials) MarshalHCL() (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err

@@ -90,7 +90,7 @@ func (me *Static) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Static) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Static) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

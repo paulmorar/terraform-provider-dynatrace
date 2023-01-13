@@ -104,7 +104,7 @@ func (amm *AzureMonitoredMetric) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (amm *AzureMonitoredMetric) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (amm *AzureMonitoredMetric) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(amm.Unknowns) > 0 {

@@ -94,7 +94,7 @@ func (me *WebHookConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *WebHookConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *WebHookConfig) MarshalHCL() (map[string]any, error) {
 	result := hcl.Properties{}
 
 	if len(me.Unknowns) > 0 {

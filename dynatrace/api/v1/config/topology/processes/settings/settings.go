@@ -59,7 +59,7 @@ func (me *Process) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Process) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Process) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	if err := properties.Encode("name", me.DisplayName); err != nil {
 		return nil, err

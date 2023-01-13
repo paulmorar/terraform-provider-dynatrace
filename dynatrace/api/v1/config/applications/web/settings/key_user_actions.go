@@ -68,12 +68,12 @@ func (me *KeyUserActions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me KeyUserActions) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me KeyUserActions) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -158,7 +158,7 @@ func (me *KeyUserAction) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *KeyUserAction) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *KeyUserAction) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"name":   me.Name,
 		"type":   me.Type,

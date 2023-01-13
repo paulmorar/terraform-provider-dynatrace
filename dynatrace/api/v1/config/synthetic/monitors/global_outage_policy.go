@@ -38,7 +38,7 @@ func (me *GlobalOutagePolicy) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *GlobalOutagePolicy) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *GlobalOutagePolicy) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["consecutive_runs"] = *me.ConsecutiveRuns
 	return result, nil

@@ -55,7 +55,7 @@ func (me *FileSection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FileSection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *FileSection) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if me.Name != nil {

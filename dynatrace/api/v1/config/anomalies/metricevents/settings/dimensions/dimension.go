@@ -81,7 +81,7 @@ func (me *BaseDimension) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *BaseDimension) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *BaseDimension) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

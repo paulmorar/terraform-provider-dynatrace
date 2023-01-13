@@ -284,7 +284,7 @@ func (ac *AzureCredentials) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (ac *AzureCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (ac *AzureCredentials) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(ac.Unknowns) > 0 {
@@ -303,7 +303,7 @@ func (ac *AzureCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 	if ac.MonitorOnlyTagPairs != nil {
 		entries := []any{}
 		for _, entry := range ac.MonitorOnlyTagPairs {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -314,7 +314,7 @@ func (ac *AzureCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 	if ac.MonitorOnlyExcludingTagPairs != nil {
 		entries := []any{}
 		for _, entry := range ac.MonitorOnlyExcludingTagPairs {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -331,7 +331,7 @@ func (ac *AzureCredentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 	if ac.SupportingServices != nil {
 		entries := []any{}
 		for _, entry := range ac.SupportingServices {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

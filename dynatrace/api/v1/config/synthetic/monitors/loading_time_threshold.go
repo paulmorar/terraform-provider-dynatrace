@@ -37,12 +37,12 @@ func (me *LoadingTimeThresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me LoadingTimeThresholds) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me LoadingTimeThresholds) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	entries := []any{}
 	if len(me) > 0 {
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -90,7 +90,7 @@ func (me *LoadingTimeThreshold) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *LoadingTimeThreshold) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *LoadingTimeThreshold) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["type"] = string(me.Type)
 	result["value_ms"] = int(me.ValueMs)

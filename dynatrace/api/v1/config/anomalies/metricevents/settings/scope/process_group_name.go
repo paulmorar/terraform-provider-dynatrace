@@ -54,7 +54,7 @@ func (me *ProcessGroupName) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ProcessGroupName) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *ProcessGroupName) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -65,7 +65,7 @@ func (me *ProcessGroupName) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 		result["unknowns"] = string(data)
 	}
 	if me.NameFilter != nil {
-		if marshalled, err := me.NameFilter.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.NameFilter.MarshalHCL(); err == nil {
 			result["filter"] = []any{marshalled}
 		} else {
 			return nil, err

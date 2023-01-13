@@ -45,13 +45,13 @@ func (me *Target) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Target) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Target) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if me.Window != nil {
 		result["window"] = string(*me.Window)
 	}
 	if len(me.Locators) > 0 {
-		if marshalled, err := me.Locators.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Locators.MarshalHCL(); err == nil {
 			result["locators"] = []any{marshalled}
 		} else {
 			return nil, err

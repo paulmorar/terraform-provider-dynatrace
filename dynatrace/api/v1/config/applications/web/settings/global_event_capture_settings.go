@@ -80,7 +80,7 @@ func (me *GlobalEventCaptureSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *GlobalEventCaptureSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *GlobalEventCaptureSettings) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"mouseup":     me.MouseUp,
 		"mousedown":   me.MouseDown,

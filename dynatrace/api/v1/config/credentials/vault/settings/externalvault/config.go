@@ -117,7 +117,7 @@ func (me *Config) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Config) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Config) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if me.TenantID != nil {
 		result["tenantid"] = me.TenantID

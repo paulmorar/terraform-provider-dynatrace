@@ -60,7 +60,7 @@ func (me *EntityRef) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EntityRef) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *EntityRef) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

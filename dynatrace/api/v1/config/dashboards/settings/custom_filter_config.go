@@ -80,7 +80,7 @@ func (me *CustomFilterConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomFilterConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *CustomFilterConfig) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -94,7 +94,7 @@ func (me *CustomFilterConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, e
 	result["custom_name"] = me.CustomName
 	result["default_name"] = me.DefaultName
 	if me.ChartConfig != nil {
-		if marshalled, err := me.ChartConfig.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.ChartConfig.MarshalHCL(); err == nil {
 			result["chart_config"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -116,7 +116,7 @@ func (me *CustomFilterConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, e
 			}
 			filtersPerEntityType.Filters = append(filtersPerEntityType.Filters, filterForEntityType)
 		}
-		if marshalled, err := filtersPerEntityType.MarshalHCL(decoder); err == nil {
+		if marshalled, err := filtersPerEntityType.MarshalHCL(); err == nil {
 			result["filters"] = []any{marshalled}
 		} else {
 			return nil, err

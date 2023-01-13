@@ -91,7 +91,7 @@ func (mzr *Rule) SortConditions() {
 	}
 }
 
-func (mzr *Rule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (mzr *Rule) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(mzr.Unknowns) > 0 {
@@ -114,7 +114,7 @@ func (mzr *Rule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 		mzr.SortConditions()
 		entries := []any{}
 		for _, entry := range mzr.Conditions {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

@@ -71,7 +71,7 @@ func (me *String) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *String) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *String) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -91,7 +91,7 @@ func (me *String) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 		result["index"] = *me.Index
 	}
 	if me.TextFilter != nil {
-		if marshalled, err := me.TextFilter.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.TextFilter.MarshalHCL(); err == nil {
 			result["filter"] = []any{marshalled}
 		} else {
 			return nil, err

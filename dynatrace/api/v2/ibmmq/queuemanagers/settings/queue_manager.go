@@ -127,7 +127,7 @@ func (me *QueueManager) EnsurePredictableOrder() {
 	}
 }
 
-func (me *QueueManager) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *QueueManager) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	me.EnsurePredictableOrder()
 

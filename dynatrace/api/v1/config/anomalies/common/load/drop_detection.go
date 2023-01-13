@@ -51,7 +51,7 @@ func (me *DropDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DropDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DropDetection) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if me.LoadDropPercent != nil {

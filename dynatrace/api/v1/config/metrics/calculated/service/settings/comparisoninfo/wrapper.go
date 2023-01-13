@@ -179,7 +179,7 @@ func (me *Wrapper) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Wrapper) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Wrapper) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	properties.Encode("negate", me.Comparison.IsNegate())
 	switch cmp := me.Comparison.(type) {

@@ -39,7 +39,7 @@ func (me *Group) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Group) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Group) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"name":                       me.Name,
 		"description":                me.Description,

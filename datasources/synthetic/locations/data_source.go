@@ -23,7 +23,6 @@ import (
 	settings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -85,7 +84,7 @@ func DataSourceRead(d *schema.ResourceData, m any) (err error) {
 		value := stub.Value.(*settings.SyntheticLocation)
 		locs.Locations = append(locs.Locations, value)
 	}
-	marshalled, err := locs.MarshalHCL(hcl.DecoderFrom(d))
+	marshalled, err := locs.MarshalHCL()
 	if err != nil {
 		return err
 	}

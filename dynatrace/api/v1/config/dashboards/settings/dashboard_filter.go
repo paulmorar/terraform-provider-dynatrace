@@ -60,7 +60,7 @@ func (me *DashboardFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DashboardFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DashboardFilter) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -74,7 +74,7 @@ func (me *DashboardFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, erro
 		result["timeframe"] = opt.String(me.Timeframe)
 	}
 	if me.ManagementZone != nil {
-		if marshalled, err := me.ManagementZone.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.ManagementZone.MarshalHCL(); err == nil {
 			result["management_zone"] = []any{marshalled}
 		} else {
 			return nil, err

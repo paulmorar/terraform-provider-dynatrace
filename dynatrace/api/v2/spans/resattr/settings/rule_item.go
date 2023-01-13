@@ -49,7 +49,7 @@ func (me *RuleItem) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RuleItem) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *RuleItem) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	result["enabled"] = me.Enabled

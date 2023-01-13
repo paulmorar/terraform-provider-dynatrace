@@ -65,7 +65,7 @@ func (me *DimensionalRuleCondition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DimensionalRuleCondition) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DimensionalRuleCondition) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

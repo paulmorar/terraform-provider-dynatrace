@@ -70,7 +70,7 @@ func (oac *OSArchitecture) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (oac *OSArchitecture) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (oac *OSArchitecture) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(oac.Unknowns) > 0 {

@@ -85,7 +85,7 @@ func (me *AutoTag) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AutoTag) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *AutoTag) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -102,7 +102,7 @@ func (me *AutoTag) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	if len(me.Rules) > 0 {
 		entries := make([]any, 0)
 		for _, rule := range me.Rules {
-			if marshalled, err := rule.MarshalHCL(decoder); err == nil {
+			if marshalled, err := rule.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -115,7 +115,7 @@ func (me *AutoTag) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	if me.EntitySelectorBasedRules != nil {
 		entries := make([]any, 0)
 		for _, rule := range me.EntitySelectorBasedRules {
-			if marshalled, err := rule.MarshalHCL(decoder); err == nil {
+			if marshalled, err := rule.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

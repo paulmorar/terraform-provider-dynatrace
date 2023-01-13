@@ -80,7 +80,7 @@ func (me *JavaScriptFrameworkSupport) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *JavaScriptFrameworkSupport) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *JavaScriptFrameworkSupport) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"angular":         me.Angular,
 		"dojo":            me.Dojo,

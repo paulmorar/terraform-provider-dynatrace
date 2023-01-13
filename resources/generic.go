@@ -130,7 +130,7 @@ func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag
 			demoSettings.FillDemoValues()
 		}
 	}
-	marshalled, err := settings.MarshalHCL(hcl.DecoderFrom(d))
+	marshalled, err := settings.MarshalHCL()
 	if err != nil {
 		return diag.FromErr(err)
 	}

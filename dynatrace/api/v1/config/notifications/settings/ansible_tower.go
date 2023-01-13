@@ -131,7 +131,7 @@ func (me *AnsibleTowerConfig) PrepareMarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *AnsibleTowerConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *AnsibleTowerConfig) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

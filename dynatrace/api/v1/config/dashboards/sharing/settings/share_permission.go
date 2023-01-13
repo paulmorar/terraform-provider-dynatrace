@@ -53,7 +53,7 @@ func (me *SharePermission) Schema() map[string]*schema.Schema {
 }
 
 // MarshalHCL has no documentation
-func (me *SharePermission) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *SharePermission) MarshalHCL() (map[string]any, error) {
 	m := map[string]any{}
 	if me.ID != nil {
 		m["id"] = *me.ID
@@ -92,7 +92,7 @@ func (me *SharePermissions) Schema() map[string]*schema.Schema {
 }
 
 // MarshalHCL has no documentation
-func (me SharePermissions) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me SharePermissions) MarshalHCL() (map[string]any, error) {
 	props := hcl.Properties{}
 	return props.EncodeSlice("permission", me)
 }

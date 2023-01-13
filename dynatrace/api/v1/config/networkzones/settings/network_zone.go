@@ -78,7 +78,7 @@ func (me *NetworkZone) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NetworkZone) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *NetworkZone) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	return properties.EncodeAll(map[string]any{
 		"description":                       me.Description,

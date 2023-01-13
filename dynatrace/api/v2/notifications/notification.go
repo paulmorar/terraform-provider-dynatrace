@@ -180,6 +180,7 @@ func (me *Notification) resolveAndCreateConfig() hcl.Unmarshaler {
 
 func (me *Notification) UnmarshalHCL(decoder hcl.Decoder) error {
 	config := me.resolveAndCreateConfig()
+
 	if err := config.UnmarshalHCL(decoder); err != nil {
 		return err
 	}
@@ -191,7 +192,7 @@ func (me *Notification) UnmarshalHCL(decoder hcl.Decoder) error {
 	})
 }
 
-func (me *Notification) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Notification) MarshalHCL() (map[string]any, error) {
 	m := map[Type]hcl.Marshaler{
 		Types.AnsibleTower: me.AnsibleTower,
 		Types.Email:        me.Email,
@@ -212,7 +213,7 @@ func (me *Notification) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) 
 		if config == nil {
 			return nil, fmt.Errorf("notification type is `%v` but the corresponding configuration is missing", me.Type)
 		}
-		result, err := config.MarshalHCL(decoder)
+		result, err := config.MarshalHCL()
 		if err != nil {
 			return nil, err
 		}

@@ -65,7 +65,7 @@ func (me *AliasQueues) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AliasQueue) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *AliasQueue) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{
@@ -83,7 +83,7 @@ func (me *AliasQueue) UnmarshalHCL(decoder hcl.Decoder) error {
 	})
 }
 
-func (me AliasQueues) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me AliasQueues) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("alias_queue", me)
 }
 

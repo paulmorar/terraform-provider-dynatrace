@@ -97,7 +97,7 @@ func (me *ManagementZoneAttributeRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ManagementZoneAttributeRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *ManagementZoneAttributeRule) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

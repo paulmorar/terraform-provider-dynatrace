@@ -48,7 +48,7 @@ func (me *UniversalTagKey) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *UniversalTagKey) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *UniversalTagKey) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	return properties.EncodeAll(map[string]any{
 		"key":     me.Key,

@@ -98,7 +98,7 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *AnomalyDetection) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	properties, err := properties.EncodeAll(map[string]any{
 		"name":              me.Name,
@@ -115,7 +115,7 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 		properties["host_group_id"] = *me.HostGroupID
 	}
 	if me.DiskNameFilter != nil {
-		if marshalled, err := me.DiskNameFilter.MarshalHCL(decoder); err != nil {
+		if marshalled, err := me.DiskNameFilter.MarshalHCL(); err != nil {
 			return nil, err
 		} else {
 			properties["disk_name"] = []any{marshalled}
@@ -123,7 +123,7 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 
 	}
 	if len(me.TagFilters) > 0 {
-		if marshalled, err := me.TagFilters.MarshalHCL(decoder); err != nil {
+		if marshalled, err := me.TagFilters.MarshalHCL(); err != nil {
 			return nil, err
 		} else {
 			properties["tags"] = []any{marshalled}

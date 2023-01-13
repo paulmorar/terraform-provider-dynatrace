@@ -111,7 +111,7 @@ func (me *Jira) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Jira) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Jira) MarshalHCL() (map[string]any, error) {
 	// The api_token field MUST NOT get serialized into HCL here
 	// The Dynatrace Settings 2.0 API delivers a scrambled version of any previously stored api_token here
 	// Evaluation at this point would lead to that scrambled version to make it into the Terraform State

@@ -68,7 +68,7 @@ func (me *IMSBridge) EnsurePredictableOrder() {
 	}
 }
 
-func (me *IMSBridge) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *IMSBridge) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	me.EnsurePredictableOrder()
 

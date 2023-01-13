@@ -50,17 +50,17 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *AnomalyDetection) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if me.OutageHandling != nil {
-		if marshalled, err := me.OutageHandling.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.OutageHandling.MarshalHCL(); err == nil {
 			result["outage_handling"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.LoadingTimeThresholds != nil {
-		if marshalled, err := me.LoadingTimeThresholds.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.LoadingTimeThresholds.MarshalHCL(); err == nil {
 			result["loading_time_thresholds"] = []any{marshalled}
 		} else {
 			return nil, err

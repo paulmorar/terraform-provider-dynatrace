@@ -104,7 +104,7 @@ func (mz *ManagementZone) SortRules() {
 	}
 }
 
-func (mz *ManagementZone) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (mz *ManagementZone) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(mz.Unknowns) > 0 {
@@ -122,7 +122,7 @@ func (mz *ManagementZone) MarshalHCL(decoder hcl.Decoder) (map[string]any, error
 		mz.SortRules()
 		entries := []any{}
 		for _, entry := range mz.Rules {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -133,7 +133,7 @@ func (mz *ManagementZone) MarshalHCL(decoder hcl.Decoder) (map[string]any, error
 	if len(mz.DimensionalRules) > 0 {
 		entries := []any{}
 		for _, entry := range mz.DimensionalRules {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -144,7 +144,7 @@ func (mz *ManagementZone) MarshalHCL(decoder hcl.Decoder) (map[string]any, error
 	if len(mz.EntitySelectorBasedRules) > 0 {
 		entries := []any{}
 		for _, entry := range mz.EntitySelectorBasedRules {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

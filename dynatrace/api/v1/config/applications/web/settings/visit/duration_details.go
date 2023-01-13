@@ -38,7 +38,7 @@ func (me *DurationDetails) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DurationDetails) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DurationDetails) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"duration": me.DurationInMillis,
 	})

@@ -36,8 +36,8 @@ func (me *SpanEntryPoint) Schema() map[string]*schema.Schema {
 	return new(SpanEntrypointRule).Schema()
 }
 
-func (me *SpanEntryPoint) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
-	return me.EntryPointRule.MarshalHCL(decoder)
+func (me *SpanEntryPoint) MarshalHCL() (map[string]any, error) {
+	return me.EntryPointRule.MarshalHCL()
 }
 
 func (me *SpanEntryPoint) UnmarshalHCL(decoder hcl.Decoder) error {

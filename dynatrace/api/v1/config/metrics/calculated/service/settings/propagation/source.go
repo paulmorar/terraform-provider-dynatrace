@@ -57,7 +57,7 @@ func (me *Source) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Source) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Source) MarshalHCL() (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err

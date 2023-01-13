@@ -66,7 +66,7 @@ func (me *Scope) IsEmpty() bool {
 	return len(me.Entities) == 0 && len(me.Matches) == 0
 }
 
-func (me *Scope) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Scope) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -82,7 +82,7 @@ func (me *Scope) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	if len(me.Matches) > 0 {
 		entries := []any{}
 		for _, entry := range me.Matches {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

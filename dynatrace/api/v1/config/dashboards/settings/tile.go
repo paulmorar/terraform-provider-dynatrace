@@ -175,7 +175,7 @@ func (me *Tile) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Tile) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Tile) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -194,14 +194,14 @@ func (me *Tile) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 		result["configured"] = opt.Bool(me.Configured)
 	}
 	if me.Bounds != nil {
-		if marshalled, err := me.Bounds.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Bounds.MarshalHCL(); err == nil {
 			result["bounds"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Filter != nil {
-		if marshalled, err := me.Filter.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Filter.MarshalHCL(); err == nil {
 			result["filter"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -228,7 +228,7 @@ func (me *Tile) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 		result["time_frame_shift"] = string(*me.TimeFrameShift)
 	}
 	if me.VisualizationConfig != nil {
-		if marshalled, err := me.VisualizationConfig.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.VisualizationConfig.MarshalHCL(); err == nil {
 			result["visualization_config"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -239,7 +239,7 @@ func (me *Tile) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	}
 
 	if me.FilterConfig != nil {
-		if marshalled, err := me.FilterConfig.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.FilterConfig.MarshalHCL(); err == nil {
 			result["filter_config"] = []any{marshalled}
 		} else {
 			return nil, err

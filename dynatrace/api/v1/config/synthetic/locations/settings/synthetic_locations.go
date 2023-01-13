@@ -39,11 +39,11 @@ func (me *SyntheticLocations) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SyntheticLocations) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *SyntheticLocations) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	entries := []any{}
 	for _, entry := range me.Locations {
-		if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+		if marshalled, err := entry.MarshalHCL(); err == nil {
 			entries = append(entries, marshalled)
 		} else {
 			return nil, err
@@ -108,7 +108,7 @@ func (me *SyntheticLocation) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SyntheticLocation) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *SyntheticLocation) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["entity_id"] = me.ID
 	result["name"] = me.Name

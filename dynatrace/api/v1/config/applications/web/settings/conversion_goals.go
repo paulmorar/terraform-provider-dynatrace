@@ -40,12 +40,12 @@ func (me *ConversionGoals) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me ConversionGoals) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me ConversionGoals) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -123,7 +123,7 @@ func (me *ConversionGoal) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ConversionGoal) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *ConversionGoal) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"name": me.Name,
 		// "id":               me.ID,

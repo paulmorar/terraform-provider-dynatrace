@@ -137,7 +137,7 @@ func (me *MetricEvent) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MetricEvent) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *MetricEvent) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -172,14 +172,14 @@ func (me *MetricEvent) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 		result["severity"] = string(*me.Severity)
 	}
 	if me.MetricDimensions != nil {
-		if marshalled, err := me.MetricDimensions.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.MetricDimensions.MarshalHCL(); err == nil {
 			result["dimensions"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.AlertingScope != nil {
-		if marshalled, err := me.AlertingScope.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.AlertingScope.MarshalHCL(); err == nil {
 			result["scopes"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -187,7 +187,7 @@ func (me *MetricEvent) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	}
 	if me.MonitoringStrategy != nil {
 		wrapper := &strategy.Wrapper{Strategy: me.MonitoringStrategy}
-		if marshalled, err := wrapper.MarshalHCL(decoder); err == nil {
+		if marshalled, err := wrapper.MarshalHCL(); err == nil {
 			result["strategy"] = []any{marshalled}
 		} else {
 			return nil, err

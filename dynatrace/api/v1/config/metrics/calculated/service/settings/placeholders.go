@@ -37,7 +37,7 @@ func (me *Placeholders) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Placeholders) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me Placeholders) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("placeholder", me)
 }
 

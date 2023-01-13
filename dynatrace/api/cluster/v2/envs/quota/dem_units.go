@@ -31,7 +31,7 @@ func (me *DEMUnits) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DEMUnits) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DEMUnits) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"monthly": me.MonthlyLimit,
 		"annual":  me.AnnualLimit,

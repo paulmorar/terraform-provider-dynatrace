@@ -62,7 +62,7 @@ func (me *ResourceTimingSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ResourceTimingSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *ResourceTimingSettings) MarshalHCL() (map[string]any, error) {
 	res, err := hcl.Properties{}.EncodeAll(map[string]any{
 		"w3c_resource_timings":          me.W3CResourceTimings,
 		"non_w3c_resource_timings":      me.NonW3CResourceTimings,

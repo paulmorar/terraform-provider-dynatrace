@@ -61,7 +61,7 @@ func (me *BaseAlertingScope) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *BaseAlertingScope) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *BaseAlertingScope) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

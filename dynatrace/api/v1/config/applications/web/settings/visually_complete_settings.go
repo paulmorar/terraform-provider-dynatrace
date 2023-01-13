@@ -62,7 +62,7 @@ func (me *VisuallyCompleteSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *VisuallyCompleteSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *VisuallyCompleteSettings) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"exclude_url_regex":      me.ExcludeURLRegex,
 		"ignored_mutations_list": me.IgnoredMutationsList,

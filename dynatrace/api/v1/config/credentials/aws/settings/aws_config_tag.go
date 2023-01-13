@@ -101,7 +101,7 @@ func (act *AWSConfigTag) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (act *AWSConfigTag) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (act *AWSConfigTag) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(act.Unknowns) > 0 {

@@ -69,7 +69,7 @@ func (catc *CustomApplicationType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (catc *CustomApplicationType) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (catc *CustomApplicationType) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(catc.Unknowns) > 0 {

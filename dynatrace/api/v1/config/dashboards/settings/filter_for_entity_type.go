@@ -47,13 +47,13 @@ func (me *FilterForEntityType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FilterForEntityType) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *FilterForEntityType) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["entity_type"] = me.EntityType
 	if len(me.Filters) > 0 {
 		entries := []any{}
 		for _, entry := range me.Filters {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

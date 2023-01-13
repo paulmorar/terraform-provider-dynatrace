@@ -173,7 +173,7 @@ func (me *MonitoringSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MonitoringSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *MonitoringSettings) MarshalHCL() (map[string]any, error) {
 	res, err := hcl.Properties{}.EncodeAll(map[string]any{
 		"fetch_requests":                       me.FetchRequests,
 		"xml_http_request":                     me.XmlHttpRequest,

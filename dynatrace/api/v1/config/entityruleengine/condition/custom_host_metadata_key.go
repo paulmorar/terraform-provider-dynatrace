@@ -53,7 +53,7 @@ func (chmk *CustomHostMetadataKey) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (chmk *CustomHostMetadataKey) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (chmk *CustomHostMetadataKey) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(chmk.Unknowns) > 0 {

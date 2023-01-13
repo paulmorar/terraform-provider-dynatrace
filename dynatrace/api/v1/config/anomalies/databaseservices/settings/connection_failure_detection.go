@@ -48,7 +48,7 @@ func (me *ConnectionFailureDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ConnectionFailureDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *ConnectionFailureDetection) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	result["connection_fails_count"] = int(*me.ConnectionFailsCount)

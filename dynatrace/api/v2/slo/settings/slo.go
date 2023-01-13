@@ -124,7 +124,7 @@ func empty2Nil(s *string) *string {
 	return s
 }
 
-func (me *SLO) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *SLO) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	res, err := properties.EncodeAll(map[string]any{

@@ -41,7 +41,7 @@ func (me TagFilters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me TagFilters) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me TagFilters) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	tagFilters := TagFilters{}
@@ -53,7 +53,7 @@ func (me TagFilters) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	})
 	filters := []any{}
 	for _, filter := range tagFilters {
-		if marshalled, err := filter.MarshalHCL(decoder); err == nil {
+		if marshalled, err := filter.MarshalHCL(); err == nil {
 			filters = append(filters, marshalled)
 		} else {
 			return nil, err

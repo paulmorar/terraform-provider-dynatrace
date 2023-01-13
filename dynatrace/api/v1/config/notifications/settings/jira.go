@@ -117,7 +117,7 @@ func (me *JiraConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *JiraConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *JiraConfig) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

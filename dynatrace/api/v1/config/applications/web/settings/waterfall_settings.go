@@ -74,7 +74,7 @@ func (me *WaterfallSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *WaterfallSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *WaterfallSettings) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"uncompressed_resources_threshold":              me.UncompressedResourcesThreshold,
 		"resources_threshold":                           me.ResourcesThreshold,

@@ -86,7 +86,7 @@ func (me *DetectionRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DetectionRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DetectionRule) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -107,7 +107,7 @@ func (me *DetectionRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error)
 			Match: me.FileNameMatcher,
 		}
 		if !fileSection.IsEmpty() {
-			if marshalled, err := fileSection.MarshalHCL(decoder); err == nil {
+			if marshalled, err := fileSection.MarshalHCL(); err == nil {
 				result["file"] = []any{marshalled}
 			} else {
 				return nil, err
@@ -119,7 +119,7 @@ func (me *DetectionRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error)
 			Name:  me.ClassName,
 			Match: me.ClassNameMatcher,
 		}
-		if marshalled, err := classSection.MarshalHCL(decoder); err == nil {
+		if marshalled, err := classSection.MarshalHCL(); err == nil {
 			result["class"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -128,7 +128,7 @@ func (me *DetectionRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error)
 	if len(me.MethodRules) > 0 {
 		entries := []any{}
 		for _, entry := range me.MethodRules {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

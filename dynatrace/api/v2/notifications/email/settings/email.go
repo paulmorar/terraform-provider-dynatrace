@@ -98,7 +98,7 @@ func (me *Email) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Email) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Email) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"active":  me.Enabled,

@@ -56,7 +56,7 @@ func (me *Credential) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Credential) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Credential) MarshalHCL() (map[string]any, error) {
 	return map[string]any{
 		"vault_id": me.ID,
 		"field":    me.Field,
@@ -125,31 +125,31 @@ func (me *KeyStrokes) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *KeyStrokes) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *KeyStrokes) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Target.MarshalHCL(); err == nil {
 			result["target"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Credential != nil {
-		if marshalled, err := me.Credential.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Credential.MarshalHCL(); err == nil {
 			result["credential"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Wait != nil {
-		if marshalled, err := me.Wait.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Wait.MarshalHCL(); err == nil {
 			result["wait"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if len(me.Validate) > 0 {
-		if marshalled, err := me.Validate.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Validate.MarshalHCL(); err == nil {
 			result["validate"] = []any{marshalled}
 		} else {
 			return nil, err

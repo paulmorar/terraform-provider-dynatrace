@@ -72,7 +72,7 @@ func (me *FastString) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FastString) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *FastString) MarshalHCL() (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err

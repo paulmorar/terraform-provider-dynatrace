@@ -55,17 +55,17 @@ func (me *Detection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Detection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Detection) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if me.AutomaticDetection != nil {
-		if marshalled, err := me.AutomaticDetection.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.AutomaticDetection.MarshalHCL(); err == nil {
 			result["auto"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	} else if me.Thresholds != nil {
-		if marshalled, err := me.Thresholds.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Thresholds.MarshalHCL(); err == nil {
 			result["thresholds"] = []any{marshalled}
 		} else {
 			return nil, err

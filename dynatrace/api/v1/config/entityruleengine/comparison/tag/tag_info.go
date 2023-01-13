@@ -60,7 +60,7 @@ func (ti *Info) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ti *Info) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (ti *Info) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(ti.Unknowns) > 0 {

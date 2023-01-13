@@ -31,7 +31,7 @@ func (me *Synthetic) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Synthetic) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Synthetic) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"monthly": me.MonthlyLimit,
 		"annual":  me.AnnualLimit,

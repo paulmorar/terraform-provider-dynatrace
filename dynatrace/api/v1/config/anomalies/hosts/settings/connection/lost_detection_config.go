@@ -44,7 +44,7 @@ func (me *LostDetectionConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *LostDetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *LostDetectionConfig) MarshalHCL() (map[string]any, error) {
 	return map[string]any{
 		"enabled":                       me.Enabled,
 		"enabled_on_graceful_shutdowns": me.EnabledOnGracefulShutdowns,

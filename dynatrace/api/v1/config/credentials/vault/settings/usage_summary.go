@@ -45,7 +45,7 @@ func (me *CredentialUsageObj) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CredentialUsageObj) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *CredentialUsageObj) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["type"] = string(me.MonitorType)
 	result["count"] = int(me.Count)

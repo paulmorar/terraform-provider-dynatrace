@@ -20,12 +20,12 @@ func (me *PermissionAssignments) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me PermissionAssignments) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me PermissionAssignments) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -64,7 +64,7 @@ func (me *PermissionAssignment) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *PermissionAssignment) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *PermissionAssignment) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	return properties.EncodeAll(map[string]any{
 		"permission":   me.Permission,

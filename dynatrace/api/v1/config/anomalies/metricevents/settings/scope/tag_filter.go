@@ -56,7 +56,7 @@ func (me *TagFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TagFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *TagFilter) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -67,7 +67,7 @@ func (me *TagFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 		result["unknowns"] = string(data)
 	}
 	if me.TagFilter != nil {
-		if marshalled, err := me.TagFilter.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.TagFilter.MarshalHCL(); err == nil {
 			result["filter"] = []any{marshalled}
 		} else {
 			return nil, err

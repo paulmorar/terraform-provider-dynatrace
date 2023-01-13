@@ -58,7 +58,7 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Settings) MarshalHCL() (map[string]any, error) {
 	res, err := hcl.Properties{}.EncodeAll(map[string]any{
 		"enabled":                                me.Enabled,
 		"cost_control_percentage":                me.CostControlPercentage,

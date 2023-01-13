@@ -97,10 +97,10 @@ func (me *EventWrapper) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EventWrapper) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *EventWrapper) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["description"] = me.Event.GetDescription()
-	if marshalled, err := me.Event.MarshalHCL(decoder); err == nil {
+	if marshalled, err := me.Event.MarshalHCL(); err == nil {
 		if me.Event.GetType() == Types.Click {
 			result["click"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.Tap {
@@ -211,12 +211,12 @@ func (me *Events) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me Events) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me Events) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	entries := []any{}
 	for _, event := range me {
 		evtw := &EventWrapper{Event: event}
-		if marshalled, err := evtw.MarshalHCL(decoder); err == nil {
+		if marshalled, err := evtw.MarshalHCL(); err == nil {
 			entries = append(entries, marshalled)
 		} else {
 			return nil, err
@@ -291,7 +291,7 @@ type Event interface {
 	GetType() Type
 	GetDescription() string
 	SetDescription(string)
-	MarshalHCL(hcl.Decoder) (map[string]any, error)
+	MarshalHCL() (map[string]any, error)
 }
 
 type EventBase struct {

@@ -124,7 +124,7 @@ func (me *DashboardMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DashboardMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DashboardMetadata) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -156,21 +156,21 @@ func (me *DashboardMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, er
 		result["valid_filter_keys"] = me.ValidFilterKeys
 	}
 	if me.SharingDetails != nil {
-		if marshalled, err := me.SharingDetails.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.SharingDetails.MarshalHCL(); err == nil {
 			result["name"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Filter != nil {
-		if marshalled, err := me.Filter.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Filter.MarshalHCL(); err == nil {
 			result["filter"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.DynamicFilters != nil {
-		if marshalled, err := me.DynamicFilters.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.DynamicFilters.MarshalHCL(); err == nil {
 			result["dynamic_filters"] = []any{marshalled}
 		} else {
 			return nil, err

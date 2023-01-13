@@ -40,7 +40,7 @@ func (me *CustomEventFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomEventFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *CustomEventFilter) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -51,14 +51,14 @@ func (me *CustomEventFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, er
 		result["unknowns"] = string(data)
 	}
 	if me.Description != nil {
-		if marshalled, err := me.Description.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Description.MarshalHCL(); err == nil {
 			result["custom_description_filter"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Title != nil {
-		if marshalled, err := me.Title.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Title.MarshalHCL(); err == nil {
 			result["custom_title_filter"] = []any{marshalled}
 		} else {
 			return nil, err

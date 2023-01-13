@@ -58,18 +58,18 @@ func (me *Javascript) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Javascript) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Javascript) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["code"] = me.Javascript
 	if me.Wait != nil {
-		if marshalled, err := me.Wait.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Wait.MarshalHCL(); err == nil {
 			result["wait"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Target.MarshalHCL(); err == nil {
 			result["target"] = []any{marshalled}
 		} else {
 			return nil, err

@@ -58,7 +58,7 @@ func (kep *KubernetesEventPattern) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (kep *KubernetesEventPattern) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (kep *KubernetesEventPattern) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(kep.Unknowns) > 0 {

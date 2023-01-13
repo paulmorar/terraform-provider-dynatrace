@@ -102,7 +102,7 @@ func (ct *CloudTag) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (ct *CloudTag) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (ct *CloudTag) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(ct.Unknowns) > 0 {

@@ -121,7 +121,7 @@ func (assm *AWSSupportingServiceMetric) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (assm *AWSSupportingServiceMetric) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (assm *AWSSupportingServiceMetric) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(assm.Unknowns) > 0 {

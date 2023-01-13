@@ -73,7 +73,7 @@ func (stc *SimpleTech) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (stc *SimpleTech) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (stc *SimpleTech) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(stc.Unknowns) > 0 {
@@ -86,7 +86,7 @@ func (stc *SimpleTech) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	result["negate"] = stc.Negate
 	result["operator"] = string(stc.Operator)
 	if stc.Value != nil {
-		if marshalled, err := stc.Value.MarshalHCL(decoder); err == nil {
+		if marshalled, err := stc.Value.MarshalHCL(); err == nil {
 			result["value"] = []any{marshalled}
 		} else {
 			return nil, err

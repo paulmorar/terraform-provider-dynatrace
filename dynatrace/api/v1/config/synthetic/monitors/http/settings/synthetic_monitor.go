@@ -122,7 +122,7 @@ func (me *SyntheticMonitor) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SyntheticMonitor) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *SyntheticMonitor) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["name"] = me.Name
 	result["frequency"] = me.FrequencyMin
@@ -134,21 +134,21 @@ func (me *SyntheticMonitor) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 		result["manually_assigned_apps"] = me.ManuallyAssignedApps
 	}
 	if len(me.Tags) > 0 {
-		if marshalled, err := me.Tags.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Tags.MarshalHCL(); err == nil {
 			result["tags"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.AnomalyDetection != nil {
-		if marshalled, err := me.AnomalyDetection.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.AnomalyDetection.MarshalHCL(); err == nil {
 			result["anomaly_detection"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Script != nil {
-		if marshalled, err := me.Script.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Script.MarshalHCL(); err == nil {
 			result["script"] = []any{marshalled}
 		} else {
 			return nil, err

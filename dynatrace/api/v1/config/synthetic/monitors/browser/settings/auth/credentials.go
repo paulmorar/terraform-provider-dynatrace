@@ -44,7 +44,7 @@ func (me *Credentials) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Credentials) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Credentials) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["type"] = me.Type
 	result["creds"] = me.Credential.ID

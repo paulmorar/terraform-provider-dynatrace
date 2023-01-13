@@ -58,7 +58,7 @@ func (me *Autodetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Autodetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Autodetection) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

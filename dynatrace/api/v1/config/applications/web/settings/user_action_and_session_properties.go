@@ -37,12 +37,12 @@ func (me *UserActionAndSessionProperties) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me UserActionAndSessionProperties) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me UserActionAndSessionProperties) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -146,7 +146,7 @@ func (me *UserActionAndSessionProperty) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *UserActionAndSessionProperty) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *UserActionAndSessionProperty) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"display_name":                  me.DisplayName,
 		"type":                          me.Type,

@@ -69,7 +69,7 @@ func (acmc *AzureComputeMode) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (acmc *AzureComputeMode) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (acmc *AzureComputeMode) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(acmc.Unknowns) > 0 {

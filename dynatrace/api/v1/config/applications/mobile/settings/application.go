@@ -83,7 +83,7 @@ func (me *Application) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *Application) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Application) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	if err := properties.Encode("name", me.Name); err != nil {
 		return nil, err

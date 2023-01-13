@@ -31,7 +31,7 @@ func (me *DavisDataUnits) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DavisDataUnits) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DavisDataUnits) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	if me.MonthlyLimit != nil {
 		if err := properties.Encode("monthly", me.MonthlyLimit); err != nil {

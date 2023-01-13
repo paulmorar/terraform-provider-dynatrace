@@ -100,7 +100,7 @@ func (me *AnsibleTower) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnsibleTower) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *AnsibleTower) MarshalHCL() (map[string]any, error) {
 	// The password field MUST NOT get serialized into HCL here
 	// The Dynatrace Settings 2.0 API delivers a scrambled version of any previously stored password here
 	// Evaluation at this point would lead to that scrambled version to make it into the Terraform State

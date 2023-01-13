@@ -54,7 +54,7 @@ func (me *SpanAttribute) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpanAttribute) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *SpanAttribute) MarshalHCL() (map[string]any, error) {
 	return map[string]any{
 		"key":     me.Key,
 		"masking": string(me.Masking),

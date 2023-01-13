@@ -92,7 +92,7 @@ func (me AlertingScopes) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me AlertingScopes) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me AlertingScopes) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	customDeviceGroupNames := []any{}
@@ -108,61 +108,61 @@ func (me AlertingScopes) MarshalHCL(decoder hcl.Decoder) (map[string]any, error)
 	for _, scope := range me {
 		switch sc := scope.(type) {
 		case *CustomDeviceGroupName:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				customDeviceGroupNames = append(customDeviceGroupNames, marshalled)
 			} else {
 				return nil, err
 			}
 		case *EntityID:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				entityIDs = append(entityIDs, marshalled)
 			} else {
 				return nil, err
 			}
 		case *HostGroupName:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				hostGroupNames = append(hostGroupNames, marshalled)
 			} else {
 				return nil, err
 			}
 		case *HostName:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				hostNames = append(hostNames, marshalled)
 			} else {
 				return nil, err
 			}
 		case *ManagementZone:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				managementZones = append(managementZones, marshalled)
 			} else {
 				return nil, err
 			}
 		case *Name:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				names = append(names, marshalled)
 			} else {
 				return nil, err
 			}
 		case *ProcessGroupID:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				processGroupIDs = append(processGroupIDs, marshalled)
 			} else {
 				return nil, err
 			}
 		case *ProcessGroupName:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				processGroupNames = append(processGroupNames, marshalled)
 			} else {
 				return nil, err
 			}
 		case *TagFilter:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				tags = append(tags, marshalled)
 			} else {
 				return nil, err
 			}
 		case *BaseAlertingScope:
-			if marshalled, err := sc.MarshalHCL(decoder); err == nil {
+			if marshalled, err := sc.MarshalHCL(); err == nil {
 				scopes = append(scopes, marshalled)
 			} else {
 				return nil, err

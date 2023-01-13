@@ -73,7 +73,7 @@ func (shtc *SimpleHostTech) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (shtc *SimpleHostTech) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (shtc *SimpleHostTech) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(shtc.Unknowns) > 0 {
@@ -86,7 +86,7 @@ func (shtc *SimpleHostTech) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 	result["negate"] = shtc.Negate
 	result["operator"] = string(shtc.Operator)
 	if shtc.Value != nil {
-		if marshalled, err := shtc.Value.MarshalHCL(decoder); err == nil {
+		if marshalled, err := shtc.Value.MarshalHCL(); err == nil {
 			result["value"] = []any{marshalled}
 		} else {
 			return nil, err

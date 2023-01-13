@@ -42,7 +42,7 @@ func (me *Order) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Order) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Order) MarshalHCL() (map[string]any, error) {
 	refs := []any{}
 	for _, ref := range me.Values {
 		refs = append(refs, ref.ID)

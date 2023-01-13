@@ -31,7 +31,7 @@ func (me *Policy) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Policy) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Policy) MarshalHCL() (map[string]any, error) {
 	return map[string]any{
 		"name":            me.Name,
 		"description":     me.Description,

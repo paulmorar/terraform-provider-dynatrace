@@ -49,7 +49,7 @@ func (me *ContentMaskingSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ContentMaskingSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *ContentMaskingSettings) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"recording": me.RecordingMaskingSettings,
 		"playback":  me.PlaybackMaskingSettings,

@@ -96,7 +96,7 @@ func (me *RequestAttribute) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RequestAttribute) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *RequestAttribute) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if me.Unknowns != nil {
@@ -121,7 +121,7 @@ func (me *RequestAttribute) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 	if len(me.DataSources) > 0 {
 		entries := []any{}
 		for _, entry := range me.DataSources {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

@@ -60,7 +60,7 @@ func (me *limits) Schema() map[string]*schema.Schema {
 		}}
 }
 
-func (me *limits) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *limits) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	if me.Transactions != nil {
 		if err := properties.Encode("transactions", me.Transactions); err != nil {
@@ -137,7 +137,7 @@ func (me *retent) Schema() map[string]*schema.Schema {
 		}}
 }
 
-func (me *retent) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *retent) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	if me.ServiceCodeLevel != 0 {
 		if err := properties.Encode("service_code_level", me.ServiceCodeLevel); err != nil {
@@ -212,7 +212,7 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Settings) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	if !me.UserActionsPerMinute.IsEmpty() {
 		if err := properties.Encode("user_actions", me.UserActionsPerMinute.MaxLimit); err != nil {

@@ -62,7 +62,7 @@ func (me *GeneralProperties) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *GeneralProperties) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *GeneralProperties) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

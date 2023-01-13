@@ -51,7 +51,7 @@ func (me *DailyRecurrence) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DailyRecurrence) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DailyRecurrence) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

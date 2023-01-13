@@ -81,7 +81,7 @@ func (me *DynamicFilters) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *DynamicFilters) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *DynamicFilters) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

@@ -29,7 +29,7 @@ import (
 // The actual set of fields and possible values vary, depending on the **type** of the key.
 // Find the list of actual objects in the description of the **type** field.
 type Key interface {
-	MarshalHCL(decoder hcl.Decoder) (map[string]any, error)
+	MarshalHCL() (map[string]any, error)
 	UnmarshalHCL(decoder hcl.Decoder) error
 	MarshalJSON() ([]byte, error)
 	UnmarshalJSON(data []byte) error
@@ -67,7 +67,7 @@ func (bck *BaseConditionKey) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (bck *BaseConditionKey) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (bck *BaseConditionKey) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(bck.Unknowns) > 0 {

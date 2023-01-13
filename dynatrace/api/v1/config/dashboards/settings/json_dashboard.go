@@ -75,7 +75,7 @@ func (me *JSONDashboard) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *JSONDashboard) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *JSONDashboard) MarshalHCL() (map[string]any, error) {
 	m := map[string]any{}
 	m["contents"] = me.Contents
 	return m, nil

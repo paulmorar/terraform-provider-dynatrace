@@ -37,7 +37,7 @@ func (me *SeverityRules) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me SeverityRules) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me SeverityRules) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("rule", me)
 }
 
@@ -78,7 +78,7 @@ func (me *SeverityRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SeverityRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *SeverityRule) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	result["delay_in_minutes"] = int(me.DelayInMinutes)

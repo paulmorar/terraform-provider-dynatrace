@@ -69,7 +69,7 @@ func (dtc *DatabaseTopology) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (dtc *DatabaseTopology) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (dtc *DatabaseTopology) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(dtc.Unknowns) > 0 {

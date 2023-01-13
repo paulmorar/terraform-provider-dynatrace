@@ -61,7 +61,7 @@ func (pmck *ProcessMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (pmck *ProcessMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (pmck *ProcessMetadata) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(pmck.Unknowns) > 0 {

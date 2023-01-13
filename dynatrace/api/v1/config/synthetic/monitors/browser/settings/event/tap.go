@@ -66,25 +66,25 @@ func (me *Tap) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Tap) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Tap) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["button"] = me.Button
 	if me.Wait != nil {
-		if marshalled, err := me.Wait.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Wait.MarshalHCL(); err == nil {
 			result["wait"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if len(me.Validate) > 0 {
-		if marshalled, err := me.Validate.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Validate.MarshalHCL(); err == nil {
 			result["validate"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Target.MarshalHCL(); err == nil {
 			result["target"] = []any{marshalled}
 		} else {
 			return nil, err

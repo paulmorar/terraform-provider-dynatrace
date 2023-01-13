@@ -44,7 +44,7 @@ func (me *LocalOutagePolicy) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *LocalOutagePolicy) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *LocalOutagePolicy) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["affected_locations"] = *me.AffectedLocations
 	result["consecutive_runs"] = *me.ConsecutiveRuns

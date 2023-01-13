@@ -105,7 +105,7 @@ func (ass *AzureSupportingService) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (ass *AzureSupportingService) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (ass *AzureSupportingService) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(ass.Unknowns) > 0 {
@@ -122,7 +122,7 @@ func (ass *AzureSupportingService) MarshalHCL(decoder hcl.Decoder) (map[string]a
 	if ass.MonitoredMetrics != nil {
 		entries := []any{}
 		for _, entry := range ass.MonitoredMetrics {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

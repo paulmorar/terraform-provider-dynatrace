@@ -53,7 +53,7 @@ func (cpmk *CustomProcessMetadataKey) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (cpmk *CustomProcessMetadataKey) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (cpmk *CustomProcessMetadataKey) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(cpmk.Unknowns) > 0 {

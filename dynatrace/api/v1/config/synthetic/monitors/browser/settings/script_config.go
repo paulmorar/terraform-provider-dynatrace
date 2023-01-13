@@ -114,7 +114,7 @@ func (me *ScriptConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ScriptConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *ScriptConfig) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["disable_web_security"] = me.DisableWebSecurity
 	result["bypass_csp"] = me.BypassCSP
@@ -127,35 +127,35 @@ func (me *ScriptConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) 
 		result["user_agent"] = me.UserAgent
 	}
 	if me.IgnoredErrorCodes != nil {
-		if marshalled, err := me.IgnoredErrorCodes.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.IgnoredErrorCodes.MarshalHCL(); err == nil {
 			result["ignored_error_codes"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.JavascriptSettings != nil {
-		if marshalled, err := me.JavascriptSettings.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.JavascriptSettings.MarshalHCL(); err == nil {
 			result["javascript_setttings"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Device != nil {
-		if marshalled, err := me.Device.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Device.MarshalHCL(); err == nil {
 			result["device"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Bandwidth != nil {
-		if marshalled, err := me.Bandwidth.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Bandwidth.MarshalHCL(); err == nil {
 			result["bandwidth"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.RequestHeaders != nil {
-		if marshalled, err := me.RequestHeaders.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.RequestHeaders.MarshalHCL(); err == nil {
 			result["headers"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -165,7 +165,7 @@ func (me *ScriptConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) 
 		result["block"] = me.BlockRequests
 	}
 	if len(me.Cookies) > 0 {
-		if marshalled, err := me.Cookies.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Cookies.MarshalHCL(); err == nil {
 			result["cookies"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -241,7 +241,7 @@ func (me *IgnoredErrorCodes) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *IgnoredErrorCodes) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *IgnoredErrorCodes) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["status_codes"] = me.StatusCodes
 	if me.MatchingDocumentRequests != nil {
@@ -290,17 +290,17 @@ func (me *JavascriptSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *JavascriptSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *JavascriptSettings) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if me.TimeoutSettings != nil {
-		if marshalled, err := me.TimeoutSettings.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.TimeoutSettings.MarshalHCL(); err == nil {
 			result["timeout_settings"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.VisuallyCompleteOptions != nil {
-		if marshalled, err := me.VisuallyCompleteOptions.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.VisuallyCompleteOptions.MarshalHCL(); err == nil {
 			result["visually_complete_options"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -365,7 +365,7 @@ func (me *VisuallyCompleteOptions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *VisuallyCompleteOptions) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *VisuallyCompleteOptions) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["image_size_threshold"] = me.ImageSizeThreshold
 	result["inactivity_timeout"] = me.InactivityTimeout
@@ -424,7 +424,7 @@ func (me *TimeoutSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TimeoutSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *TimeoutSettings) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["action_limit"] = int(me.TemporaryActionLimit)
 	result["total_timeout"] = int(me.TemporaryActionTotalTimeout)

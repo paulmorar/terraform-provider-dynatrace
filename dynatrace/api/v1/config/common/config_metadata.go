@@ -54,7 +54,7 @@ func (me *ConfigMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ConfigMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *ConfigMetadata) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if me.ClusterVersion != nil && len(*me.ClusterVersion) > 0 {

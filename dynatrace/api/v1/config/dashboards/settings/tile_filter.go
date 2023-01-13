@@ -64,7 +64,7 @@ func (me *TileFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TileFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *TileFilter) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -78,7 +78,7 @@ func (me *TileFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 		result["timeframe"] = opt.String(me.Timeframe)
 	}
 	if me.ManagementZone != nil {
-		if marshalled, err := me.ManagementZone.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.ManagementZone.MarshalHCL(); err == nil {
 			result["management_zone"] = []any{marshalled}
 		} else {
 			return nil, err

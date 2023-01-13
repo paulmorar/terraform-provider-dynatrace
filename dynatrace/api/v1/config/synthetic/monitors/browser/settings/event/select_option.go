@@ -68,31 +68,31 @@ func (me *SelectOption) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SelectOption) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *SelectOption) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Target.MarshalHCL(); err == nil {
 			result["target"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.Wait != nil {
-		if marshalled, err := me.Wait.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Wait.MarshalHCL(); err == nil {
 			result["wait"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if len(me.Validate) > 0 {
-		if marshalled, err := me.Wait.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Wait.MarshalHCL(); err == nil {
 			result["validate"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if len(me.Selections) > 0 {
-		if marshalled, err := me.Selections.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Selections.MarshalHCL(); err == nil {
 			result["selections"] = []any{marshalled}
 		} else {
 			return nil, err

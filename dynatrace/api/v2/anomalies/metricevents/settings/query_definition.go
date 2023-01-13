@@ -79,7 +79,7 @@ func (me *QueryDefinition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *QueryDefinition) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *QueryDefinition) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

@@ -100,7 +100,7 @@ func (me *APIValue) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *APIValue) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *APIValue) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	if err := properties.Encode("key", me.Key); err != nil {
 		return nil, err

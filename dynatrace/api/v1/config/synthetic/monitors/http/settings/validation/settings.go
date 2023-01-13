@@ -40,12 +40,12 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Settings) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if len(me.Rules) > 0 {
 		entries := []any{}
 		for _, entry := range me.Rules {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

@@ -71,7 +71,7 @@ func (me *RemoteQueues) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RemoteQueue) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *RemoteQueue) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{
@@ -91,7 +91,7 @@ func (me *RemoteQueue) UnmarshalHCL(decoder hcl.Decoder) error {
 	})
 }
 
-func (me RemoteQueues) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me RemoteQueues) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("remote_queue", me)
 }
 

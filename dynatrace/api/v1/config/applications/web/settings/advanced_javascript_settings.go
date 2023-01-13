@@ -92,7 +92,7 @@ func (me *AdvancedJavaScriptTagSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AdvancedJavaScriptTagSettings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *AdvancedJavaScriptTagSettings) MarshalHCL() (map[string]any, error) {
 	res, err := hcl.Properties{}.EncodeAll(map[string]any{
 		"sync_beacon_firefox":                    me.SyncBeaconFirefox,
 		"sync_beacon_internet_explorer":          me.SyncBeaconInternetExplorer,

@@ -58,7 +58,7 @@ func (me *Rule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Rule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Rule) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

@@ -34,7 +34,7 @@ type NotificationConfig interface {
 	GetID() *string
 	SetID(*string)
 	GetName() string
-	MarshalHCL(decoder hcl.Decoder) (map[string]any, error)
+	MarshalHCL() (map[string]any, error)
 	UnmarshalHCL(decoder hcl.Decoder) error
 }
 
@@ -95,7 +95,7 @@ func (me *BaseNotificationConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *BaseNotificationConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *BaseNotificationConfig) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

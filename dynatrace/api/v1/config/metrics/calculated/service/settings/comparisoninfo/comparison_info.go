@@ -71,7 +71,7 @@ func (me *BaseComparisonInfo) GetType() Type {
 	return me.Type
 }
 
-func (me *BaseComparisonInfo) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *BaseComparisonInfo) MarshalHCL() (map[string]any, error) {
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err

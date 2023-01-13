@@ -37,12 +37,12 @@ func (me *HTTPErrorRules) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me HTTPErrorRules) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me HTTPErrorRules) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -123,7 +123,7 @@ func (me *HTTPErrorRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *HTTPErrorRule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *HTTPErrorRule) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"consider_unknown_error_code": me.ConsiderUnknownErrorCode,
 		"consider_blocked_requests":   me.ConsiderBlockedRequests,

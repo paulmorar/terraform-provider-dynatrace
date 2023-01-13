@@ -49,7 +49,7 @@ func (me *TimeWindow) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TimeWindow) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *TimeWindow) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

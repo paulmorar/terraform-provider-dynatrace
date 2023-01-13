@@ -52,7 +52,7 @@ func (me *TagFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TagFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *TagFilter) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	result["context"] = string(me.Context)

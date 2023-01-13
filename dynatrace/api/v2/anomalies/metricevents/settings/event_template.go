@@ -63,7 +63,7 @@ func (me *EventTemplate) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EventTemplate) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *EventTemplate) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

@@ -86,7 +86,7 @@ func (me *XMattersConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *XMattersConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *XMattersConfig) MarshalHCL() (map[string]any, error) {
 	result := hcl.Properties{}
 
 	if len(me.Unknowns) > 0 {

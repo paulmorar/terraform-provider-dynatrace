@@ -69,7 +69,7 @@ func (bc *Bitness) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (bc *Bitness) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (bc *Bitness) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(bc.Unknowns) > 0 {

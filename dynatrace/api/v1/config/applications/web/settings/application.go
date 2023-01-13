@@ -176,7 +176,7 @@ func (me *Application) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Application) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Application) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"name":                                 me.Name,
 		"type":                                 me.Type,

@@ -69,7 +69,7 @@ func (ddc *DCRumDecoder) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ddc *DCRumDecoder) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (ddc *DCRumDecoder) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(ddc.Unknowns) > 0 {

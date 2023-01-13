@@ -158,7 +158,7 @@ func (me *APIToken) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *APIToken) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *APIToken) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 	if _, err := properties.EncodeAll(map[string]any{
 		"name":                  me.Name,

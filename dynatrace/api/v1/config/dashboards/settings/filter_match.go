@@ -45,7 +45,7 @@ func (me *FilterMatch) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FilterMatch) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *FilterMatch) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	result["key"] = me.Key
 	if len(me.Values) > 0 {

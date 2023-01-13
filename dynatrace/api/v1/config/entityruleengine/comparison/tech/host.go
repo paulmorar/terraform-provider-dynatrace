@@ -54,7 +54,7 @@ func (sht *Host) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (sht *Host) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (sht *Host) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(sht.Unknowns) > 0 {

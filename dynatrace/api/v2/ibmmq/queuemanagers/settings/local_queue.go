@@ -37,7 +37,7 @@ func (me *LocalQueue) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *LocalQueue) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *LocalQueue) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

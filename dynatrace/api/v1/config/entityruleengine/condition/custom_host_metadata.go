@@ -65,7 +65,7 @@ func (chmck *CustomHostMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (chmck *CustomHostMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (chmck *CustomHostMetadata) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(chmck.Unknowns) > 0 {
@@ -76,7 +76,7 @@ func (chmck *CustomHostMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any
 		result["unknowns"] = string(data)
 	}
 	result["attribute"] = string(chmck.Attribute)
-	if marshalled, err := chmck.DynamicKey.MarshalHCL(decoder); err == nil {
+	if marshalled, err := chmck.DynamicKey.MarshalHCL(); err == nil {
 		result["dynamic_key"] = []any{marshalled}
 	} else {
 		return nil, err

@@ -53,7 +53,7 @@ func (me *CustomTextFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomTextFilter) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *CustomTextFilter) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

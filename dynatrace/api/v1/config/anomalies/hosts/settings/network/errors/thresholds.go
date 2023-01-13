@@ -46,7 +46,7 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Thresholds) MarshalHCL() (map[string]any, error) {
 	return map[string]any{
 		"errors_percentage":  int(me.ErrorsPercentage),
 		"total_packets_rate": int(me.TotalPacketsRate),

@@ -43,7 +43,7 @@ func (me *RecurrenceRange) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RecurrenceRange) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *RecurrenceRange) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

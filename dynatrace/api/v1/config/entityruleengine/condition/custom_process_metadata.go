@@ -66,7 +66,7 @@ func (cpmck *CustomProcessMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (cpmck *CustomProcessMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (cpmck *CustomProcessMetadata) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(cpmck.Unknowns) > 0 {
@@ -77,7 +77,7 @@ func (cpmck *CustomProcessMetadata) MarshalHCL(decoder hcl.Decoder) (map[string]
 		result["unknowns"] = string(data)
 	}
 	result["attribute"] = string(cpmck.Attribute)
-	if marshalled, err := cpmck.DynamicKey.MarshalHCL(decoder); err == nil {
+	if marshalled, err := cpmck.DynamicKey.MarshalHCL(); err == nil {
 		result["dynamic_key"] = []any{marshalled}
 	} else {
 		return nil, err

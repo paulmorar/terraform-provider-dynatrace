@@ -69,7 +69,7 @@ func (stc *ServiceTopology) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (stc *ServiceTopology) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (stc *ServiceTopology) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(stc.Unknowns) > 0 {

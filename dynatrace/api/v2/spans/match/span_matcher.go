@@ -62,7 +62,7 @@ func (me *SpanMatcher) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpanMatcher) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *SpanMatcher) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	m := map[string]any{
@@ -124,7 +124,7 @@ func (me *SpanMatchers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me SpanMatchers) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me SpanMatchers) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeSlice("match", me)
 }
 

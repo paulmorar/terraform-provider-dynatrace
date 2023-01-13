@@ -69,7 +69,7 @@ func (ctc *CloudType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ctc *CloudType) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (ctc *CloudType) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(ctc.Unknowns) > 0 {

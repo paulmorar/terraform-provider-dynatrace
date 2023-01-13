@@ -152,15 +152,6 @@ func (me Properties) Marshal(decoder Decoder, key string, v any) error {
 	case float64:
 		me[key] = float64(t)
 	default:
-		// if marshaller, ok := v.(ExtMarshaler); ok {
-		// 	if marshalled, err := marshaller.MarshalHCL(NewDecoder(decoder, key, 0)); err == nil {
-		// 		me[key] = []any{marshalled}
-		// 		return nil
-		// 	} else {
-		// 		return err
-		// 	}
-		// }
-
 		switch reflect.TypeOf(v).Kind() {
 		case reflect.String:
 			me[key] = fmt.Sprintf("%v", v)
@@ -199,7 +190,7 @@ func (me Properties) EncodeSlice(key string, v any) (Properties, error) {
 		vElem := rv.Index(idx)
 		elem := vElem.Interface()
 		if marshaler, ok := elem.(Marshaler); ok {
-			if marshalled, err := marshaler.MarshalHCL(nil); err == nil {
+			if marshalled, err := marshaler.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -377,21 +368,11 @@ func (me Properties) Encode(key string, v any) error {
 		if reflect.TypeOf(v).Kind() == reflect.String {
 			me[key] = fmt.Sprintf("%v", v)
 			return nil
-			// } else if marshaller, ok := v.(ExtMarshaler); ok {
-			// 	if reflect.ValueOf(v).IsNil() {
-			// 		return nil
-			// 	}
-			// 	if marshalled, err := marshaller.MarshalHCL(VoidDecoder()); err == nil {
-			// 		me[key] = []any{marshalled}
-			// 		return nil
-			// 	} else {
-			// 		return err
-			// 	}
 		} else if marshaller, ok := v.(Marshaler); ok {
 			if reflect.ValueOf(v).IsNil() {
 				return nil
 			}
-			if marshalled, err := marshaller.MarshalHCL(nil); err == nil {
+			if marshalled, err := marshaller.MarshalHCL(); err == nil {
 				me[key] = []any{marshalled}
 				return nil
 			} else {

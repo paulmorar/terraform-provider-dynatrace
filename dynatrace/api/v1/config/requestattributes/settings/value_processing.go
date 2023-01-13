@@ -104,7 +104,7 @@ func (me *ValueProcessing) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ValueProcessing) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *ValueProcessing) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -115,7 +115,7 @@ func (me *ValueProcessing) MarshalHCL(decoder hcl.Decoder) (map[string]any, erro
 		result["unknowns"] = string(data)
 	}
 	if me.ExtractSubstring != nil {
-		if marshalled, err := me.ExtractSubstring.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.ExtractSubstring.MarshalHCL(); err == nil {
 			result["extract_substring"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -128,7 +128,7 @@ func (me *ValueProcessing) MarshalHCL(decoder hcl.Decoder) (map[string]any, erro
 		result["trim"] = opt.Bool(me.Trim)
 	}
 	if me.ValueCondition != nil {
-		if marshalled, err := me.ValueCondition.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.ValueCondition.MarshalHCL(); err == nil {
 			result["value_condition"] = []any{marshalled}
 		} else {
 			return nil, err

@@ -93,7 +93,7 @@ func (me *PagerDutyConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *PagerDutyConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *PagerDutyConfig) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {

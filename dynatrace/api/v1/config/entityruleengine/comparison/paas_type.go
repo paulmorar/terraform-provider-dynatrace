@@ -69,7 +69,7 @@ func (ptc *PaasType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ptc *PaasType) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (ptc *PaasType) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(ptc.Unknowns) > 0 {

@@ -90,7 +90,7 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Settings) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"placeholders":                   me.Placeholders,
 		"load_action_naming_rules":       me.LoadActionNamingRules,

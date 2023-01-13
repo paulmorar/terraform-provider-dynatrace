@@ -87,7 +87,7 @@ func Read(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 		}
 		return diag.FromErr(err)
 	}
-	marshalled, err := config.MarshalHCL(hcl.DecoderFrom(d))
+	marshalled, err := config.MarshalHCL()
 	if err != nil {
 		return diag.FromErr(err)
 	}

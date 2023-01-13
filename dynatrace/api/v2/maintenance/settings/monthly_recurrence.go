@@ -57,7 +57,7 @@ func (me *MonthlyRecurrence) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MonthlyRecurrence) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *MonthlyRecurrence) MarshalHCL() (map[string]any, error) {
 	properties := hcl.Properties{}
 
 	return properties.EncodeAll(map[string]any{

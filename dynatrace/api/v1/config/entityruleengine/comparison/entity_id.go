@@ -72,7 +72,7 @@ func (eic *EntityID) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (eic *EntityID) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (eic *EntityID) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(eic.Unknowns) > 0 {

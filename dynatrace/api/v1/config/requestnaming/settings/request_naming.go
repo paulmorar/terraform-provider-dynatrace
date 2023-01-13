@@ -91,7 +91,7 @@ func (me *RequestNaming) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RequestNaming) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *RequestNaming) MarshalHCL() (map[string]any, error) {
 	if properties, err := hcl.NewProperties(me, me.Unknowns); err != nil {
 		return nil, err
 	} else {

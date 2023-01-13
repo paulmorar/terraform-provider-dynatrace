@@ -69,7 +69,7 @@ func (asc *AzureSku) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (asc *AzureSku) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (asc *AzureSku) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(asc.Unknowns) > 0 {

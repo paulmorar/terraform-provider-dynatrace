@@ -37,12 +37,12 @@ func (me *Ranges) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Ranges) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me Ranges) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err
@@ -87,7 +87,7 @@ func (me *Range) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Range) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Range) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"subnet_mask": me.SubNetMask,
 		"address":     me.Address,

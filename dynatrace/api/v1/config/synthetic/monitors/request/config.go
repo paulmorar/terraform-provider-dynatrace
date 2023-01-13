@@ -58,7 +58,7 @@ func (me *Config) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Config) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Config) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if me.UserAgent != nil && len(*me.UserAgent) > 0 {
 		result["user_agent"] = *me.UserAgent
@@ -72,7 +72,7 @@ func (me *Config) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 		result["follow_redirects"] = false
 	}
 	if len(me.RequestHeaders) > 0 {
-		if marshalled, err := me.RequestHeaders.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.RequestHeaders.MarshalHCL(); err == nil {
 			result["headers"] = []any{marshalled}
 		} else {
 			return nil, err

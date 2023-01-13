@@ -38,7 +38,7 @@ func (me *NumActionDetails) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NumActionDetails) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *NumActionDetails) MarshalHCL() (map[string]any, error) {
 	return hcl.Properties{}.EncodeAll(map[string]any{
 		"num_user_actions": me.NumUserActions,
 	})

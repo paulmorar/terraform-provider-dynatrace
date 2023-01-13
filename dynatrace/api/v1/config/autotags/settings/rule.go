@@ -87,7 +87,7 @@ func (me *Rule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Rule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Rule) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
@@ -109,7 +109,7 @@ func (me *Rule) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
 	if len(me.Conditions) > 0 {
 		entries := []any{}
 		for _, entry := range me.Conditions {
-			if marshalled, err := entry.MarshalHCL(decoder); err == nil {
+			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
 				return nil, err

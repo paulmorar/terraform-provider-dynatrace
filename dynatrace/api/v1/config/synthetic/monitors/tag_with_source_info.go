@@ -40,7 +40,7 @@ func (me *TagsWithSourceInfo) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me TagsWithSourceInfo) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me TagsWithSourceInfo) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	entries := []any{}
 	sorted := TagsWithSourceInfo{}
@@ -49,7 +49,7 @@ func (me TagsWithSourceInfo) MarshalHCL(decoder hcl.Decoder) (map[string]any, er
 		return sorted[i].Key < sorted[j].Key
 	})
 	for _, tag := range sorted {
-		if marshalled, err := tag.MarshalHCL(decoder); err == nil {
+		if marshalled, err := tag.MarshalHCL(); err == nil {
 			entries = append(entries, marshalled)
 		} else {
 			return nil, err
@@ -105,7 +105,7 @@ func (me *TagWithSourceInfo) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me TagWithSourceInfo) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me TagWithSourceInfo) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if me.Source != nil {
 		result["source"] = string(*me.Source)

@@ -117,17 +117,17 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *AnomalyDetection) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if me.HighMemoryDetection != nil && me.HighMemoryDetection.Enabled {
-		if marshalled, err := me.HighMemoryDetection.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.HighMemoryDetection.MarshalHCL(); err == nil {
 			result["memory"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.HighCPUSaturationDetection != nil && me.HighCPUSaturationDetection.Enabled {
-		if marshalled, err := me.HighCPUSaturationDetection.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.HighCPUSaturationDetection.MarshalHCL(); err == nil {
 			result["cpu"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -135,14 +135,14 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 	}
 
 	if me.HighGcActivityDetection != nil && me.HighGcActivityDetection.Enabled {
-		if marshalled, err := me.HighGcActivityDetection.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.HighGcActivityDetection.MarshalHCL(); err == nil {
 			result["gc"] = []any{marshalled}
 		} else {
 			return nil, err
 		}
 	}
 	if me.ConnectionLostDetection != nil && me.ConnectionLostDetection.Enabled {
-		if marshalled, err := me.ConnectionLostDetection.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.ConnectionLostDetection.MarshalHCL(); err == nil {
 			result["connections"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -153,7 +153,7 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 		OutOfThreadsDetection: me.OutOfThreadsDetection,
 	}
 	if jdc.IsConfigured() {
-		if marshalled, err := jdc.MarshalHCL(decoder); err == nil {
+		if marshalled, err := jdc.MarshalHCL(); err == nil {
 			result["java"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -167,7 +167,7 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 		NetworkErrorsDetection:             me.NetworkErrorsDetection,
 	}
 	if ndc.IsConfigured() {
-		if marshalled, err := ndc.MarshalHCL(decoder); err == nil {
+		if marshalled, err := ndc.MarshalHCL(); err == nil {
 			result["network"] = []any{marshalled}
 		} else {
 			return nil, err
@@ -179,7 +179,7 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]any, err
 		Inodes: me.DiskLowInodesDetection,
 	}
 	if ddc.IsConfigured() {
-		if marshalled, err := ddc.MarshalHCL(decoder); err == nil {
+		if marshalled, err := ddc.MarshalHCL(); err == nil {
 			result["disks"] = []any{marshalled}
 		} else {
 			return nil, err

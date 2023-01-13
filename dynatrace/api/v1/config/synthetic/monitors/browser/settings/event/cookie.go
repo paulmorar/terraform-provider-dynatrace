@@ -47,10 +47,10 @@ func (me *Cookie) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Cookie) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *Cookie) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 	if len(me.Cookies) > 0 {
-		if marshalled, err := me.Cookies.MarshalHCL(decoder); err == nil {
+		if marshalled, err := me.Cookies.MarshalHCL(); err == nil {
 			result["cookies"] = []any{marshalled}
 		} else {
 			return nil, err

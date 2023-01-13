@@ -93,7 +93,7 @@ func (me *VictorOpsConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *VictorOpsConfig) MarshalHCL(decoder hcl.Decoder) (map[string]any, error) {
+func (me *VictorOpsConfig) MarshalHCL() (map[string]any, error) {
 	result := map[string]any{}
 
 	if len(me.Unknowns) > 0 {
