@@ -18,7 +18,7 @@
 package managementzones
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	managementzones "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/managementzones/settings"
 )
@@ -26,10 +26,10 @@ import (
 const SchemaID = "v1:config:management-zones"
 const BasePath = "/api/config/v1/managementZones"
 
-func Service(credentials *api.Credentials) api.CRUDService[*managementzones.ManagementZone] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*managementzones.ManagementZone] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*managementzones.ManagementZone](BasePath),
+		settings.DefaultServiceOptions[*managementzones.ManagementZone](BasePath),
 	)
 }

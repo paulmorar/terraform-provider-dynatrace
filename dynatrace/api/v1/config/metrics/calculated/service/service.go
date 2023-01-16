@@ -19,17 +19,18 @@ package service
 
 import (
 	"fmt"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	settings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/metrics/calculated/service/settings"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"net/url"
 	"strings"
 	"time"
+
+	mysettings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/metrics/calculated/service/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:config:calculated-metrics:service"
 
-func Service(credentials *api.Credentials) api.CRUDService[*settings.CalculatedServiceMetric] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*mysettings.CalculatedServiceMetric] {
 	return &service{client: rest.DefaultClient(credentials.URL, credentials.Token)}
 }
 
@@ -37,22 +38,22 @@ type service struct {
 	client rest.Client
 }
 
-func (me *service) Get(id string, v *settings.CalculatedServiceMetric) error {
+func (me *service) Get(id string, v *mysettings.CalculatedServiceMetric) error {
 	return me.client.Get(fmt.Sprintf("/api/config/v1/calculatedMetrics/service/%s", url.PathEscape(id)), 200).Finish(v)
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	var err error
 
 	req := me.client.Get("/api/config/v1/calculatedMetrics/service", 200)
-	var stubList api.StubList
+	var stubList settings.StubList
 	if err = req.Finish(&stubList); err != nil {
 		return nil, err
 	}
 	return stubList.Values, nil
 }
 
-func (me *service) Validate(v *settings.CalculatedServiceMetric) error {
+func (me *service) Validate(v *mysettings.CalculatedServiceMetric) error {
 	var err error
 
 	client := me.client
@@ -81,7 +82,7 @@ func (me *service) Validate(v *settings.CalculatedServiceMetric) error {
 	return nil
 }
 
-func (me *service) Create(v *settings.CalculatedServiceMetric) (*api.Stub, error) {
+func (me *service) Create(v *mysettings.CalculatedServiceMetric) (*settings.Stub, error) {
 	var err error
 
 	client := me.client
@@ -89,7 +90,7 @@ func (me *service) Create(v *settings.CalculatedServiceMetric) (*api.Stub, error
 	retry := true
 	maxAttempts := 64
 	attempts := 0
-	var stub api.Stub
+	var stub settings.Stub
 
 	for retry {
 		attempts = attempts + 1
@@ -111,7 +112,7 @@ func (me *service) Create(v *settings.CalculatedServiceMetric) (*api.Stub, error
 	return &stub, nil
 }
 
-func (me *service) Update(id string, v *settings.CalculatedServiceMetric) error {
+func (me *service) Update(id string, v *mysettings.CalculatedServiceMetric) error {
 	if err := me.client.Put(fmt.Sprintf("/api/config/v1/calculatedMetrics/service/%s", url.PathEscape(id)), v, 204).Finish(); err != nil {
 		return err
 	}

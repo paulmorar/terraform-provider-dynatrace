@@ -18,10 +18,10 @@
 package trello
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
-func Service(credentials *api.Credentials) api.CRUDService[*notifications.Notification] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*notifications.Notification] {
 	return notifications.Service(credentials, notifications.Types.Trello)
 }

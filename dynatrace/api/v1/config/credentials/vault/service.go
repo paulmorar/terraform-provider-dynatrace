@@ -18,17 +18,17 @@
 package vault
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	vault "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/credentials/vault/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:config:credentials"
 const BasePath = "/api/config/v1/credentials"
 
-func Service(credentials *api.Credentials) api.CRUDService[*vault.Credentials] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*vault.Credentials] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*vault.Credentials](BasePath).WithStubs(&vault.CredentialsList{}).NoValidator(),
+		settings.DefaultServiceOptions[*vault.Credentials](BasePath).WithStubs(&vault.CredentialsList{}).NoValidator(),
 	)
 }

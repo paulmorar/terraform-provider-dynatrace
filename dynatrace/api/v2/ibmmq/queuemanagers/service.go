@@ -18,14 +18,14 @@
 package queuemanagers
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 
 	queuemanagers "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/ibmmq/queuemanagers/settings"
 )
 
 const SchemaID = "builtin:ibmmq.queue-managers"
 
-func Service(credentials *api.Credentials) api.CRUDService[*queuemanagers.QueueManager] {
-	return v2.Service[*queuemanagers.QueueManager](credentials, SchemaID)
+func Service(credentials *settings.Credentials) settings.CRUDService[*queuemanagers.QueueManager] {
+	return settings20.Service[*queuemanagers.QueueManager](credentials, SchemaID)
 }

@@ -26,8 +26,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/version"
 )
 
@@ -39,7 +39,7 @@ type Module struct {
 	Status      ModuleStatus
 	Error       error
 	Descriptor  *ResourceDescriptor
-	Service     api.CRUDService[api.Settings]
+	Service     settings.CRUDService[settings.Settings]
 }
 
 func (me *Module) ContainsPostProcessedResources() bool {
@@ -144,6 +144,16 @@ func (me *Module) GetFolder(relative ...bool) string {
 		return path.Join(me.Environment.GetFolder(), path.Join("modules", me.Type.Trim()))
 	}
 	return path.Join("modules", me.Type.Trim())
+}
+
+func (me *Module) GetAttentionFolder(relative ...bool) string {
+	if me.Environment.Flags.Flat {
+		return me.Environment.GetAttentionFolder()
+	}
+	if len(relative) == 0 || !relative[0] {
+		return path.Join(me.Environment.GetAttentionFolder(), path.Join(me.Type.Trim()))
+	}
+	return path.Join(me.Type.Trim())
 }
 
 func (me *Module) GetFile(name string) string {
@@ -349,7 +359,7 @@ func (me *Module) Discover() error {
 
 	var err error
 
-	var stubs []*api.Stub
+	var stubs []*settings.Stub
 	// log.Println("Discovering \"" + me.Type + "\" ...")
 	if stubs, err = me.Service.List(); err != nil {
 		if strings.Contains(err.Error(), "Token is missing required scope") {
@@ -436,6 +446,7 @@ func (me *Module) ExecuteImport() (err error) {
 			"CACHE_OFFLINE_MODE=true",
 			"DELETE_CACHE_ON_LAUNCH=false",
 			"DT_TERRAFORM_IMPORT=true",
+			"DT_REST_DEBUG_REQUESTS=terraform-provider-dynatrace.http.log",
 		}
 		cmd.Start()
 		if err := cmd.Wait(); err != nil {

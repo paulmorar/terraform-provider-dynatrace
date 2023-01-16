@@ -22,7 +22,7 @@ import (
 	"os"
 	"strings"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -36,9 +36,9 @@ type IAM struct {
 	ClientSecret string
 }
 
-func Credentials(m any) *api.Credentials {
+func Credentials(m any) *settings.Credentials {
 	conf := m.(*ProviderConfiguration)
-	return &api.Credentials{
+	return &settings.Credentials{
 		Token: conf.APIToken,
 		URL:   conf.EnvironmentURL,
 	}

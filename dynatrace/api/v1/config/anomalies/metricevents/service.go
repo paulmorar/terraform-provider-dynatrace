@@ -18,9 +18,10 @@
 package metricevents
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"strings"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	metricevents "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/anomalies/metricevents/settings"
 )
@@ -28,11 +29,11 @@ import (
 const SchemaID = "v1:config:anomaly-detection:metric-events"
 const BasePath = "/api/config/v1/anomalyDetection/metricEvents"
 
-func Service(credentials *api.Credentials) api.CRUDService[*metricevents.MetricEvent] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*metricevents.MetricEvent] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*metricevents.MetricEvent](BasePath).WithCreateRetry(RetryOnCreate),
+		settings.DefaultServiceOptions[*metricevents.MetricEvent](BasePath).WithCreateRetry(RetryOnCreate),
 	)
 }
 

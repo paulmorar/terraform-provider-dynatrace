@@ -18,14 +18,14 @@
 package capture
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 
 	capture "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/spans/capture/settings"
 )
 
 const SchemaID = "builtin:span-capturing"
 
-func Service(credentials *api.Credentials) api.CRUDService[*capture.SpanCaptureSetting] {
-	return v2.Service[*capture.SpanCaptureSetting](credentials, SchemaID)
+func Service(credentials *settings.Credentials) settings.CRUDService[*capture.SpanCaptureSetting] {
+	return settings20.Service[*capture.SpanCaptureSetting](credentials, SchemaID)
 }

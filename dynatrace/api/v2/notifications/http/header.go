@@ -27,34 +27,6 @@ import (
 
 type Headers []*Header
 
-// func (me Headers) PrepareMarshalHCL(decoder hcl.Decoder) error {
-
-// 	if _, ok := decoder.GetOk("headers.0"); ok {
-// 		if untypted, ok := decoder.GetOk("headers.0.header"); ok {
-// 			if headerSet, ok := untypted.(*schema.Set); ok {
-// 				for _, headerv := range headerSet.List() {
-// 					hash := untypted.(*schema.Set).F(headerv)
-// 					if utsecret, ok := decoder.GetOk(fmt.Sprintf("headers.0.header.%d.secret_value", hash)); ok {
-
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// 	if job_template_id, ok := decoder.GetOk("ansible_tower.0.job_template_id"); ok && job_template_id.(int) != 0 {
-// 		me.JobTemplateID = int32(job_template_id.(int))
-// 	}
-// 	if me.JobTemplateID == 0 && len(me.JobTemplateURL) > 0 {
-// 		if idx := strings.LastIndex(me.JobTemplateURL, "/"); idx != -1 {
-// 			sJobTemplateID := me.JobTemplateURL[idx+1:]
-// 			if iJobTemplateID, err := strconv.Atoi(sJobTemplateID); err != nil {
-// 				me.JobTemplateID = int32(iJobTemplateID)
-// 			}
-// 		}
-// 	}
-// 	return nil
-// }
-
 func (me *Headers) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"header": {
@@ -62,9 +34,7 @@ func (me *Headers) Schema() map[string]*schema.Schema {
 			Required:    true,
 			MinItems:    1,
 			Description: "An additional HTTP Header to include when sending requests",
-			Elem: &schema.Resource{
-				Schema: new(Header).Schema(),
-			},
+			Elem:        &schema.Resource{Schema: new(Header).Schema()},
 		},
 	}
 }
@@ -75,18 +45,6 @@ func (me Headers) MarshalHCL() (map[string]any, error) {
 
 func (me *Headers) UnmarshalHCL(decoder hcl.Decoder) error {
 	return decoder.DecodeSlice("header", me)
-	// if value, ok := decoder.GetOk("header"); ok {
-	// 	resourceSet := value.(*schema.Set)
-	// 	for _, m := range resourceSet.List() {
-	// 		hash := resourceSet.F(m)
-	// 		var header Header
-	// 		if err := header.UnmarshalHCL(hcl.NewDecoder(decoder, fmt.Sprintf("header.%d", hash))); err != nil {
-	// 			return err
-	// 		}
-	// 		*me = append(*me, &header)
-	// 	}
-	// }
-	// return nil
 }
 
 type Header struct {
@@ -148,8 +106,8 @@ func (me *Header) Schema() map[string]*schema.Schema {
 		"secret_value": {
 			Type:        schema.TypeString,
 			Description: "The value of the HTTP header as a sensitive property. May contain an empty value. `secret_value` and `value` are mutually exclusive. Only one of those two is allowed to be specified.",
-			Sensitive:   true,
-			Optional:    true,
+			// Sensitive:   true,
+			Optional: true,
 		},
 		"value": {
 			Type:        schema.TypeString,
@@ -165,9 +123,10 @@ func (me *Header) MarshalHCL() (map[string]any, error) {
 	if me.Value != nil {
 		result["value"] = me.Value
 	}
-
-	if me.SecretValue != nil {
-		result["secret_value"] = *me.SecretValue
+	if me.Secret {
+		if me.SecretValue != nil {
+			result["secret_value"] = "${state.secret_value}"
+		}
 	}
 
 	return result, nil

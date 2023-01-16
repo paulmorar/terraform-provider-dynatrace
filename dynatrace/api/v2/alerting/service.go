@@ -18,13 +18,13 @@
 package alerting
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
 	alerting "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/alerting/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 )
 
 const SchemaID = "builtin:alerting.profile"
 
-func Service(credentials *api.Credentials) api.CRUDService[*alerting.Profile] {
-	return v2.Service(credentials, SchemaID, &v2.ServiceOptions[*alerting.Profile]{LegacyID: api.LegacyObjIDDecode})
+func Service(credentials *settings.Credentials) settings.CRUDService[*alerting.Profile] {
+	return settings20.Service(credentials, SchemaID, &settings20.ServiceOptions[*alerting.Profile]{LegacyID: settings.LegacyObjIDDecode})
 }

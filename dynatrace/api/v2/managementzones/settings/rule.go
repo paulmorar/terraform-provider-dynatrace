@@ -18,6 +18,8 @@
 package managementzones
 
 import (
+	"strings"
+
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -108,9 +110,13 @@ func (me *Rule) Schema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"entity_selector": {
-			Type:        schema.TypeString,
-			Description: "Entity selector. The documentation of the entity selector can be found [here](https://dt-url.net/apientityselector).",
-			Optional:    true,
+			Type:             schema.TypeString,
+			Description:      "Entity selector. The documentation of the entity selector can be found [here](https://dt-url.net/apientityselector).",
+			Optional:         true,
+			DiffSuppressFunc: hcl.SuppressEOT,
+			StateFunc: func(i interface{}) string {
+				return strings.TrimSpace(i.(string))
+			},
 		},
 	}
 }

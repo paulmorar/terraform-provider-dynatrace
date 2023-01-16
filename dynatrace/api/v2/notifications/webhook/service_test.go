@@ -25,11 +25,9 @@ import (
 )
 
 func TestWebHookNotifications(t *testing.T) {
-	t.Skip()
 	api.TestService(t, webhook.Service)
 }
 
 func TestAccWebHookNotifications(t *testing.T) {
-	t.Skip()
 	api.TestAcc(t)
 }

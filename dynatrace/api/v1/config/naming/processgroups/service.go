@@ -18,7 +18,7 @@
 package processgroups
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	processgroups "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/naming/processgroups/settings"
 )
@@ -26,10 +26,10 @@ import (
 const SchemaID = "v1:config:conditional-naming:process-groups"
 const BasePath = "/api/config/v1/conditionalNaming/processGroup"
 
-func Service(credentials *api.Credentials) api.CRUDService[*processgroups.NamingRule] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*processgroups.NamingRule] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*processgroups.NamingRule](BasePath),
+		settings.DefaultServiceOptions[*processgroups.NamingRule](BasePath),
 	)
 }

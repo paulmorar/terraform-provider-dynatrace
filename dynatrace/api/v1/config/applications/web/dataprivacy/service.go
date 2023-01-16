@@ -19,11 +19,12 @@ package dataprivacy
 
 import (
 	"fmt"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"net/url"
 	"strings"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
 
 	webservice "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/applications/web"
 	dataprivacy "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/applications/web/dataprivacy/settings"
@@ -32,7 +33,7 @@ import (
 
 const SchemaID = "v1:config:applications:web:data-privacy"
 
-func Service(credentials *api.Credentials) api.CRUDService[*dataprivacy.ApplicationDataPrivacy] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*dataprivacy.ApplicationDataPrivacy] {
 	return &service{
 		schemaID:      SchemaID,
 		client:        rest.DefaultClient(credentials.URL, credentials.Token),
@@ -42,7 +43,7 @@ func Service(credentials *api.Credentials) api.CRUDService[*dataprivacy.Applicat
 type service struct {
 	schemaID      string
 	client        rest.Client
-	webAppService api.CRUDService[*web.Application]
+	webAppService settings.CRUDService[*web.Application]
 }
 
 func (me *service) Get(id string, v *dataprivacy.ApplicationDataPrivacy) error {
@@ -107,16 +108,16 @@ func (me *service) Validate(v *dataprivacy.ApplicationDataPrivacy) error {
 	return err
 }
 
-func (me *service) Create(v *dataprivacy.ApplicationDataPrivacy) (*api.Stub, error) {
+func (me *service) Create(v *dataprivacy.ApplicationDataPrivacy) (*settings.Stub, error) {
 	if err := me.Update(*v.WebApplicationID, v); err != nil {
 		return nil, err
 	}
-	return &api.Stub{ID: *v.WebApplicationID + "-data-privacy"}, nil
+	return &settings.Stub{ID: *v.WebApplicationID + "-data-privacy"}, nil
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	var err error
-	var stubs api.Stubs
+	var stubs settings.Stubs
 
 	if stubs, err = me.webAppService.List(); err != nil {
 		return nil, err

@@ -35,9 +35,7 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			Description: "Outage handling configuration",
 			Optional:    true,
-			Elem: &schema.Resource{
-				Schema: new(OutageHandlingPolicy).Schema(),
-			},
+			Elem:        &schema.Resource{Schema: new(OutageHandlingPolicy).Schema()},
 		},
 		"loading_time_thresholds": {
 			Type:        schema.TypeList,

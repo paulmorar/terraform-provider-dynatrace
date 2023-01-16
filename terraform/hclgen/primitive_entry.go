@@ -100,18 +100,18 @@ func (me *primitiveEntry) Write(w *hclwrite.Body, indent string) error {
 		w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(toJSONencode(strVal, indent))}})
 	} else if strValP, ok := me.Value.(*string); ok && strValP != nil && isJSON(*strValP) {
 		w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(toJSONencode(*strValP, indent))}})
-		// } else if strVal, ok := me.Value.(string); ok && strings.Contains(strVal, "\n") {
-		// 	mlstr := "<<-EOT\n" + indent + "  " + finalizeString(strVal, indent) + "\n" + indent + "EOT"
-		// 	w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(mlstr)}})
-		// } else if strVal, ok := me.Value.(string); ok && strings.Count(strVal, "\"") > 3 {
-		// 	mlstr := "<<-EOT\n" + indent + "  " + finalizeString(strVal, indent) + "\n" + indent + "EOT"
-		// 	w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(mlstr)}})
-		// } else if strValP, ok := me.Value.(*string); ok && strValP != nil && strings.Count(*strValP, "\"") > 3 {
-		// 	mlstr := "<<-EOT\n" + indent + "  " + finalizeString(*strValP, indent) + "\n" + indent + "EOT"
-		// 	w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(mlstr)}})
-		// } else if strValP, ok := me.Value.(*string); ok && strValP != nil && strings.Contains(*strValP, "\n") {
-		// 	mlstr := "<<-EOT\n" + indent + "  " + finalizeString(*strValP, indent) + "\n" + indent + "EOT"
-		// 	w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(mlstr)}})
+	} else if strVal, ok := me.Value.(string); ok && strings.Contains(strVal, "\n") {
+		mlstr := "<<-EOT\n" + indent + "  " + finalizeString(strVal, indent) + "\n" + indent + "EOT"
+		w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(mlstr)}})
+	} else if strVal, ok := me.Value.(string); ok && strings.Count(strVal, "\"") > 3 {
+		mlstr := "<<-EOT\n" + indent + "  " + finalizeString(strVal, indent) + "\n" + indent + "EOT"
+		w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(mlstr)}})
+	} else if strValP, ok := me.Value.(*string); ok && strValP != nil && strings.Count(*strValP, "\"") > 3 {
+		mlstr := "<<-EOT\n" + indent + "  " + finalizeString(*strValP, indent) + "\n" + indent + "EOT"
+		w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(mlstr)}})
+	} else if strValP, ok := me.Value.(*string); ok && strValP != nil && strings.Contains(*strValP, "\n") {
+		mlstr := "<<-EOT\n" + indent + "  " + finalizeString(*strValP, indent) + "\n" + indent + "EOT"
+		w.SetAttributeRaw(me.Key, hclwrite.Tokens{&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte(mlstr)}})
 	} else if strVal, ok := me.Value.(string); ok {
 		w.SetAttributeRaw(me.Key, hclwrite.Tokens{
 			&hclwrite.Token{Type: hclsyntax.TokenStringLit, Bytes: []byte{' '}},

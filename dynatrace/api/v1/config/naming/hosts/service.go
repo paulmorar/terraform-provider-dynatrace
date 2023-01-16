@@ -18,7 +18,7 @@
 package hosts
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	hosts "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/naming/hosts/settings"
 )
@@ -26,10 +26,10 @@ import (
 const SchemaID = "v1:config:conditional-naming:hosts"
 const BasePath = "/api/config/v1/conditionalNaming/host"
 
-func Service(credentials *api.Credentials) api.CRUDService[*hosts.NamingRule] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*hosts.NamingRule] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*hosts.NamingRule](BasePath),
+		settings.DefaultServiceOptions[*hosts.NamingRule](BasePath),
 	)
 }

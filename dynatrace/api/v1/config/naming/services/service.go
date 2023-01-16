@@ -18,7 +18,7 @@
 package services
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	services "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/naming/services/settings"
 )
@@ -26,10 +26,10 @@ import (
 const SchemaID = "v1:config:conditional-naming:services"
 const BasePath = "/api/config/v1/conditionalNaming/service"
 
-func Service(credentials *api.Credentials) api.CRUDService[*services.NamingRule] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*services.NamingRule] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*services.NamingRule](BasePath),
+		settings.DefaultServiceOptions[*services.NamingRule](BasePath),
 	)
 }

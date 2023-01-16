@@ -20,7 +20,7 @@ package notifications
 import (
 	"encoding/json"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -219,7 +219,7 @@ func (me *NotificationRecord) PrepareMarshalHCL(d hcl.Decoder) error {
 
 func (me *NotificationRecord) FillDemoValues() []string {
 	if me.NotificationConfig != nil {
-		if demo, ok := me.NotificationConfig.(api.DemoSettings); ok {
+		if demo, ok := me.NotificationConfig.(settings.DemoSettings); ok {
 			return demo.FillDemoValues()
 		}
 	}

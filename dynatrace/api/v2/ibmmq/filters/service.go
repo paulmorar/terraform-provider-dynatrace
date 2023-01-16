@@ -18,13 +18,13 @@
 package filters
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
 	filters "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/ibmmq/filters/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 )
 
 const SchemaID = "builtin:mainframe.mqfilters"
 
-func Service(credentials *api.Credentials) api.CRUDService[*filters.Filters] {
-	return v2.Service[*filters.Filters](credentials, SchemaID)
+func Service(credentials *settings.Credentials) settings.CRUDService[*filters.Filters] {
+	return settings20.Service[*filters.Filters](credentials, SchemaID)
 }

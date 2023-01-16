@@ -24,18 +24,18 @@ import (
 	"strings"
 	"time"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	slo "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/slo/settings"
 )
 
-func Service(credentials *api.Credentials) api.CRUDService[*slo.SLO] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*slo.SLO] {
 	return &service{credentials: credentials}
 }
 
 type service struct {
-	credentials *api.Credentials
+	credentials *settings.Credentials
 }
 
 func (me *service) Get(id string, v *slo.SLO) error {
@@ -84,7 +84,7 @@ type sloListEntry struct {
 	Timeframe string `json:"timeframe"`
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	var err error
 
 	client := rest.DefaultClient(me.credentials.URL, me.credentials.Token)
@@ -93,9 +93,9 @@ func (me *service) List() (api.Stubs, error) {
 	if err = req.Finish(&slos); err != nil {
 		return nil, err
 	}
-	stubs := api.Stubs{}
+	stubs := settings.Stubs{}
 	for _, slo := range slos.SLOs {
-		stubs = append(stubs, &api.Stub{ID: slo.ID, Name: slo.Name})
+		stubs = append(stubs, &settings.Stub{ID: slo.ID, Name: slo.Name})
 	}
 
 	return stubs, nil
@@ -105,7 +105,7 @@ func (me *service) Validate(v *slo.SLO) error {
 	return nil // no endpoint for that
 }
 
-func (me *service) Create(v *slo.SLO) (*api.Stub, error) {
+func (me *service) Create(v *slo.SLO) (*settings.Stub, error) {
 	var err error
 
 	var id string
@@ -128,7 +128,7 @@ func (me *service) Create(v *slo.SLO) (*api.Stub, error) {
 		attempts = attempts + 1
 		if err = req.Finish(); err != nil {
 			if !strings.Contains(err.Error(), "calc:") && !strings.Contains(err.Error(), "Metric selector is invalid") {
-				return &api.Stub{ID: id, Name: v.Name}, err
+				return &settings.Stub{ID: id, Name: v.Name}, err
 			}
 			if attempts < maxAttempts {
 				time.Sleep(2 * time.Second)
@@ -143,7 +143,7 @@ func (me *service) Create(v *slo.SLO) (*api.Stub, error) {
 	for length == 0 {
 		var slos sloList
 		if err = client.Get(fmt.Sprintf("/api/v2/slo?sloSelector=id(\"%s\")&pageSize=10000&sort=name&timeFrame=CURRENT&pageIdx=1&demo=false&evaluate=false", url.QueryEscape(id)), 200).Finish(&slos); err != nil {
-			return &api.Stub{ID: id, Name: v.Name}, err
+			return &settings.Stub{ID: id, Name: v.Name}, err
 		}
 		length = len(slos.SLOs)
 		if length == 0 {
@@ -154,7 +154,7 @@ func (me *service) Create(v *slo.SLO) (*api.Stub, error) {
 		}
 	}
 
-	return &api.Stub{ID: id, Name: v.Name}, nil
+	return &settings.Stub{ID: id, Name: v.Name}, nil
 }
 
 func (me *service) Update(id string, v *slo.SLO) error {

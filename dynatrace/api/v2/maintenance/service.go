@@ -18,13 +18,13 @@
 package maintenance
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
 	maintenance "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/maintenance/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 )
 
 const SchemaID = "builtin:alerting.maintenance-window"
 
-func Service(credentials *api.Credentials) api.CRUDService[*maintenance.MaintenanceWindow] {
-	return v2.Service(credentials, SchemaID, &v2.ServiceOptions[*maintenance.MaintenanceWindow]{LegacyID: api.LegacyObjIDDecode})
+func Service(credentials *settings.Credentials) settings.CRUDService[*maintenance.MaintenanceWindow] {
+	return settings20.Service(credentials, SchemaID, &settings20.ServiceOptions[*maintenance.MaintenanceWindow]{LegacyID: settings.LegacyObjIDDecode})
 }

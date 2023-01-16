@@ -39,9 +39,10 @@ func (me *EventTemplate) Schema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"description": {
-			Type:        schema.TypeString,
-			Description: "The description of the event to trigger.",
-			Required:    true,
+			Type:             schema.TypeString,
+			Description:      "The description of the event to trigger.",
+			Required:         true,
+			DiffSuppressFunc: hcl.SuppressEOT,
 		},
 		"event_type": {
 			Type:        schema.TypeString,

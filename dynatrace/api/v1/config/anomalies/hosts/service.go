@@ -18,8 +18,8 @@
 package hosts
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	hosts "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/anomalies/hosts/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:config:anomaly-detection:hosts"
@@ -27,11 +27,11 @@ const EndpointURL = "/api/config/v1/anomalyDetection/hosts"
 const StaticID = "7100e39c-a80c-4ebc-a431-211a938cb3ee"
 const StaticName = "host_anomalies"
 
-func Service(credentials *api.Credentials) api.CRUDService[*hosts.AnomalyDetection] {
-	return api.StaticService[*hosts.AnomalyDetection](
+func Service(credentials *settings.Credentials) settings.CRUDService[*hosts.AnomalyDetection] {
+	return settings.StaticService[*hosts.AnomalyDetection](
 		credentials,
 		SchemaID,
 		EndpointURL,
-		api.Stub{ID: StaticID, Name: StaticName},
+		settings.Stub{ID: StaticID, Name: StaticName},
 	)
 }

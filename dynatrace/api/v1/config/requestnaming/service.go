@@ -18,7 +18,7 @@
 package requestnaming
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	requestnaming "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/requestnaming/settings"
 )
@@ -26,10 +26,10 @@ import (
 const SchemaID = "v1:config:service:request-naming"
 const BasePath = "/api/config/v1/service/requestNaming"
 
-func Service(credentials *api.Credentials) api.CRUDService[*requestnaming.RequestNaming] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*requestnaming.RequestNaming] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*requestnaming.RequestNaming](BasePath),
+		settings.DefaultServiceOptions[*requestnaming.RequestNaming](BasePath),
 	)
 }

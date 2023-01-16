@@ -18,17 +18,17 @@
 package processes
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	processgroups "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/topology/processes/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:environment:processes"
 const BasePath = "/api/v1/entity/infrastructure/processes"
 
-func Service(credentials *api.Credentials) api.RService[*processgroups.Process] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.RService[*processgroups.Process] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*processgroups.Process](BasePath).WithStubs(new(processgroups.Processes)),
+		settings.DefaultServiceOptions[*processgroups.Process](BasePath).WithStubs(new(processgroups.Processes)),
 	)
 }

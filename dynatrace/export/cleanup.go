@@ -17,7 +17,7 @@
 
 package export
 
-import "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
+import "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
 
 type cleanUp struct {
 	finalizers []func()

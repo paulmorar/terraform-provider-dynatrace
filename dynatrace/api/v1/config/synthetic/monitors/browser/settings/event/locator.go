@@ -29,11 +29,12 @@ type Locators []*Locator
 func (me *Locators) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"locator": {
-			Type:        schema.TypeList,
-			Description: "A locator dentifyies the desired element",
-			Required:    true,
-			MinItems:    1,
-			Elem:        &schema.Resource{Schema: new(Locator).Schema()},
+			Type:             schema.TypeList,
+			Description:      "A locator dentifyies the desired element",
+			Required:         true,
+			MinItems:         1,
+			Elem:             &schema.Resource{Schema: new(Locator).Schema()},
+			DiffSuppressFunc: hcl.SuppressEOT,
 		},
 	}
 }

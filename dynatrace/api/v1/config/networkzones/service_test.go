@@ -18,21 +18,22 @@
 package networkzones_test
 
 import (
-	svapi "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/networkzones"
-	v2n "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/networkzones"
-	v2networkzones "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/networkzones/settings"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/testing/api"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/networkzones"
+	v2n "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/networkzones"
+	v2networkzones "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/networkzones/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/testing/api"
 )
 
 func TestNetworkZones(t *testing.T) {
 	var err error
-	var stub *svapi.Stub
+	var stub *settings.Stub
 	var cfg v2networkzones.NetworkZones
-	var stubs svapi.Stubs
+	var stubs settings.Stubs
 	envURL := os.Getenv("DYNATRACE_ENV_URL")
 	apiToken := os.Getenv("DYNATRACE_API_TOKEN")
 	if envURL == "" || apiToken == "" {
@@ -40,7 +41,7 @@ func TestNetworkZones(t *testing.T) {
 		return
 	}
 
-	service := v2n.Service(&svapi.Credentials{URL: envURL, Token: apiToken})
+	service := v2n.Service(&settings.Credentials{URL: envURL, Token: apiToken})
 	if stubs, err = service.List(); err != nil {
 		t.Error(err)
 		return
@@ -62,7 +63,7 @@ func TestNetworkZones(t *testing.T) {
 	}
 
 	for {
-		var sts svapi.Stubs
+		var sts settings.Stubs
 		var scfg v2networkzones.NetworkZones
 		if sts, err = service.List(); err != nil {
 			t.Error(err)

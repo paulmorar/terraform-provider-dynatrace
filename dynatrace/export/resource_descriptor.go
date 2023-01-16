@@ -22,7 +22,6 @@ import (
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/iam/groups"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/iam/users"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
 	alertingv1 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/alerting"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/dashboards"
 	maintenancev1 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/maintenance"
@@ -58,8 +57,9 @@ import (
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/spans/ctxprop"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/spans/entrypoints"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/spans/resattr"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	v2managementzones "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/managementzones"
 
 	application_anomalies "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/anomalies/applications"
@@ -97,25 +97,25 @@ import (
 	v2maintenance "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/maintenance"
 )
 
-func NewResourceDescriptor[T api.Settings](fn func(credentials *api.Credentials) api.CRUDService[T], dependencies ...Dependency) ResourceDescriptor {
+func NewResourceDescriptor[T settings.Settings](fn func(credentials *settings.Credentials) settings.CRUDService[T], dependencies ...Dependency) ResourceDescriptor {
 	return ResourceDescriptor{
-		Service: func(credentials *api.Credentials) api.CRUDService[api.Settings] {
-			return &api.GenericCRUDService[T]{Service: cache.CRUD(fn(credentials))}
+		Service: func(credentials *settings.Credentials) settings.CRUDService[settings.Settings] {
+			return &settings.GenericCRUDService[T]{Service: cache.CRUD(fn(credentials))}
 		},
 		protoType:    newSettings(fn),
 		Dependencies: dependencies,
 	}
 }
 
-func newSettings[T api.Settings](sfn func(credentials *api.Credentials) api.CRUDService[T]) T {
+func newSettings[T settings.Settings](sfn func(credentials *settings.Credentials) settings.CRUDService[T]) T {
 	var proto T
 	return reflect.New(reflect.TypeOf(proto).Elem()).Interface().(T)
 }
 
 type ResourceDescriptor struct {
 	Dependencies []Dependency
-	Service      func(credentials *api.Credentials) api.CRUDService[api.Settings]
-	protoType    api.Settings
+	Service      func(credentials *settings.Credentials) settings.CRUDService[settings.Settings]
+	protoType    settings.Settings
 }
 
 func (me ResourceDescriptor) Specify(t notifications.Type) ResourceDescriptor {
@@ -125,8 +125,8 @@ func (me ResourceDescriptor) Specify(t notifications.Type) ResourceDescriptor {
 	return me
 }
 
-func (me ResourceDescriptor) NewSettings() api.Settings {
-	res := reflect.New(reflect.TypeOf(me.protoType).Elem()).Interface().(api.Settings)
+func (me ResourceDescriptor) NewSettings() settings.Settings {
+	res := reflect.New(reflect.TypeOf(me.protoType).Elem()).Interface().(settings.Settings)
 	if notification, ok := res.(*notifications.Notification); ok {
 		notification.Type = me.protoType.(*notifications.Notification).Type
 	}
@@ -192,7 +192,10 @@ var AllResources = map[ResourceType]ResourceDescriptor{
 		Dependencies.ID(ResourceTypes.CalculatedServiceMetric),
 		Dependencies.ID(ResourceTypes.BrowserMonitor),
 	),
-	ResourceTypes.DashboardSharing:   NewResourceDescriptor(sharing.Service),
+	ResourceTypes.DashboardSharing: NewResourceDescriptor(
+		sharing.Service,
+		Dependencies.ID(ResourceTypes.JSONDashboard),
+	),
 	ResourceTypes.DatabaseAnomalies:  NewResourceDescriptor(database_anomalies.Service),
 	ResourceTypes.DiskEventAnomalies: NewResourceDescriptor(disk_event_anomalies.Service),
 	ResourceTypes.EmailNotification: NewResourceDescriptor(
@@ -317,25 +320,20 @@ var BlackListedResources = []ResourceType{
 	ResourceTypes.ManagementZone,    // legacy
 	ResourceTypes.Notification,      // legacy
 	ResourceTypes.AlertingProfile,   // legacy
+	ResourceTypes.Dashboard,         // taken care of dynatrace_json_dashboard
+	ResourceTypes.APIToken,          // should never migrate
+	ResourceTypes.IAMUser,           // not sure whether to migrate
+	ResourceTypes.IAMGroup,          // not sure whether to migrate
 
-	ResourceTypes.Dashboard,
-	ResourceTypes.DashboardSharing,
-
-	ResourceTypes.APIToken,      // should never migrate
+	// excluding by default
 	ResourceTypes.JSONDashboard, // may replace dynatrace_dashboard in the future
-	ResourceTypes.IAMUser,       // not sure whether to migrate
-	ResourceTypes.IAMGroup,      // not sure whether to migrate
-
-	ResourceTypes.XMattersNotification, // still issues with sensitive values
-	ResourceTypes.WebHookNotification,  // still issues with sensitive values
-	ResourceTypes.HTTPMonitor,          // non empty plan
-	ResourceTypes.BrowserMonitor,       // non empty plan
+	ResourceTypes.DashboardSharing,
 }
 
-func Service(credentials *api.Credentials, resourceType ResourceType) api.CRUDService[api.Settings] {
+func Service(credentials *settings.Credentials, resourceType ResourceType) settings.CRUDService[settings.Settings] {
 	return AllResources[resourceType].Service(credentials)
 }
 
-func DSService(credentials *api.Credentials, dataSourceType DataSourceType) api.RService[api.Settings] {
+func DSService(credentials *settings.Credentials, dataSourceType DataSourceType) settings.RService[settings.Settings] {
 	return AllDataSources[dataSourceType].Service(credentials)
 }

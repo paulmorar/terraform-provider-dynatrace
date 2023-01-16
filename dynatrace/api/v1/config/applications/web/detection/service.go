@@ -18,17 +18,17 @@
 package detection
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	detection "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/applications/web/detection/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:config:applications:detection"
 const BasePath = "/api/config/v1/applicationDetectionRules"
 
-func Service(credentials *api.Credentials) api.CRUDService[*detection.Rule] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*detection.Rule] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*detection.Rule](BasePath),
+		settings.DefaultServiceOptions[*detection.Rule](BasePath),
 	)
 }

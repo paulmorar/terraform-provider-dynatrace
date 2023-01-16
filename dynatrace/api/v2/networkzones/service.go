@@ -18,13 +18,13 @@
 package networkzones
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
 	networkzones "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/networkzones/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 )
 
 const SchemaID = "builtin:networkzones"
 
-func Service(credentials *api.Credentials) api.CRUDService[*networkzones.NetworkZones] {
-	return v2.Service[*networkzones.NetworkZones](credentials, SchemaID)
+func Service(credentials *settings.Credentials) settings.CRUDService[*networkzones.NetworkZones] {
+	return settings20.Service[*networkzones.NetworkZones](credentials, SchemaID)
 }

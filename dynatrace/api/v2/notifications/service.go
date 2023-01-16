@@ -18,9 +18,9 @@
 package notifications
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2/filtered"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/filtered"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 )
 
 const SchemaID = "builtin:problem.notifications"
@@ -37,9 +37,9 @@ func (me *filter) Suffix() string {
 	return string(me.Type)
 }
 
-func Service(credentials *api.Credentials, t Type) api.CRUDService[*Notification] {
+func Service(credentials *settings.Credentials, t Type) settings.CRUDService[*Notification] {
 	return filtered.Service[*Notification](
-		v2.Service(credentials, SchemaID, &v2.ServiceOptions[*Notification]{LegacyID: api.LegacyObjIDDecode}),
+		settings20.Service(credentials, SchemaID, &settings20.ServiceOptions[*Notification]{LegacyID: settings.LegacyObjIDDecode}),
 		&filter{Type: t},
 	)
 }

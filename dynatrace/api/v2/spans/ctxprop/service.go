@@ -18,14 +18,14 @@
 package ctxprop
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 
 	ctxprop "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/spans/ctxprop/settings"
 )
 
 const SchemaID = "builtin:span-context-propagation"
 
-func Service(credentials *api.Credentials) api.CRUDService[*ctxprop.PropagationSetting] {
-	return v2.Service[*ctxprop.PropagationSetting](credentials, SchemaID)
+func Service(credentials *settings.Credentials) settings.CRUDService[*ctxprop.PropagationSetting] {
+	return settings20.Service[*ctxprop.PropagationSetting](credentials, SchemaID)
 }

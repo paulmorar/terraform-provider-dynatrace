@@ -19,6 +19,7 @@ package rest
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -26,14 +27,33 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"os"
+	"strings"
 )
 
 var logger = initLogger()
 
+type onDemandWriter struct {
+	logFileName string
+	file        *os.File
+}
+
+func (odw *onDemandWriter) Write(p []byte) (n int, err error) {
+	if odw.file == nil {
+		if odw.file, err = os.OpenFile(odw.logFileName, os.O_APPEND|os.O_CREATE, os.ModePerm); err != nil {
+			return 0, err
+		}
+	}
+	return odw.file.Write(p)
+}
+
 func initLogger() *log.Logger {
-	deb := os.Getenv("DT_REST_DEBUG_REQUESTS")
-	if len(deb) > 0 && deb != "false" {
-		return log.New(os.Stderr, "", log.LstdFlags)
+	restLogFileName := os.Getenv("DYNATRACE_LOG_HTTP")
+	if len(restLogFileName) > 0 && restLogFileName != "false" {
+		logger := log.New(os.Stderr, "", log.LstdFlags)
+		if restLogFileName != "true" {
+			logger.SetOutput(&onDemandWriter{logFileName: restLogFileName})
+		}
+		return logger
 	}
 	return log.New(io.Discard, "", log.LstdFlags)
 }
@@ -142,7 +162,24 @@ func (me *request) Raw() ([]byte, error) {
 	}
 	var res *http.Response
 
-	httpClient := &http.Client{Jar: jar}
+	httpClient := &http.Client{
+		Jar:       jar,
+		Transport: http.DefaultTransport,
+	}
+	if strings.TrimSpace(os.Getenv("DYNATRACE_HTTP_INSECURE")) == "true" {
+		httpClient.Transport = &http.Transport{
+			ForceAttemptHTTP2:     http.DefaultTransport.(*http.Transport).ForceAttemptHTTP2,
+			Proxy:                 http.DefaultTransport.(*http.Transport).Proxy,
+			DialContext:           http.DefaultTransport.(*http.Transport).DialContext,
+			MaxIdleConns:          http.DefaultTransport.(*http.Transport).MaxIdleConns,
+			IdleConnTimeout:       http.DefaultTransport.(*http.Transport).IdleConnTimeout,
+			TLSHandshakeTimeout:   http.DefaultTransport.(*http.Transport).TLSHandshakeTimeout,
+			ExpectContinueTimeout: http.DefaultTransport.(*http.Transport).ExpectContinueTimeout,
+			TLSClientConfig:       &tls.Config{InsecureSkipVerify: true},
+		}
+	} else {
+		httpClient.Transport = http.DefaultTransport
+	}
 
 	if res, err = httpClient.Do(req); err != nil {
 		return nil, err

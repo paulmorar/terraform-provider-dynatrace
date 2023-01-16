@@ -19,23 +19,24 @@ package web
 
 import (
 	"fmt"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"net/url"
 	"time"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	web "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/applications/web/settings"
 )
 
 const SchemaID = "v1:config:applications:web"
 
-func Service(credentials *api.Credentials) api.CRUDService[*web.Application] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*web.Application] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		&api.ServiceOptions[*web.Application]{
-			Get:           api.Path("/api/config/v1/applications/web/%s"),
-			List:          api.Path("/api/config/v1/applications/web"),
+		&settings.ServiceOptions[*web.Application]{
+			Get:           settings.Path("/api/config/v1/applications/web/%s"),
+			List:          settings.Path("/api/config/v1/applications/web"),
 			CreateConfirm: 20,
 			CompleteGet:   LoadKeyUserActions,
 			OnChanged:     SaveKeyUserActions,

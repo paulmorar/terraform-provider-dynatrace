@@ -19,16 +19,17 @@ package networkzones
 
 import (
 	"fmt"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"net/url"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	networkzones "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/networkzones/settings"
 )
 
 const SchemaID = "v2:environment:network-zones"
 
-func Service(credentials *api.Credentials) api.CRUDService[*networkzones.NetworkZone] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*networkzones.NetworkZone] {
 	return &service{client: rest.DefaultClient(credentials.URL, credentials.Token)}
 }
 
@@ -40,16 +41,16 @@ func (me *service) Get(id string, v *networkzones.NetworkZone) error {
 	return me.client.Get(fmt.Sprintf("/api/v2/networkZones/%s", url.PathEscape(id)), 200).Finish(v)
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	var err error
 	var stubList networkzones.NetworkZones
 
 	if err = me.client.Get("/api/v2/networkZones", 200).Finish(&stubList); err != nil {
 		return nil, err
 	}
-	stubs := api.Stubs{}
+	stubs := settings.Stubs{}
 	for _, zone := range stubList.Zones {
-		stubs = append(stubs, &api.Stub{ID: *zone.ID, Name: *zone.ID})
+		stubs = append(stubs, &settings.Stub{ID: *zone.ID, Name: *zone.ID})
 	}
 	return stubs, nil
 }
@@ -58,12 +59,12 @@ func (me *service) Validate(v *networkzones.NetworkZone) error {
 	return nil // no endpoint for that
 }
 
-func (me *service) Create(v *networkzones.NetworkZone) (*api.Stub, error) {
+func (me *service) Create(v *networkzones.NetworkZone) (*settings.Stub, error) {
 	var err error
 
 	id := *v.ID
 
-	var stub api.Stub
+	var stub settings.Stub
 	req := me.client.Put(fmt.Sprintf("/api/v2/networkZones/%s", url.PathEscape(id)), v, 201)
 	if err = req.Finish(&stub); err != nil {
 		return nil, err

@@ -23,13 +23,13 @@ import (
 	"path"
 	"sort"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/version"
 )
 
 type Environment struct {
 	OutputFolder      string
-	Credentials       *api.Credentials
+	Credentials       *settings.Credentials
 	Modules           map[ResourceType]*Module
 	DataSourceModules map[DataSourceType]*DataSourceModule
 	Flags             Flags
@@ -138,6 +138,10 @@ func (me *Environment) CreateFile(name string) (*os.File, error) {
 
 func (me *Environment) GetFolder() string {
 	return me.OutputFolder
+}
+
+func (me *Environment) GetAttentionFolder() string {
+	return path.Join(me.OutputFolder, ".requires_attention")
 }
 
 func (me *Environment) RefersTo(resource *Resource) bool {

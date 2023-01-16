@@ -56,9 +56,10 @@ func (me *SLO) Schema() map[string]*schema.Schema {
 			Description: "The custom description of the SLO (optional)",
 		},
 		"metric_expression": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "The percentage-based metric expression for the calculation of the SLO",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "The percentage-based metric expression for the calculation of the SLO",
+			DiffSuppressFunc: hcl.SuppressJSONorEOT,
 		},
 		"disabled": {
 			Type:        schema.TypeBool,
@@ -92,9 +93,10 @@ func (me *SLO) Schema() map[string]*schema.Schema {
 			Description: "The evaluation type of the SLO. Currently only `AGGREGATE` is supported",
 		},
 		"filter": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "The entity filter for the SLO evaluation. Use the [syntax of entity selector](https://dt-url.net/entityselector)",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "The entity filter for the SLO evaluation. Use the [syntax of entity selector](https://dt-url.net/entityselector)",
+			DiffSuppressFunc: hcl.SuppressJSONorEOT,
 		},
 		"target": {
 			Type:        schema.TypeFloat,

@@ -6,8 +6,8 @@ import (
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/iam"
 	groups "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/iam/groups/settings"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 type GroupServiceClient struct {
@@ -28,11 +28,11 @@ func (me *GroupServiceClient) ClientSecret() string {
 	return me.clientSecret
 }
 
-func NewGroupService(clientID string, accountID string, clientSecret string) api.CRUDService[*groups.Group] {
+func NewGroupService(clientID string, accountID string, clientSecret string) settings.CRUDService[*groups.Group] {
 	return &GroupServiceClient{clientID: clientID, accountID: accountID, clientSecret: clientSecret}
 }
 
-func Service(credentials *api.Credentials) api.CRUDService[*groups.Group] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*groups.Group] {
 	return &GroupServiceClient{clientID: credentials.IAM.ClientID, accountID: credentials.IAM.AccountID, clientSecret: credentials.IAM.ClientSecret}
 }
 
@@ -40,7 +40,7 @@ func (me *GroupServiceClient) SchemaID() string {
 	return "accounts:iam:groups"
 }
 
-func (me *GroupServiceClient) Create(group *groups.Group) (*api.Stub, error) {
+func (me *GroupServiceClient) Create(group *groups.Group) (*settings.Stub, error) {
 	var err error
 	var responseBytes []byte
 
@@ -62,7 +62,7 @@ func (me *GroupServiceClient) Create(group *groups.Group) (*api.Stub, error) {
 		}
 	}
 
-	return &api.Stub{ID: groupID, Name: groupName}, nil
+	return &settings.Stub{ID: groupID, Name: groupName}, nil
 }
 
 func (me *GroupServiceClient) Update(uuid string, group *groups.Group) error {
@@ -98,7 +98,7 @@ type ListGroupsResponse struct {
 	Items []*ListGroup `json:"items"`
 }
 
-func (me *GroupServiceClient) List() (api.Stubs, error) {
+func (me *GroupServiceClient) List() (settings.Stubs, error) {
 	var err error
 	var responseBytes []byte
 
@@ -110,15 +110,15 @@ func (me *GroupServiceClient) List() (api.Stubs, error) {
 	if err = json.Unmarshal(responseBytes, &response); err != nil {
 		return nil, err
 	}
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	for _, elem := range response.Items {
-		stubs = append(stubs, &api.Stub{ID: elem.UUID, Name: elem.Name})
+		stubs = append(stubs, &settings.Stub{ID: elem.UUID, Name: elem.Name})
 	}
 	return stubs, nil
 }
 
 func (me *GroupServiceClient) Get(id string, v *groups.Group) (err error) {
-	var stubs api.Stubs
+	var stubs settings.Stubs
 
 	if stubs, err = me.List(); err != nil {
 		return err

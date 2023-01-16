@@ -20,9 +20,10 @@ package customservices
 import (
 	"errors"
 	"fmt"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"net/url"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	customservices "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/customservices/settings"
 )
@@ -33,12 +34,12 @@ type service struct {
 	client rest.Client
 }
 
-func Service(credentials *api.Credentials) api.CRUDService[*customservices.CustomService] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*customservices.CustomService] {
 	return &service{client: rest.DefaultClient(credentials.URL, credentials.Token)}
 }
 
 func (me *service) Get(id string, v *customservices.CustomService) error {
-	if id, technology, ok := api.SplitID(id); ok {
+	if id, technology, ok := settings.SplitID(id); ok {
 		return me.GetWithTechnology(id, technology, v)
 	}
 	return errors.New("unable to determine technology")
@@ -53,19 +54,19 @@ func (me *service) GetWithTechnology(id string, technology string, v *customserv
 	return nil
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	var err error
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	client := me.client
 
 	for _, technology := range []customservices.Technology{customservices.Technologies.NodeJS, customservices.Technologies.DotNet, customservices.Technologies.Go, customservices.Technologies.Java, customservices.Technologies.PHP} {
 		req := client.Get(fmt.Sprintf("/api/config/v1/service/customServices/%s", url.PathEscape(string(technology))), 200)
-		var stubList api.StubList
+		var stubList settings.StubList
 		if err = req.Finish(&stubList); err != nil {
 			return nil, err
 		}
 		for _, stub := range stubList.Values {
-			stub.ID = api.JoinID(stub.ID, string(technology))
+			stub.ID = settings.JoinID(stub.ID, string(technology))
 			stubs = append(stubs, stub)
 		}
 	}
@@ -80,25 +81,25 @@ func (me *service) ValidateWithTechnology(technology string, v any) error {
 	return me.client.Post(fmt.Sprintf("/api/config/v1/service/customServices/%s/validator", url.PathEscape(technology)), v, 204).Finish()
 }
 
-func (me *service) Create(v *customservices.CustomService) (*api.Stub, error) {
+func (me *service) Create(v *customservices.CustomService) (*settings.Stub, error) {
 	return me.CreateWithTechnology(string(v.Technology), v)
 }
 
-func (me *service) CreateWithTechnology(technology string, v any) (*api.Stub, error) {
+func (me *service) CreateWithTechnology(technology string, v any) (*settings.Stub, error) {
 	var err error
 
 	req := me.client.Post(fmt.Sprintf("/api/config/v1/service/customServices/%s", url.PathEscape(technology)), v, 201)
 
-	var stub api.Stub
+	var stub settings.Stub
 	if err = req.Finish(&stub); err != nil {
 		return nil, err
 	}
-	stub.ID = api.JoinID(stub.ID, technology)
+	stub.ID = settings.JoinID(stub.ID, technology)
 	return &stub, nil
 }
 
 func (me *service) Update(id string, v *customservices.CustomService) error {
-	if id, technology, ok := api.SplitID(id); ok {
+	if id, technology, ok := settings.SplitID(id); ok {
 		return me.UpdateWithTechnology(id, technology, v)
 	}
 	return me.UpdateWithTechnology(id, string(v.Technology), v)
@@ -116,7 +117,7 @@ func (me *service) UpdateWithTechnology(id string, technology string, v any) err
 }
 
 func (me *service) Delete(id string) error {
-	if id, technology, ok := api.SplitID(id); ok {
+	if id, technology, ok := settings.SplitID(id); ok {
 		return me.DeleteWithTechnology(id, technology)
 	}
 	return errors.New("unable to determine technology")

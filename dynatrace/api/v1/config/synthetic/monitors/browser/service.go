@@ -18,7 +18,7 @@
 package browser
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/monitors"
 	browser "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/monitors/browser/settings"
@@ -26,10 +26,10 @@ import (
 
 const SchemaID = "v1:synthetic:monitors:browser"
 
-func Service(credentials *api.Credentials) api.CRUDService[*browser.SyntheticMonitor] {
-	return api.NewCRUDService(credentials, SchemaID, &api.ServiceOptions[*browser.SyntheticMonitor]{
-		Get:            api.Path("/api/v1/synthetic/monitors/%s"),
-		List:           api.Path("/api/v1/synthetic/monitors?type=BROWSER"),
+func Service(credentials *settings.Credentials) settings.CRUDService[*browser.SyntheticMonitor] {
+	return settings.NewCRUDService(credentials, SchemaID, &settings.ServiceOptions[*browser.SyntheticMonitor]{
+		Get:            settings.Path("/api/v1/synthetic/monitors/%s"),
+		List:           settings.Path("/api/v1/synthetic/monitors?type=BROWSER"),
 		CreateURL:      func(v *browser.SyntheticMonitor) string { return "/api/v1/synthetic/monitors" },
 		Stubs:          &monitors.Monitors{},
 		HasNoValidator: true,

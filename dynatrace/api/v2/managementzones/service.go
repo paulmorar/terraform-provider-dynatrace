@@ -18,14 +18,14 @@
 package managementzones
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 
 	managementzones "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/managementzones/settings"
 )
 
 const SchemaID = "builtin:management-zones"
 
-func Service(credentials *api.Credentials) api.CRUDService[*managementzones.Settings] {
-	return v2.Service(credentials, SchemaID, &v2.ServiceOptions[*managementzones.Settings]{LegacyID: api.LegacyLongDecode})
+func Service(credentials *settings.Credentials) settings.CRUDService[*managementzones.Settings] {
+	return settings20.Service(credentials, SchemaID, &settings20.ServiceOptions[*managementzones.Settings]{LegacyID: settings.LegacyLongDecode})
 }

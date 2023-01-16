@@ -20,32 +20,32 @@ package export
 import (
 	"reflect"
 
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/credentials/aws/iam"
 	ds_services "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/topology/services"
 )
 
 type DataSourceDescriptor struct {
-	Service   func(credentials *api.Credentials) api.RService[api.Settings]
-	protoType api.Settings
+	Service   func(credentials *settings.Credentials) settings.RService[settings.Settings]
+	protoType settings.Settings
 }
 
-func (me DataSourceDescriptor) NewSettings() api.Settings {
-	return reflect.New(reflect.TypeOf(me.protoType).Elem()).Interface().(api.Settings)
+func (me DataSourceDescriptor) NewSettings() settings.Settings {
+	return reflect.New(reflect.TypeOf(me.protoType).Elem()).Interface().(settings.Settings)
 }
 
-func NewDataSourceDescriptor[T api.Settings](fn func(credentials *api.Credentials) api.RService[T]) DataSourceDescriptor {
+func NewDataSourceDescriptor[T settings.Settings](fn func(credentials *settings.Credentials) settings.RService[T]) DataSourceDescriptor {
 	return DataSourceDescriptor{
-		Service: func(credentials *api.Credentials) api.RService[api.Settings] {
-			return &api.GenericRService[T]{Service: cache.Read(fn(credentials))}
+		Service: func(credentials *settings.Credentials) settings.RService[settings.Settings] {
+			return &settings.GenericRService[T]{Service: cache.Read(fn(credentials))}
 		},
 		protoType: newSettingsRead(fn),
 	}
 }
 
-func newSettingsRead[T api.Settings](sfn func(credentials *api.Credentials) api.RService[T]) T {
+func newSettingsRead[T settings.Settings](sfn func(credentials *settings.Credentials) settings.RService[T]) T {
 	var proto T
 	return reflect.New(reflect.TypeOf(proto).Elem()).Interface().(T)
 }

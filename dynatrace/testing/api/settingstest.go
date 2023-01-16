@@ -25,13 +25,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/testing/assert"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 
 	"github.com/google/uuid"
 )
@@ -48,22 +47,22 @@ func load(path string, v any, randomize string) error {
 		return err
 	}
 
-	if loader, ok := v.(api.Loader); ok {
+	if loader, ok := v.(settings.Loader); ok {
 		return loader.Load([]byte(strings.ReplaceAll(string(data), "${randomize}", randomize)))
 	}
 	return json.Unmarshal([]byte(strings.ReplaceAll(string(data), "${randomize}", randomize)), v)
 }
 
-func TestService[V api.Settings](t *testing.T, createService func(*api.Credentials) api.CRUDService[V]) {
+func TestService[V settings.Settings](t *testing.T, createService func(*settings.Credentials) settings.CRUDService[V]) {
 	t.Helper()
 	SettingsTest[V]{T: t}.Run(createService)
 }
 
-type SettingsTest[V api.Settings] struct {
+type SettingsTest[V settings.Settings] struct {
 	T *testing.T
 }
 
-func (st SettingsTest[V]) Run(createService func(*api.Credentials) api.CRUDService[V]) {
+func (st SettingsTest[V]) Run(createService func(*settings.Credentials) settings.CRUDService[V]) {
 	st.T.Helper()
 	envURL := os.Getenv("DYNATRACE_ENV_URL")
 	apiToken := os.Getenv("DYNATRACE_API_TOKEN")
@@ -79,7 +78,7 @@ func (st SettingsTest[V]) Run(createService func(*api.Credentials) api.CRUDServi
 
 			folder := path.Join("testdata", entry.Name())
 
-			service := createService(&api.Credentials{URL: envURL, Token: apiToken})
+			service := createService(&settings.Credentials{URL: envURL, Token: apiToken})
 
 			randomize := uuid.NewString()
 
@@ -94,7 +93,7 @@ func (st SettingsTest[V]) Run(createService func(*api.Credentials) api.CRUDServi
 					continue
 				}
 				settingsJSONFile := path.Join(folder, entry.Name())
-				settings := api.NewSettings(service.(api.RService[V]))
+				settings := settings.NewSettings(service.(settings.RService[V]))
 				if err = load(settingsJSONFile, settings, randomize); err != nil {
 					st.T.Error(err)
 					return
@@ -108,14 +107,14 @@ func (st SettingsTest[V]) Run(createService func(*api.Credentials) api.CRUDServi
 			st.T.Run(entry.Name(), func(t *testing.T) {
 				t.Helper()
 				assert := assert.New(t)
-				service := createService(&api.Credentials{URL: envURL, Token: apiToken})
+				service := createService(&settings.Credentials{URL: envURL, Token: apiToken})
 
 				var err error
-				var stub *api.Stub
+				var stub *settings.Stub
 
 				createSettings := allSettings[0]
 
-				if validator, ok := service.(api.Validator[V]); ok {
+				if validator, ok := service.(settings.Validator[V]); ok {
 					if err = validator.Validate(createSettings); err != nil {
 						assert.Error(err)
 						return
@@ -141,7 +140,7 @@ func (st SettingsTest[V]) Run(createService func(*api.Credentials) api.CRUDServi
 					})
 				}
 
-				remoteSettings := api.NewSettings(service.(api.RService[V]))
+				remoteSettings := settings.NewSettings(service.(settings.RService[V]))
 				if err = service.Get(stub.ID, remoteSettings); err != nil {
 					assert.Error(err)
 					return
@@ -150,7 +149,7 @@ func (st SettingsTest[V]) Run(createService func(*api.Credentials) api.CRUDServi
 				FillDemoValues(remoteSettings)
 				Anonymize(remoteSettings)
 				Anonymize(createSettings)
-				api.ClearLegacyID(remoteSettings)
+				settings.ClearLegacyID(remoteSettings)
 
 				assert.Equals(createSettings, remoteSettings)
 
@@ -164,7 +163,7 @@ func (st SettingsTest[V]) Run(createService func(*api.Credentials) api.CRUDServi
 						return
 					}
 
-					remoteSettings := api.NewSettings(service.(api.RService[V]))
+					remoteSettings := settings.NewSettings(service.(settings.RService[V]))
 					if err = service.Get(stub.ID, remoteSettings); err != nil {
 						assert.Error(err)
 						return
@@ -172,7 +171,7 @@ func (st SettingsTest[V]) Run(createService func(*api.Credentials) api.CRUDServi
 					Anonymize(remoteSettings)
 					FillDemoValues(remoteSettings)
 					Anonymize(updateSettings)
-					api.ClearLegacyID(remoteSettings)
+					settings.ClearLegacyID(remoteSettings)
 					assert.Equals(updateSettings, remoteSettings)
 				}
 
@@ -183,7 +182,7 @@ func (st SettingsTest[V]) Run(createService func(*api.Credentials) api.CRUDServi
 }
 
 func FillDemoValues(v any) {
-	if demoFiller, ok := v.(api.DemoSettings); ok {
+	if demoFiller, ok := v.(settings.DemoSettings); ok {
 		demoFiller.FillDemoValues()
 	}
 

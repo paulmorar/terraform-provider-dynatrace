@@ -18,20 +18,20 @@
 package keyrequests
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
-	services "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/topology/services"
+	toposervices "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/topology/services"
 	keyrequests "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/keyrequests/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 )
 
 const SchemaID = "builtin:settings.subscriptions.service"
 
-func Service(credentials *api.Credentials) api.CRUDService[*keyrequests.KeyRequest] {
-	topologyService := cache.Read(services.Service(credentials))
-	return v2.Service(credentials, SchemaID, &v2.ServiceOptions[*keyrequests.KeyRequest]{
+func Service(credentials *settings.Credentials) settings.CRUDService[*keyrequests.KeyRequest] {
+	topologyService := cache.Read(toposervices.Service(credentials))
+	return settings20.Service(credentials, SchemaID, &settings20.ServiceOptions[*keyrequests.KeyRequest]{
 		Name: func(id string, v *keyrequests.KeyRequest) (string, error) {
-			service := api.NewSettings(topologyService)
+			service := settings.NewSettings(topologyService)
 			if err := topologyService.Get(v.ServiceID, service); err != nil {
 				return "", err
 			}

@@ -25,8 +25,7 @@ import (
 	"strings"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
-
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hclgen"
 )
@@ -79,7 +78,7 @@ func (me *DataSource) GetFile(base string) string {
 	return path.Join(me.Module.GetFolder(base), filename)
 }
 
-func (me *DataSource) Download(credentials *api.Credentials, outputFolder string) error {
+func (me *DataSource) Download(credentials *settings.Credentials, outputFolder string) error {
 	if me.Status.IsOneOf(DataSourceStati.Erronous, DataSourceStati.Downloaded) {
 		return nil
 	}
@@ -136,7 +135,7 @@ func (me *DataSource) Download(credentials *api.Credentials, outputFolder string
 	return nil
 }
 
-func (me *DataSource) DownloadTo(credentials *api.Credentials, w io.Writer) error {
+func (me *DataSource) DownloadTo(credentials *settings.Credentials, w io.Writer) error {
 	if me.Status.IsOneOf(DataSourceStati.Erronous) {
 		return nil
 	}

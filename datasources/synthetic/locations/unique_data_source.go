@@ -18,10 +18,11 @@
 package locations
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	locations "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations"
-	settings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
+	locsettings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
+
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -29,7 +30,7 @@ import (
 func UniqueDataSource() *schema.Resource {
 	return &schema.Resource{
 		Read:   UniqueDataSourceRead,
-		Schema: new(settings.SyntheticLocation).Schema(),
+		Schema: new(locsettings.SyntheticLocation).Schema(),
 	}
 }
 
@@ -66,7 +67,7 @@ func UniqueDataSourceRead(d *schema.ResourceData, m any) (err error) {
 			ips = vt
 		}
 	}
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	if stubs, err = locations.Service(config.Credentials(m)).List(); err != nil {
 		return err
 	}
@@ -82,7 +83,7 @@ func UniqueDataSourceRead(d *schema.ResourceData, m any) (err error) {
 				continue
 			}
 		}
-		value := stub.Value.(*settings.SyntheticLocation)
+		value := stub.Value.(*locsettings.SyntheticLocation)
 		if typeLoc != nil {
 			if *typeLoc != string(value.Type) {
 				continue

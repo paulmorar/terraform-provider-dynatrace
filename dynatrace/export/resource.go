@@ -21,11 +21,11 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
-
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hclgen"
 )
@@ -100,8 +100,16 @@ func (me *Resource) ReadFile() ([]byte, error) {
 	return os.ReadFile(me.GetFile())
 }
 
+func (me *Resource) GetFileName() string {
+	return fileSystemName(fmt.Sprintf("%s.%s.tf", strings.TrimSpace(me.UniqueName), me.Type.Trim()))
+}
+
 func (me *Resource) GetFile() string {
-	return path.Join(me.Module.GetFolder(), fileSystemName(fmt.Sprintf("%s.%s.tf", strings.TrimSpace(me.UniqueName), me.Type.Trim())))
+	return path.Join(me.Module.GetFolder(), me.GetFileName())
+}
+
+func (me *Resource) GetAttentionFile() string {
+	return path.Join(me.Module.GetAttentionFolder(false), me.GetFileName())
 }
 
 func (me *Resource) Download() error {
@@ -123,8 +131,8 @@ func (me *Resource) Download() error {
 
 	var service = me.Module.Service
 
-	settings := me.Module.Descriptor.NewSettings()
-	if err = service.Get(me.ID, settings); err != nil {
+	settngs := me.Module.Descriptor.NewSettings()
+	if err = service.Get(me.ID, settngs); err != nil {
 		if restError, ok := err.(rest.Error); ok {
 			if strings.HasPrefix(restError.Message, "Editing or deleting a non user specific dashboard preset is not allowed.") {
 				me.Status = ResourceStati.Erronous
@@ -144,7 +152,7 @@ func (me *Resource) Download() error {
 		}
 		return err
 	}
-	legacyID := api.GetLegacyID(settings)
+	legacyID := settings.GetLegacyID(settngs)
 	if legacyID != nil {
 		me.LegacyID = *legacyID
 	}
@@ -155,22 +163,32 @@ func (me *Resource) Download() error {
 	}
 	defer outputFile.Close()
 
-	comments := api.FillDemoValues(settings)
+	comments := settings.FillDemoValues(settngs)
 	finalComments := []string{}
 	if me.Module.Environment.Flags.PersistIDs {
 		finalComments = []string{"ID " + me.ID}
-		if legacyID := api.ClearLegacyID(settings); legacyID != nil {
+		if legacyID := settings.ClearLegacyID(settngs); legacyID != nil {
 			finalComments = append(finalComments, "LEGACY_ID "+*legacyID)
 		}
 	}
 	if len(comments) > 0 {
 		for _, comment := range comments {
+			if len(finalComments) > 0 {
+				finalComments = append(finalComments, "")
+			}
 			finalComments = append(finalComments, "ATTENTION "+comment)
 		}
 	}
 
-	if err = hclgen.ExportResource(settings, outputFile, string(me.Type), me.UniqueName, finalComments...); err != nil {
+	if err = hclgen.ExportResource(settngs, outputFile, string(me.Type), me.UniqueName, finalComments...); err != nil {
 		return err
+	}
+	if len(comments) > 0 {
+		orig, _ := filepath.Abs(me.GetFile())
+		att, _ := filepath.Abs(me.GetAttentionFile())
+		absdir, _ := filepath.Abs(path.Dir(me.GetAttentionFile()))
+		os.MkdirAll(absdir, os.ModePerm)
+		os.Link(orig, att)
 	}
 	me.Status = ResourceStati.Downloaded
 	return nil

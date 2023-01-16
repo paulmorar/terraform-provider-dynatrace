@@ -18,13 +18,13 @@
 package imsbridges
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
 	imsbridges "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/ibmmq/imsbridges/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 )
 
 const SchemaID = "builtin:ibmmq.ims-bridges"
 
-func Service(credentials *api.Credentials) api.CRUDService[*imsbridges.IMSBridge] {
-	return v2.Service[*imsbridges.IMSBridge](credentials, SchemaID)
+func Service(credentials *settings.Credentials) settings.CRUDService[*imsbridges.IMSBridge] {
+	return settings20.Service[*imsbridges.IMSBridge](credentials, SchemaID)
 }

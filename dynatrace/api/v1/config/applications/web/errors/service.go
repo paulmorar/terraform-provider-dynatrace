@@ -19,11 +19,12 @@ package errors
 
 import (
 	"fmt"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"net/url"
 	"strings"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
 
 	webservice "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/applications/web"
 	errors "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/applications/web/errors/settings"
@@ -34,7 +35,7 @@ import (
 
 const SchemaID = "v1:config:applications:web:errors"
 
-func Service(credentials *api.Credentials) api.CRUDService[*errors.Rules] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*errors.Rules] {
 	return &service{
 		client:        rest.DefaultClient(credentials.URL, credentials.Token),
 		webAppService: cache.CRUD(webservice.Service(credentials))}
@@ -42,7 +43,7 @@ func Service(credentials *api.Credentials) api.CRUDService[*errors.Rules] {
 
 type service struct {
 	client        rest.Client
-	webAppService api.CRUDService[*web.Application]
+	webAppService settings.CRUDService[*web.Application]
 }
 
 func (me *service) Get(id string, v *errors.Rules) error {
@@ -199,16 +200,16 @@ func (me *service) Delete(id string) error {
 	return me.Update(id, &settings)
 }
 
-func (me *service) Create(v *errors.Rules) (*api.Stub, error) {
+func (me *service) Create(v *errors.Rules) (*settings.Stub, error) {
 	if err := me.Update(v.WebApplicationID, v); err != nil {
 		return nil, err
 	}
-	return &api.Stub{ID: v.WebApplicationID + "-error-rules"}, nil
+	return &settings.Stub{ID: v.WebApplicationID + "-error-rules"}, nil
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	var err error
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	if stubs, err = me.webAppService.List(); err != nil {
 		return nil, err
 	}

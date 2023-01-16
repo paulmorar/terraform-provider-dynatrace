@@ -18,7 +18,7 @@
 package maintenance
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	maintenance "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/maintenance/settings"
 )
@@ -26,10 +26,10 @@ import (
 const SchemaID = "v1:config:maintenance-windows"
 const BasePath = "/api/config/v1/maintenanceWindows"
 
-func Service(credentials *api.Credentials) api.CRUDService[*maintenance.Window] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*maintenance.Window] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*maintenance.Window](BasePath),
+		settings.DefaultServiceOptions[*maintenance.Window](BasePath),
 	)
 }

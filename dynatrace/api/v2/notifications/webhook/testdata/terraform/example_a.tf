@@ -16,6 +16,22 @@ resource "dynatrace_webhook_notification" "#name#" { # replace #name# with the n
       name         = "http-header-name-02"
       secret_value = "http-header-value-02"
     }
+    header {
+      name         = "http-header-name-03"
+      secret_value = "http-header-value-03"
+    }
+    header {
+      name         = "http-header-name-04"
+      secret_value = "http-header-value-04"
+    }
+    header {
+      name         = "http-header-name-05"
+      secret_value = "http-header-value-05"
+    }
+    header {
+      name         = "http-header-name-06"
+      secret_value = "http-header-value-06"
+    }
 
   }
 }

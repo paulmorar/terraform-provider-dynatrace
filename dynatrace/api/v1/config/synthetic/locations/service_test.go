@@ -24,9 +24,9 @@ import (
 	"strings"
 	"testing"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations"
-	settings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
+	locsettings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 func TestSyntheticLocations(t *testing.T) {
@@ -36,9 +36,9 @@ func TestSyntheticLocations(t *testing.T) {
 		t.Skip("Environment Variables DYNATRACE_ENV_URL and DYNATRACE_API_TOKEN must be specified")
 		return
 	}
-	credentials := &api.Credentials{URL: envURL, Token: apiToken}
+	credentials := &settings.Credentials{URL: envURL, Token: apiToken}
 	service := locations.Service(credentials)
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	var err error
 	if stubs, err = service.List(); err != nil {
 		t.Error(err)
@@ -56,7 +56,7 @@ func TestSyntheticLocations(t *testing.T) {
 			t.Error("Stubs were expected to contain values, but didn't")
 			return
 		}
-		if stub.Value.(*settings.SyntheticLocation).ID != stub.ID {
+		if stub.Value.(*locsettings.SyntheticLocation).ID != stub.ID {
 			data, _ := json.Marshal(stub)
 			log.Println("stub: " + string(data))
 			data, _ = json.Marshal(stub.Value)

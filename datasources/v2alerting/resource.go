@@ -21,8 +21,8 @@ import (
 	"context"
 	"os"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/logging"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
@@ -46,19 +46,19 @@ func Resource() *schema.Resource {
 	}
 }
 
-func createCredentials(m any) *api.Credentials {
+func createCredentials(m any) *settings.Credentials {
 	conf := m.(*config.ProviderConfiguration)
-	return &api.Credentials{
+	return &settings.Credentials{
 		Token: conf.APIToken,
 		URL:   conf.EnvironmentURL,
 	}
 }
 
-func Settings() api.Settings {
+func Settings() settings.Settings {
 	return export.AllResources[ResourceType].NewSettings()
 }
 
-func Service(m any) api.CRUDService[api.Settings] {
+func Service(m any) settings.CRUDService[settings.Settings] {
 	return export.AllResources[ResourceType].Service(createCredentials(m))
 }
 

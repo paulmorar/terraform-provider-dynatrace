@@ -19,20 +19,21 @@ package apitokens
 
 import (
 	"fmt"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	apitokens "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/apitokens/settings"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
 )
 
-func Service(credentials *api.Credentials) api.CRUDService[*apitokens.APIToken] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*apitokens.APIToken] {
 	return &service{credentials}
 }
 
 type service struct {
-	credentials *api.Credentials
+	credentials *settings.Credentials
 }
 
 func (me *service) Get(id string, v *apitokens.APIToken) error {
@@ -51,7 +52,7 @@ func (me *service) SchemaID() string {
 	return "v2:environment:api-tokens"
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	var err error
 
 	client := rest.DefaultClient(me.credentials.URL, me.credentials.Token)
@@ -60,9 +61,9 @@ func (me *service) List() (api.Stubs, error) {
 	if err = req.Finish(&tokenlist); err != nil {
 		return nil, err
 	}
-	stubs := api.Stubs{}
+	stubs := settings.Stubs{}
 	for _, token := range tokenlist.APITokens {
-		stubs = append(stubs, &api.Stub{ID: *token.ID, Name: token.Name})
+		stubs = append(stubs, &settings.Stub{ID: *token.ID, Name: token.Name})
 	}
 
 	return stubs, nil
@@ -72,7 +73,7 @@ func (me *service) Validate(v *apitokens.APIToken) error {
 	return nil // no endpoint for that
 }
 
-func (me *service) Create(v *apitokens.APIToken) (*api.Stub, error) {
+func (me *service) Create(v *apitokens.APIToken) (*settings.Stub, error) {
 	var err error
 
 	resultToken := struct {
@@ -97,7 +98,7 @@ func (me *service) Create(v *apitokens.APIToken) (*api.Stub, error) {
 	resultToken.Name = item.Name
 	resultToken.Scopes = item.Scopes
 
-	return &api.Stub{ID: *resultToken.ID, Name: token.Name, Value: resultToken}, nil
+	return &settings.Stub{ID: *resultToken.ID, Name: token.Name, Value: resultToken}, nil
 }
 
 func (me *service) Update(id string, v *apitokens.APIToken) error {

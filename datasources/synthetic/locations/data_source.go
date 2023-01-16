@@ -18,10 +18,10 @@
 package locations
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	locations "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations"
-	settings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
+	locsettings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -42,7 +42,7 @@ func DataSource() *schema.Resource {
 			"locations": {
 				Type:     schema.TypeList,
 				MaxItems: 1,
-				Elem:     &schema.Resource{Schema: new(settings.SyntheticLocation).Schema()},
+				Elem:     &schema.Resource{Schema: new(locsettings.SyntheticLocation).Schema()},
 				Optional: true,
 				Computed: true,
 			},
@@ -65,11 +65,11 @@ func DataSourceRead(d *schema.ResourceData, m any) (err error) {
 		name = opt.NewString(v.(string))
 	}
 
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	if stubs, err = locations.Service(config.Credentials(m)).List(); err != nil {
 		return err
 	}
-	locs := settings.SyntheticLocations{}
+	locs := locsettings.SyntheticLocations{}
 	for _, stub := range stubs {
 		if id != nil {
 			if *id != stub.ID {
@@ -81,7 +81,7 @@ func DataSourceRead(d *schema.ResourceData, m any) (err error) {
 				continue
 			}
 		}
-		value := stub.Value.(*settings.SyntheticLocation)
+		value := stub.Value.(*locsettings.SyntheticLocation)
 		locs.Locations = append(locs.Locations, value)
 	}
 	marshalled, err := locs.MarshalHCL()

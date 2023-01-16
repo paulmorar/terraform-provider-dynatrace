@@ -17,17 +17,19 @@
 
 package vault
 
-import api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+import (
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+)
 
 // CredentialsList A list of credentials sets for Synthetic monitors.
 type CredentialsList struct {
 	Credentials []CredentialsResponseElement `json:"credentials"` // A list of credentials sets for Synthetic monitors.
 }
 
-func (me CredentialsList) ToStubs() api.Stubs {
-	stubs := api.Stubs{}
+func (me CredentialsList) ToStubs() settings.Stubs {
+	stubs := settings.Stubs{}
 	for _, elem := range me.Credentials {
-		stubs = append(stubs, &api.Stub{ID: *elem.ID, Name: elem.Name})
+		stubs = append(stubs, &settings.Stub{ID: *elem.ID, Name: elem.Name})
 	}
 	return stubs
 }

@@ -35,7 +35,7 @@ func (me *Order) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"ids": {
 			Type:        schema.TypeList,
-			Required:    true,
+			Optional:    true,
 			Description: "The IDs of the request namings in the order they should be taken into consideration",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
@@ -47,15 +47,12 @@ func (me *Order) MarshalHCL() (map[string]any, error) {
 	for _, ref := range me.Values {
 		refs = append(refs, ref.ID)
 	}
-	return map[string]any{
-		"ids": refs,
-	}, nil
+	return map[string]any{"ids": refs}, nil
 }
 
 func (me *Order) UnmarshalHCL(decoder hcl.Decoder) error {
 	me.Values = []Ref{}
-	values, ok := decoder.GetOk("ids")
-	if ok {
+	if values, ok := decoder.GetOk("ids"); ok {
 		vals := values.([]any)
 		for _, val := range vals {
 			me.Values = append(me.Values, Ref{ID: val.(string)})

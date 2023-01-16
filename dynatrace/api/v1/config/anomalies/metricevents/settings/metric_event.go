@@ -65,9 +65,10 @@ func (me *MetricEvent) Schema() map[string]*schema.Schema {
 			Description: "The name of the metric event displayed in the UI",
 		},
 		"description": {
-			Type:        schema.TypeString,
-			Required:    true,
-			Description: "The description of the metric event",
+			Type:             schema.TypeString,
+			Required:         true,
+			Description:      "The description of the metric event",
+			DiffSuppressFunc: hcl.SuppressEOT,
 		},
 		"aggregation_type": {
 			Type:          schema.TypeString,
@@ -76,10 +77,11 @@ func (me *MetricEvent) Schema() map[string]*schema.Schema {
 			Description:   "How the metric data points are aggregated for the evaluation. The timeseries must support this aggregation",
 		},
 		"metric_selector": {
-			Type:          schema.TypeString,
-			Optional:      true,
-			ConflictsWith: []string{"metric_id", "scopes", "aggregation_type"},
-			Description:   "The metric selector that should be executed",
+			Type:             schema.TypeString,
+			Optional:         true,
+			ConflictsWith:    []string{"metric_id", "scopes", "aggregation_type"},
+			Description:      "The metric selector that should be executed",
+			DiffSuppressFunc: hcl.SuppressEOT,
 		},
 		"warning_reason": {
 			Type:     schema.TypeString,

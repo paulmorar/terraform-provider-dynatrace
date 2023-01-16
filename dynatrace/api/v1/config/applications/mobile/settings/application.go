@@ -20,7 +20,7 @@ package mobile
 import (
 	"encoding/json"
 
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/collections"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/collections"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 

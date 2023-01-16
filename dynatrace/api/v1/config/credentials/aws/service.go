@@ -18,17 +18,17 @@
 package aws
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	aws "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/credentials/aws/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:config:credentials:aws"
 const BasePath = "/api/config/v1/aws/credentials"
 
-func Service(credentials *api.Credentials) api.CRUDService[*aws.AWSCredentialsConfig] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*aws.AWSCredentialsConfig] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*aws.AWSCredentialsConfig](BasePath).WithStubs(&api.Stubs{}),
+		settings.DefaultServiceOptions[*aws.AWSCredentialsConfig](BasePath).WithStubs(&settings.Stubs{}),
 	)
 }

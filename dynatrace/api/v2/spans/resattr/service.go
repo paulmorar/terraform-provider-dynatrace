@@ -18,13 +18,13 @@
 package resattr
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
 	resattr "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/spans/resattr/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 )
 
 const SchemaID = "builtin:resource-attribute"
 
-func Service(credentials *api.Credentials) api.CRUDService[*resattr.ResourceAttributes] {
-	return v2.Service[*resattr.ResourceAttributes](credentials, SchemaID)
+func Service(credentials *settings.Credentials) settings.CRUDService[*resattr.ResourceAttributes] {
+	return settings20.Service[*resattr.ResourceAttributes](credentials, SchemaID)
 }

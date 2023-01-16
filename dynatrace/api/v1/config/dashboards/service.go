@@ -18,8 +18,8 @@
 package dashboards
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
 
 	dashboards "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/dashboards/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/jsondashboards"
@@ -27,59 +27,59 @@ import (
 
 const SchemaID = "v1:config:dashboards"
 
-func Service(credentials *api.Credentials) api.CRUDService[*dashboards.Dashboard] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*dashboards.Dashboard] {
 	return &service{service: cache.CRUD(jsondashboards.Service(credentials))}
 }
 
 type service struct {
-	service api.CRUDService[*dashboards.JSONDashboard]
+	service settings.CRUDService[*dashboards.JSONDashboard]
 }
 
 func (me *service) NoCache() bool {
 	return true
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	return me.service.List()
 }
 
 func (me *service) Get(id string, v *dashboards.Dashboard) error {
 	var err error
 	var data []byte
-	jsondb := api.NewSettings(me.service.(api.RService[*dashboards.JSONDashboard]))
+	jsondb := settings.NewSettings(me.service.(settings.RService[*dashboards.JSONDashboard]))
 	if err = me.service.Get(id, jsondb); err != nil {
 		return err
 	}
-	if data, err = api.ToJSON(jsondb); err != nil {
+	if data, err = settings.ToJSON(jsondb); err != nil {
 		return err
 	}
-	return api.FromJSON(data, v)
+	return settings.FromJSON(data, v)
 }
 
 func (me *service) Validate(v *dashboards.Dashboard) error {
 	var err error
 	var data []byte
-	jsondb := api.NewSettings(me.service.(api.RService[*dashboards.JSONDashboard]))
-	if data, err = api.ToJSON(v); err != nil {
+	jsondb := settings.NewSettings(me.service.(settings.RService[*dashboards.JSONDashboard]))
+	if data, err = settings.ToJSON(v); err != nil {
 		return err
 	}
-	if err = api.FromJSON(data, jsondb); err != nil {
+	if err = settings.FromJSON(data, jsondb); err != nil {
 		return err
 	}
-	if validator, ok := me.service.(api.Validator[*dashboards.JSONDashboard]); ok {
+	if validator, ok := me.service.(settings.Validator[*dashboards.JSONDashboard]); ok {
 		return validator.Validate(jsondb)
 	}
 	return nil
 }
 
-func (me *service) Create(v *dashboards.Dashboard) (*api.Stub, error) {
+func (me *service) Create(v *dashboards.Dashboard) (*settings.Stub, error) {
 	var err error
 	var data []byte
-	jsondb := api.NewSettings(me.service.(api.RService[*dashboards.JSONDashboard]))
-	if data, err = api.ToJSON(v); err != nil {
+	jsondb := settings.NewSettings(me.service.(settings.RService[*dashboards.JSONDashboard]))
+	if data, err = settings.ToJSON(v); err != nil {
 		return nil, err
 	}
-	if err = api.FromJSON(data, jsondb); err != nil {
+	if err = settings.FromJSON(data, jsondb); err != nil {
 		return nil, err
 	}
 	return me.service.Create(jsondb)
@@ -88,11 +88,11 @@ func (me *service) Create(v *dashboards.Dashboard) (*api.Stub, error) {
 func (me *service) Update(id string, v *dashboards.Dashboard) error {
 	var err error
 	var data []byte
-	jsondb := api.NewSettings(me.service.(api.RService[*dashboards.JSONDashboard]))
-	if data, err = api.ToJSON(v); err != nil {
+	jsondb := settings.NewSettings(me.service.(settings.RService[*dashboards.JSONDashboard]))
+	if data, err = settings.ToJSON(v); err != nil {
 		return err
 	}
-	if err = api.FromJSON(data, jsondb); err != nil {
+	if err = settings.FromJSON(data, jsondb); err != nil {
 		return err
 	}
 	return me.service.Update(id, jsondb)

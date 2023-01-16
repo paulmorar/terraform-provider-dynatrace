@@ -18,17 +18,17 @@
 package kubernetes
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	kubernetes "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/credentials/kubernetes/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:config:credentials:kubernetes"
 const BasePath = "/api/config/v1/kubernetes/credentials"
 
-func Service(credentials *api.Credentials) api.CRUDService[*kubernetes.KubernetesCredentials] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*kubernetes.KubernetesCredentials] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*kubernetes.KubernetesCredentials](BasePath),
+		settings.DefaultServiceOptions[*kubernetes.KubernetesCredentials](BasePath),
 	)
 }

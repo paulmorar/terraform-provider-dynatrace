@@ -24,9 +24,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
-
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
 )
 
 func Initialize() (environment *Environment, err error) {
@@ -95,8 +94,8 @@ func Initialize() (environment *Environment, err error) {
 		os.RemoveAll(targetFolder)
 	}
 
-	var credentials *api.Credentials
-	if credentials, err = api.CreateCredentials(); err != nil {
+	var credentials *settings.Credentials
+	if credentials, err = settings.CreateCredentials(); err != nil {
 		return nil, err
 	}
 

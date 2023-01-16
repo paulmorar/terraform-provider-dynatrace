@@ -21,8 +21,8 @@ import (
 	"context"
 	"os"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/logging"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
@@ -53,19 +53,19 @@ func (me *Generic) Resource() *schema.Resource {
 	}
 }
 
-func (me *Generic) createCredentials(m any) *api.Credentials {
+func (me *Generic) createCredentials(m any) *settings.Credentials {
 	conf := m.(*config.ProviderConfiguration)
-	return &api.Credentials{
+	return &settings.Credentials{
 		Token: conf.APIToken,
 		URL:   conf.EnvironmentURL,
 	}
 }
 
-func (me *Generic) Settings() api.Settings {
+func (me *Generic) Settings() settings.Settings {
 	return me.Descriptor.NewSettings()
 }
 
-func (me *Generic) Service(m any) api.CRUDService[api.Settings] {
+func (me *Generic) Service(m any) settings.CRUDService[settings.Settings] {
 	return me.Descriptor.Service(me.createCredentials(m))
 }
 
@@ -95,15 +95,7 @@ func (me *Generic) Update(ctx context.Context, d *schema.ResourceData, m any) di
 
 func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var err error
-	var restLogFile *os.File
-	restLogFileName := os.Getenv("DT_REST_DEBUG_LOG")
-	if len(restLogFileName) > 0 {
-		if restLogFile, err = os.Create(restLogFileName); err != nil {
-			return diag.FromErr(err)
-		}
-		rest.SetLogWriter(restLogFile)
-	}
-	settings := me.Settings()
+	sttngs := me.Settings()
 	// if os.Getenv("CACHE_OFFLINE_MODE") != "true" {
 	// 	if _, ok := settings.(*vault.Credentials); ok {
 	// 		return diag.Diagnostics{}
@@ -113,7 +105,7 @@ func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag
 	// 	}
 	// }
 	service := me.Service(m)
-	if err := service.Get(d.Id(), settings); err != nil {
+	if err := service.Get(d.Id(), sttngs); err != nil {
 		if restError, ok := err.(rest.Error); ok {
 			if restError.Code == 404 {
 				d.SetId("")
@@ -122,15 +114,32 @@ func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag
 		}
 		return diag.FromErr(err)
 	}
-	if preparer, ok := settings.(MarshalPreparer); ok {
+	if preparer, ok := sttngs.(MarshalPreparer); ok {
 		preparer.PrepareMarshalHCL(hcl.DecoderFrom(d))
 	}
 	if os.Getenv("DT_TERRAFORM_IMPORT") == "true" {
-		if demoSettings, ok := settings.(api.DemoSettings); ok {
+		if demoSettings, ok := sttngs.(settings.DemoSettings); ok {
 			demoSettings.FillDemoValues()
 		}
 	}
-	marshalled, err := settings.MarshalHCL()
+
+	marshalled, err := sttngs.MarshalHCL()
+	attributes := Attributes{}
+	attributes.collect("", marshalled)
+	stateAttributes := NewAttributes(d.State().Attributes)
+	for key, value := range attributes {
+		if value == "${state.secret_value}" {
+			matches := stateAttributes.MatchingKeys(key)
+			siblings := attributes.Siblings(key)
+			for _, m := range matches {
+				sibs := stateAttributes.Siblings(m)
+				if sibs.Contains(siblings...) {
+					store(marshalled, key, stateAttributes[m])
+					break
+				}
+			}
+		}
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}

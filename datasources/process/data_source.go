@@ -19,10 +19,10 @@ package process
 
 import (
 	dscommon "github.com/dynatrace-oss/terraform-provider-dynatrace/datasources"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	processes "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/topology/processes"
-	settings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/topology/processes/settings"
+	processsettings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/topology/processes/settings"
 	tagapi "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/topology/tag"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -61,14 +61,14 @@ func DataSourceRead(d *schema.ResourceData, m any) (err error) {
 	}
 
 	service := processes.Service(config.Credentials(m))
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	if stubs, err = service.List(); err != nil {
 		return err
 	}
 	if len(stubs) > 0 {
 		for _, stub := range stubs {
 			if name == stub.Name {
-				var process settings.Process
+				var process processsettings.Process
 				if err = service.Get(stub.ID, &process); err != nil {
 					return err
 				}

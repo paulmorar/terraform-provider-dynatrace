@@ -19,11 +19,12 @@ package sharing
 
 import (
 	"fmt"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/cache"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"net/url"
 	"strings"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
 
 	dashboards "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/dashboards/settings"
 	sharing "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/dashboards/sharing/settings"
@@ -32,7 +33,7 @@ import (
 
 const SchemaID = "v1:config:dashboards:sharing"
 
-func Service(credentials *api.Credentials) api.CRUDService[*sharing.DashboardSharing] {
+func Service(credentials *settings.Credentials) settings.CRUDService[*sharing.DashboardSharing] {
 	return &service{
 		client:           rest.DefaultClient(credentials.URL, credentials.Token),
 		dashboardService: cache.CRUD(jsondashboards.Service(credentials)),
@@ -41,11 +42,11 @@ func Service(credentials *api.Credentials) api.CRUDService[*sharing.DashboardSha
 
 type service struct {
 	client           rest.Client
-	dashboardService api.CRUDService[*dashboards.JSONDashboard]
+	dashboardService settings.CRUDService[*dashboards.JSONDashboard]
 }
 
-type NoValuesLister[T api.Settings] interface {
-	ListNoValues() (api.Stubs, error)
+type NoValuesLister[T settings.Settings] interface {
+	ListNoValues() (settings.Stubs, error)
 }
 
 func (me *service) Get(id string, v *sharing.DashboardSharing) error {
@@ -56,7 +57,7 @@ func (me *service) Get(id string, v *sharing.DashboardSharing) error {
 	}
 
 	var dashboardName string
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	var err error
 
 	if noValuesLister, ok := me.dashboardService.(NoValuesLister[*dashboards.Dashboard]); ok {
@@ -123,17 +124,17 @@ func (me *service) Delete(id string) error {
 	return me.Update(id, &settings)
 }
 
-func (me *service) Create(v *sharing.DashboardSharing) (*api.Stub, error) {
+func (me *service) Create(v *sharing.DashboardSharing) (*settings.Stub, error) {
 	if err := me.Update(v.DashboardID, v); err != nil {
 		return nil, err
 	}
-	return &api.Stub{ID: v.DashboardID + "-sharing"}, nil
+	return &settings.Stub{ID: v.DashboardID + "-sharing"}, nil
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	var err error
 
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	if stubs, err = me.dashboardService.List(); err != nil {
 		return nil, err
 	}

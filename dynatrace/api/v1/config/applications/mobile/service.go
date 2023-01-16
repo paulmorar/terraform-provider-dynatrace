@@ -19,23 +19,24 @@ package mobile
 
 import (
 	"fmt"
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"net/url"
 	"strings"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	mobile "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/applications/mobile/settings"
 )
 
 const SchemaID = "v1:config:applications:mobile"
 
-func Service(credentials *api.Credentials) api.CRUDService[*mobile.Application] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*mobile.Application] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		&api.ServiceOptions[*mobile.Application]{
-			Get:           api.Path("/api/config/v1/applications/mobile/%s"),
-			List:          api.Path("/api/config/v1/applications/mobile"),
+		&settings.ServiceOptions[*mobile.Application]{
+			Get:           settings.Path("/api/config/v1/applications/mobile/%s"),
+			List:          settings.Path("/api/config/v1/applications/mobile"),
 			CreateConfirm: 20,
 			OnChanged:     StoreKeyUserActionsAndSessionProperties,
 			CompleteGet:   LoadKeyUserActionsAndSessionProperties,

@@ -18,17 +18,17 @@
 package services
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	services "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/topology/services/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:environment:services"
 const BasePath = "/api/v1/entity/services"
 
-func Service(credentials *api.Credentials) api.RService[*services.Settings] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.RService[*services.Settings] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*services.Settings](BasePath).WithStubs(new(services.Services)),
+		settings.DefaultServiceOptions[*services.Settings](BasePath).WithStubs(new(services.Services)),
 	)
 }

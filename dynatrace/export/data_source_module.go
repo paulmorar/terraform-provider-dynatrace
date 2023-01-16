@@ -22,7 +22,7 @@ import (
 	"path"
 	"strings"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 type DataSourceModule struct {
@@ -33,7 +33,7 @@ type DataSourceModule struct {
 	Status      ModuleStatus
 	Error       error
 	Descriptor  *DataSourceDescriptor
-	Service     api.RService[api.Settings]
+	Service     settings.RService[settings.Settings]
 }
 
 func (me *DataSourceModule) DataSource(id string) *DataSource {
@@ -49,7 +49,7 @@ func (me *DataSourceModule) GetFolder(base string) string {
 	return path.Join(base, me.Type.Trim())
 }
 
-func (me *DataSourceModule) Discover(credentials *api.Credentials) error {
+func (me *DataSourceModule) Discover(credentials *settings.Credentials) error {
 	if me.Status.IsOneOf(ModuleStati.Downloaded, ModuleStati.Discovered, ModuleStati.Erronous) {
 		return nil
 	}
@@ -65,7 +65,7 @@ func (me *DataSourceModule) Discover(credentials *api.Credentials) error {
 
 	var err error
 
-	var stubs []*api.Stub
+	var stubs []*settings.Stub
 	log.Println("Discovering \"" + me.Type + "\" ...")
 	if stubs, err = me.Service.List(); err != nil {
 		if strings.Contains(err.Error(), "Token is missing required scope") {

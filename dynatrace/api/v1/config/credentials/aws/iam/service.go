@@ -18,9 +18,9 @@
 package iam
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	iam "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/credentials/aws/iam/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:config:credentials:aws:iam:external:id"
@@ -35,14 +35,14 @@ func (me *service) Get(id string, v *iam.Settings) error {
 	return me.client.Get("/api/config/v1/aws/iamExternalId", 200).Finish(v)
 }
 
-func (me *service) List() (api.Stubs, error) {
-	return api.Stubs{&api.Stub{ID: StaticID, Name: StaticName}}, nil
+func (me *service) List() (settings.Stubs, error) {
+	return settings.Stubs{&settings.Stub{ID: StaticID, Name: StaticName}}, nil
 }
 
 func (me *service) SchemaID() string {
 	return SchemaID
 }
 
-func Service(credentials *api.Credentials) api.RService[*iam.Settings] {
+func Service(credentials *settings.Credentials) settings.RService[*iam.Settings] {
 	return &service{client: rest.DefaultClient(credentials.URL, credentials.Token)}
 }

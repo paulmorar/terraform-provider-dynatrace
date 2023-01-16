@@ -18,14 +18,14 @@
 package entrypoints
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 
 	entrypoints "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/spans/entrypoints/settings"
 )
 
 const SchemaID = "builtin:span-entry-points"
 
-func Service(credentials *api.Credentials) api.CRUDService[*entrypoints.SpanEntryPoint] {
-	return v2.Service[*entrypoints.SpanEntryPoint](credentials, SchemaID)
+func Service(credentials *settings.Credentials) settings.CRUDService[*entrypoints.SpanEntryPoint] {
+	return settings20.Service[*entrypoints.SpanEntryPoint](credentials, SchemaID)
 }

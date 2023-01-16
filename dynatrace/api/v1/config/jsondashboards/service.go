@@ -20,31 +20,31 @@ package jsondashboards
 import (
 	"strings"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	dashboards "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/dashboards/settings"
 )
 
 const SchemaID = "v1:config:json-dashboards"
 
-func Service(credentials *api.Credentials) api.CRUDService[*dashboards.JSONDashboard] {
-	return &service{api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*dashboards.JSONDashboard] {
+	return &service{settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*dashboards.JSONDashboard]("/api/config/v1/dashboards").WithStubs(&dashboards.DashboardList{}),
+		settings.DefaultServiceOptions[*dashboards.JSONDashboard]("/api/config/v1/dashboards").WithStubs(&dashboards.DashboardList{}),
 	)}
 }
 
 type service struct {
-	service api.CRUDService[*dashboards.JSONDashboard]
+	service settings.CRUDService[*dashboards.JSONDashboard]
 }
 
-func (me *service) List() (api.Stubs, error) {
+func (me *service) List() (settings.Stubs, error) {
 	stubs, err := me.service.List()
 	if err != nil {
 		return stubs, err
 	}
-	var filteredStubs api.Stubs
+	var filteredStubs settings.Stubs
 	for _, stub := range stubs {
 		if stub.Name != "Config owned by " {
 			filteredStubs = append(filteredStubs, stub)
@@ -58,13 +58,13 @@ func (me *service) Get(id string, v *dashboards.JSONDashboard) error {
 }
 
 func (me *service) Validate(v *dashboards.JSONDashboard) error {
-	if validator, ok := me.service.(api.Validator[*dashboards.JSONDashboard]); ok {
+	if validator, ok := me.service.(settings.Validator[*dashboards.JSONDashboard]); ok {
 		return validator.Validate(v)
 	}
 	return nil
 }
 
-func (me *service) Create(v *dashboards.JSONDashboard) (*api.Stub, error) {
+func (me *service) Create(v *dashboards.JSONDashboard) (*settings.Stub, error) {
 	return me.service.Create(v)
 }
 

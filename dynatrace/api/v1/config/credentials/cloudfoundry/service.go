@@ -18,17 +18,17 @@
 package cloudfoundry
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	cloudfoundry "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/credentials/cloudfoundry/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
 const SchemaID = "v1:config:credentials:cloudfoundry"
 const BasePath = "/api/config/v1/cloudFoundry/credentials"
 
-func Service(credentials *api.Credentials) api.CRUDService[*cloudfoundry.CloudFoundryCredentials] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*cloudfoundry.CloudFoundryCredentials] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*cloudfoundry.CloudFoundryCredentials](BasePath),
+		settings.DefaultServiceOptions[*cloudfoundry.CloudFoundryCredentials](BasePath),
 	)
 }

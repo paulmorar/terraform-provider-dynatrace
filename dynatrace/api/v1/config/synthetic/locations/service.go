@@ -18,15 +18,15 @@
 package locations
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	locations "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
 )
 
 const SchemaID = "v1:synthetic:locations:all"
 
-func Service(credentials *api.Credentials) api.RService[*locations.SyntheticLocation] {
+func Service(credentials *settings.Credentials) settings.RService[*locations.SyntheticLocation] {
 	return &service{client: rest.DefaultClient(credentials.URL, credentials.Token)}
 }
 
@@ -34,20 +34,20 @@ type service struct {
 	client rest.Client
 }
 
-func (me *service) List() (stubs api.Stubs, err error) {
+func (me *service) List() (stubs settings.Stubs, err error) {
 	var stubList locations.SyntheticLocations
 	if err = me.client.Get("/api/v1/synthetic/locations", 200).Finish(&stubList); err != nil {
 		return nil, err
 	}
 	for _, location := range stubList.Locations {
 		localLocation := location
-		stubs = append(stubs, &api.Stub{ID: location.ID, Name: location.Name, Value: localLocation})
+		stubs = append(stubs, &settings.Stub{ID: location.ID, Name: location.Name, Value: localLocation})
 	}
 	return stubs, nil
 }
 
 func (me *service) Get(id string, v *locations.SyntheticLocation) (err error) {
-	var stubs api.Stubs
+	var stubs settings.Stubs
 	if stubs, err = me.List(); err != nil {
 		return err
 	}

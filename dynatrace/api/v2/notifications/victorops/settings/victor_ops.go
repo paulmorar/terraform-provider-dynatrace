@@ -18,8 +18,6 @@
 package notifications
 
 import (
-	"log"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -36,16 +34,13 @@ type VictorOps struct {
 }
 
 func (me *VictorOps) PrepareMarshalHCL(decoder hcl.Decoder) error {
-	log.Println("VictorOps", "PrepareMarshalHCL")
 	if apiKey, ok := decoder.GetOk("api_key"); ok && len(apiKey.(string)) > 0 {
-		log.Println("  ", "me.APIKey <= %v", apiKey.(string))
 		me.APIKey = apiKey.(string)
 	}
 	return nil
 }
 
 func (me *VictorOps) FillDemoValues() []string {
-	log.Println("VictorOps", "PrepareMarshalHCL")
 	me.APIKey = "#######"
 	return []string{"Please fill in the API Key"}
 }

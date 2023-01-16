@@ -21,15 +21,15 @@ import (
 	"fmt"
 	"net/url"
 
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	entities "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/entities/settings"
 )
 
 const SchemaID = "v2:environment:entities"
 
-func Service(entityType string, credentials *api.Credentials) api.RService[*entities.Settings] {
+func Service(entityType string, credentials *settings.Credentials) settings.RService[*entities.Settings] {
 	return &service{entityType: entityType, client: rest.DefaultClient(credentials.URL, credentials.Token)}
 }
 
@@ -64,6 +64,6 @@ func (me *service) SchemaID() string {
 	return fmt.Sprintf("%s-%s", SchemaID, me.entityType)
 }
 
-func (me *service) List() (api.Stubs, error) {
-	return api.Stubs{&api.Stub{ID: me.SchemaID(), Name: me.SchemaID()}}, nil
+func (me *service) List() (settings.Stubs, error) {
+	return settings.Stubs{&settings.Stub{ID: me.SchemaID(), Name: me.SchemaID()}}, nil
 }

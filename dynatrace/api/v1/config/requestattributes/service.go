@@ -18,7 +18,7 @@
 package requestattributes
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	requestattributes "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/requestattributes/settings"
 )
@@ -26,10 +26,10 @@ import (
 const SchemaID = "v1:config:request-attributes"
 const BasePath = "/api/config/v1/service/requestAttributes"
 
-func Service(credentials *api.Credentials) api.CRUDService[*requestattributes.RequestAttribute] {
-	return api.NewCRUDService(
+func Service(credentials *settings.Credentials) settings.CRUDService[*requestattributes.RequestAttribute] {
+	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		api.DefaultServiceOptions[*requestattributes.RequestAttribute](BasePath),
+		settings.DefaultServiceOptions[*requestattributes.RequestAttribute](BasePath),
 	)
 }

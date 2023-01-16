@@ -18,14 +18,14 @@
 package attributes
 
 import (
-	api "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services"
-	v2 "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/services/v2"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/settings20"
 
 	attributes "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/spans/attributes/settings"
 )
 
 const SchemaID = "builtin:span-attribute"
 
-func Service(credentials *api.Credentials) api.CRUDService[*attributes.SpanAttribute] {
-	return v2.Service[*attributes.SpanAttribute](credentials, SchemaID)
+func Service(credentials *settings.Credentials) settings.CRUDService[*attributes.SpanAttribute] {
+	return settings20.Service[*attributes.SpanAttribute](credentials, SchemaID)
 }
