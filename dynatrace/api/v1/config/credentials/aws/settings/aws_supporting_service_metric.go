@@ -131,14 +131,8 @@ func (assm *AWSSupportingServiceMetric) MarshalHCL(properties hcl.Properties) er
 	if err := properties.Encode("statistic", assm.Statistic); err != nil {
 		return err
 	}
-	if assm.Dimensions != nil {
-		entries := []any{}
-		for _, dimension := range assm.Dimensions {
-			entries = append(entries, dimension)
-		}
-		if err := properties.Encode("dimensions", entries); err != nil {
-			return err
-		}
+	if err := properties.Encode("dimensions", assm.Dimensions); err != nil {
+		return err
 	}
 	return nil
 }

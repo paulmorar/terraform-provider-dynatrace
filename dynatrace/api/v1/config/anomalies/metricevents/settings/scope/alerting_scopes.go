@@ -177,35 +177,55 @@ func (me AlertingScopes) MarshalHCL(properties hcl.Properties) error {
 			}
 		default:
 		}
-		if err := properties.Encode("custom_device_group_name", customDeviceGroupNames); err != nil {
-			return err
+		if len(customDeviceGroupNames) > 0 {
+			properties["custom_device_group_name"] = customDeviceGroupNames
+		} else {
+			properties["custom_device_group_name"] = nil
 		}
-		if err := properties.Encode("entity", entityIDs); err != nil {
-			return err
+		if len(entityIDs) > 0 {
+			properties["entity"] = entityIDs
+		} else {
+			properties["entity"] = nil
 		}
-		if err := properties.Encode("host_group_name", hostGroupNames); err != nil {
-			return err
+		if len(hostGroupNames) > 0 {
+			properties["host_group_name"] = hostGroupNames
+		} else {
+			properties["host_group_name"] = nil
 		}
-		if err := properties.Encode("host_name", hostNames); err != nil {
-			return err
+		if len(hostNames) > 0 {
+			properties["host_name"] = hostNames
+		} else {
+			properties["host_name"] = nil
 		}
-		if err := properties.Encode("management_zone", managementZones); err != nil {
-			return err
+		if len(managementZones) > 0 {
+			properties["management_zone"] = managementZones
+		} else {
+			properties["management_zone"] = nil
 		}
-		if err := properties.Encode("name", names); err != nil {
-			return err
+		if len(names) > 0 {
+			properties["name"] = names
+		} else {
+			properties["name"] = nil
 		}
-		if err := properties.Encode("process_group_id", processGroupIDs); err != nil {
-			return err
+		if len(processGroupIDs) > 0 {
+			properties["process_group_id"] = processGroupIDs
+		} else {
+			properties["process_group_id"] = nil
 		}
-		if err := properties.Encode("process_group_name", processGroupNames); err != nil {
-			return err
+		if len(processGroupNames) > 0 {
+			properties["process_group_name"] = processGroupNames
+		} else {
+			properties["process_group_name"] = nil
 		}
-		if err := properties.Encode("tag", tags); err != nil {
-			return err
+		if len(tags) > 0 {
+			properties["tag"] = tags
+		} else {
+			properties["tag"] = nil
 		}
-		if err := properties.Encode("scope", scopes); err != nil {
-			return err
+		if len(scopes) > 0 {
+			properties["scope"] = scopes
+		} else {
+			properties["scope"] = nil
 		}
 	}
 	return nil

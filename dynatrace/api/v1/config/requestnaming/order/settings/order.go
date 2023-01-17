@@ -43,7 +43,7 @@ func (me *Order) Schema() map[string]*schema.Schema {
 }
 
 func (me *Order) MarshalHCL(properties hcl.Properties) error {
-	refs := []any{}
+	refs := []string{}
 	for _, ref := range me.Values {
 		refs = append(refs, ref.ID)
 	}

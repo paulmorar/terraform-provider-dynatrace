@@ -134,6 +134,17 @@ func (e *exportEntries) eval(key string, value any, breadCrumbs string, schema m
 				entry.Entries.handle(elem.(map[string]any), breadCrumbs, schema)
 				*e = append(*e, entry)
 			}
+		case hcl.Properties:
+			for _, elem := range v {
+				entry := &resourceEntry{Key: key, Entries: exportEntries{}}
+				switch typed := elem.(type) {
+				case map[string]any:
+					entry.Entries.handle(typed, breadCrumbs, schema)
+				case hcl.Properties:
+					entry.Entries.handle(map[string]any(typed), breadCrumbs, schema)
+				}
+				*e = append(*e, entry)
+			}
 		case string:
 			vs := []string{}
 			for _, elem := range v {
