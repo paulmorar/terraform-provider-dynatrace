@@ -142,55 +142,56 @@ func (me *Credentials) EnsurePredictableOrder() {
 	me.CredentialUsageSummary = conds
 }
 
-func (me *Credentials) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["name"] = me.Name
+func (me *Credentials) MarshalHCL(properties hcl.Properties) error {
+	properties["name"] = me.Name
 	if me.Description != nil && len(*me.Description) > 0 {
-		result["description"] = *me.Description
+		properties["description"] = *me.Description
 	}
 	if me.OwnerAccessOnly {
-		result["owner_access_only"] = me.OwnerAccessOnly
+		properties["owner_access_only"] = me.OwnerAccessOnly
 	}
-	result["scope"] = string(me.Scope)
+	properties["scope"] = string(me.Scope)
 	if me.Token != nil && len(*me.Token) > 0 {
-		result["token"] = *me.Token
+		properties["token"] = *me.Token
 	}
 	if me.Password != nil && len(*me.Password) > 0 {
-		result["password"] = *me.Password
+		properties["password"] = *me.Password
 	}
 	if me.Username != nil && len(*me.Username) > 0 {
-		result["username"] = *me.Username
+		properties["username"] = *me.Username
 	}
 	if me.Certificate != nil && len(*me.Certificate) > 0 {
-		result["certificate"] = *me.Certificate
+		properties["certificate"] = *me.Certificate
 	}
 	if me.CertificateFormat != nil && len(*me.CertificateFormat) > 0 {
-		result["format"] = *me.CertificateFormat
+		properties["format"] = *me.CertificateFormat
 	}
 	if me.ExternalVault != nil {
-		marshalled, err := me.ExternalVault.MarshalHCL()
+		marshalled := hcl.Properties{}
+		err := me.ExternalVault.MarshalHCL(marshalled)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["external"] = []any{marshalled}
+		properties["external"] = []any{marshalled}
 	}
 	if me.CredentialUsageSummary != nil {
 		entries := []any{}
 		for _, entry := range me.CredentialUsageSummary {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["credential_usage_summary"] = entries
+		properties["credential_usage_summary"] = entries
 	}
 
 	switch me.Type {
 	case CredentialsTypes.PublicCertificate:
-		result["public"] = true
+		properties["public"] = true
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Credentials) UnmarshalHCL(decoder hcl.Decoder) error {

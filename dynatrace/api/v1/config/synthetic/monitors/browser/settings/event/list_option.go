@@ -37,19 +37,19 @@ func (me *ListOptions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me ListOptions) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me ListOptions) MarshalHCL(properties hcl.Properties) error {
 	entries := []any{}
 	for _, entry := range me {
-		if marshalled, err := entry.MarshalHCL(); err == nil {
+		marshalled := hcl.Properties{}
+		if err := entry.MarshalHCL(marshalled); err == nil {
 			entries = append(entries, marshalled)
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["option"] = entries
+	properties["option"] = entries
 
-	return result, nil
+	return nil
 }
 
 func (me *ListOptions) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -79,12 +79,11 @@ func (me *ListOption) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ListOption) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["index"] = me.Index
-	result["value"] = me.Value
+func (me *ListOption) MarshalHCL(properties hcl.Properties) error {
+	properties["index"] = me.Index
+	properties["value"] = me.Value
 
-	return result, nil
+	return nil
 }
 
 func (me *ListOption) UnmarshalHCL(decoder hcl.Decoder) error {

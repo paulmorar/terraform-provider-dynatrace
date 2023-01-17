@@ -103,8 +103,8 @@ func Read(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	if err := Service(m).Get(d.Id(), settings); err != nil {
 		return diag.FromErr(err)
 	}
-	marshalled, err := settings.MarshalHCL()
-	if err != nil {
+	marshalled := hcl.Properties{}
+	if err := settings.MarshalHCL(marshalled); err != nil {
 		return diag.FromErr(err)
 	}
 	for k, v := range marshalled {

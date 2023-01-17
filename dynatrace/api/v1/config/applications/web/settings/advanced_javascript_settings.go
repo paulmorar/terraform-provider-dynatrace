@@ -92,8 +92,8 @@ func (me *AdvancedJavaScriptTagSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AdvancedJavaScriptTagSettings) MarshalHCL() (map[string]any, error) {
-	res, err := hcl.Properties{}.EncodeAll(map[string]any{
+func (me *AdvancedJavaScriptTagSettings) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.EncodeAll(map[string]any{
 		"sync_beacon_firefox":                    me.SyncBeaconFirefox,
 		"sync_beacon_internet_explorer":          me.SyncBeaconInternetExplorer,
 		"instrument_unsupported_ajax_frameworks": me.InstrumentUnsupportedAjaxFrameworks,
@@ -103,14 +103,13 @@ func (me *AdvancedJavaScriptTagSettings) MarshalHCL() (map[string]any, error) {
 		"additional_event_handlers":              me.AdditionalEventHandlers,
 		"event_wrapper_settings":                 &me.EventWrapperSettings,
 		"global_event_capture_settings":          me.GlobalEventCaptureSettings,
-	})
-	if err != nil {
-		return nil, err
+	}); err != nil {
+		return err
 	}
 	if me.EventWrapperSettings.IsDefault() {
-		res["event_wrapper_settings"] = nil
+		properties["event_wrapper_settings"] = nil
 	}
-	return res, nil
+	return nil
 }
 
 func (me *AdvancedJavaScriptTagSettings) UnmarshalHCL(decoder hcl.Decoder) error {

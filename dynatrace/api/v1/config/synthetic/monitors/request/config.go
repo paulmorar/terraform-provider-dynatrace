@@ -58,27 +58,27 @@ func (me *Config) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Config) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Config) MarshalHCL(properties hcl.Properties) error {
 	if me.UserAgent != nil && len(*me.UserAgent) > 0 {
-		result["user_agent"] = *me.UserAgent
+		properties["user_agent"] = *me.UserAgent
 	}
 	if me.AcceptAnyCertificate != nil && *me.AcceptAnyCertificate {
-		result["accept_any_certificate"] = *me.AcceptAnyCertificate
+		properties["accept_any_certificate"] = *me.AcceptAnyCertificate
 	}
 	if me.FollowRedirects != nil && *me.FollowRedirects {
-		result["follow_redirects"] = *me.FollowRedirects
+		properties["follow_redirects"] = *me.FollowRedirects
 	} else {
-		result["follow_redirects"] = false
+		properties["follow_redirects"] = false
 	}
 	if len(me.RequestHeaders) > 0 {
-		if marshalled, err := me.RequestHeaders.MarshalHCL(); err == nil {
-			result["headers"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.RequestHeaders.MarshalHCL(marshalled); err == nil {
+			properties["headers"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Config) UnmarshalHCL(decoder hcl.Decoder) error {

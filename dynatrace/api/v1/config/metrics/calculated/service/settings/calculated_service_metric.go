@@ -115,10 +115,9 @@ func (me *CalculatedServiceMetric) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CalculatedServiceMetric) MarshalHCL() (map[string]any, error) {
-	properties, err := hcl.NewProperties(me, me.Unknowns)
-	if err != nil {
-		return nil, err
+func (me *CalculatedServiceMetric) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	delete(properties, "metadata")
 	if me.MetricDefinition != nil && me.MetricDefinition.Metric == nil && me.MetricDefinition.RequestAttribute == nil {

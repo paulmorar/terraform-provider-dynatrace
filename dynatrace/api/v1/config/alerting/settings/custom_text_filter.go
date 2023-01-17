@@ -53,23 +53,21 @@ func (me *CustomTextFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomTextFilter) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *CustomTextFilter) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["enabled"] = me.Enabled
-	result["negate"] = me.Negate
-	result["operator"] = string(me.Operator)
-	result["value"] = me.Value
-	result["case_insensitive"] = me.CaseInsensitive
+	properties["enabled"] = me.Enabled
+	properties["negate"] = me.Negate
+	properties["operator"] = string(me.Operator)
+	properties["value"] = me.Value
+	properties["case_insensitive"] = me.CaseInsensitive
 
-	return result, nil
+	return nil
 }
 
 func (me *CustomTextFilter) UnmarshalHCL(decoder hcl.Decoder) error {

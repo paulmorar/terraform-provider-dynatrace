@@ -93,26 +93,20 @@ func (me *VictorOpsConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *VictorOpsConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *VictorOpsConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
 	if me.APIKey != nil {
-		result["api_key"] = *me.APIKey
+		properties["api_key"] = *me.APIKey
 	}
-	result["message"] = me.Message
-	result["routing_key"] = me.RoutingKey
+	properties["message"] = me.Message
+	properties["routing_key"] = me.RoutingKey
 
-	return result, nil
+	return nil
 }
 
 func (me *VictorOpsConfig) UnmarshalHCL(decoder hcl.Decoder) error {

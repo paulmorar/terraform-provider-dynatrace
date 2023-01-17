@@ -76,20 +76,14 @@ func (me *ValueCondition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ValueCondition) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *ValueCondition) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["negate"] = me.Negate
-	result["operator"] = string(me.Operator)
-	result["value"] = me.Value
-	return result, nil
+	properties["negate"] = me.Negate
+	properties["operator"] = string(me.Operator)
+	properties["value"] = me.Value
+	return nil
 }
 
 func (me *ValueCondition) UnmarshalHCL(decoder hcl.Decoder) error {

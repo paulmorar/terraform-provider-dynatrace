@@ -40,8 +40,7 @@ func (me *TagsWithSourceInfo) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me TagsWithSourceInfo) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me TagsWithSourceInfo) MarshalHCL(properties hcl.Properties) error {
 	entries := []any{}
 	sorted := TagsWithSourceInfo{}
 	sorted = append(sorted, me...)
@@ -49,14 +48,15 @@ func (me TagsWithSourceInfo) MarshalHCL() (map[string]any, error) {
 		return sorted[i].Key < sorted[j].Key
 	})
 	for _, tag := range sorted {
-		if marshalled, err := tag.MarshalHCL(); err == nil {
+		marshalled := hcl.Properties{}
+		if err := tag.MarshalHCL(marshalled); err == nil {
 			entries = append(entries, marshalled)
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["tag"] = entries
-	return result, nil
+	properties["tag"] = entries
+	return nil
 }
 
 func (me *TagsWithSourceInfo) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -105,17 +105,16 @@ func (me *TagWithSourceInfo) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me TagWithSourceInfo) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me TagWithSourceInfo) MarshalHCL(properties hcl.Properties) error {
 	if me.Source != nil {
-		result["source"] = string(*me.Source)
+		properties["source"] = string(*me.Source)
 	}
-	result["context"] = string(me.Context)
-	result["key"] = me.Key
+	properties["context"] = string(me.Context)
+	properties["key"] = me.Key
 	if me.Value != nil {
-		result["value"] = *me.Value
+		properties["value"] = *me.Value
 	}
-	return result, nil
+	return nil
 }
 
 func (me *TagWithSourceInfo) UnmarshalHCL(decoder hcl.Decoder) error {

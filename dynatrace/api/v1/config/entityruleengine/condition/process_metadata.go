@@ -61,21 +61,19 @@ func (pmck *ProcessMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (pmck *ProcessMetadata) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (pmck *ProcessMetadata) MarshalHCL(properties hcl.Properties) error {
 	if len(pmck.Unknowns) > 0 {
 		data, err := json.Marshal(pmck.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["attribute"] = string(pmck.Attribute)
+	properties["attribute"] = string(pmck.Attribute)
 	if pmck.DynamicKey != nil {
-		result["dynamic_key"] = string(*pmck.DynamicKey)
+		properties["dynamic_key"] = string(*pmck.DynamicKey)
 	}
-	return result, nil
+	return nil
 }
 
 func (pmck *ProcessMetadata) UnmarshalHCL(decoder hcl.Decoder) error {

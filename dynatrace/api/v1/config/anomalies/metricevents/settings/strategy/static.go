@@ -90,26 +90,19 @@ func (me *Static) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Static) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *Static) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["alert_condition"] = string(me.AlertCondition)
-	if me.AlertingOnMissingData != nil {
-		result["alerting_on_missing_data"] = *me.AlertingOnMissingData
-	}
-	result["dealerting_samples"] = int(me.DealertingSamples)
-	result["samples"] = int(me.Samples)
-	result["violating_samples"] = int(me.ViolatingSamples)
-	result["threshold"] = float64(me.Threshold)
-	result["unit"] = string(me.Unit)
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"alert_condition":          me.AlertCondition,
+		"alerting_on_missing_data": me.AlertingOnMissingData,
+		"dealerting_samples":       me.DealertingSamples,
+		"threshold":                me.Threshold,
+		"samples":                  me.Samples,
+		"violating_samples":        me.ViolatingSamples,
+		"unit":                     me.Unit,
+	})
 }
 
 func (me *Static) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -284,63 +284,64 @@ func (ac *AzureCredentials) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (ac *AzureCredentials) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (ac *AzureCredentials) MarshalHCL(properties hcl.Properties) error {
 	if len(ac.Unknowns) > 0 {
 		delete(ac.Unknowns, "id")
 		delete(ac.Unknowns, "metadata")
 		data, err := json.Marshal(ac.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
 
-	result["label"] = ac.Label
-	result["directory_id"] = ac.DirectoryID
-	result["auto_tagging"] = opt.Bool(ac.AutoTagging)
+	properties["label"] = ac.Label
+	properties["directory_id"] = ac.DirectoryID
+	properties["auto_tagging"] = opt.Bool(ac.AutoTagging)
 	if ac.MonitorOnlyTagPairs != nil {
 		entries := []any{}
 		for _, entry := range ac.MonitorOnlyTagPairs {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["monitor_only_tag_pairs"] = entries
+		properties["monitor_only_tag_pairs"] = entries
 	}
 	if ac.MonitorOnlyExcludingTagPairs != nil {
 		entries := []any{}
 		for _, entry := range ac.MonitorOnlyExcludingTagPairs {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["monitor_only_excluding_tag_pairs"] = entries
+		properties["monitor_only_excluding_tag_pairs"] = entries
 	}
-	result["active"] = opt.Bool(ac.Active)
-	result["app_id"] = ac.AppID
+	properties["active"] = opt.Bool(ac.Active)
+	properties["app_id"] = ac.AppID
 	if ac.Key != nil {
-		result["key"] = *ac.Key
+		properties["key"] = *ac.Key
 	}
-	result["monitor_only_tagged_entities"] = opt.Bool(ac.MonitorOnlyTaggedEntities)
+	properties["monitor_only_tagged_entities"] = opt.Bool(ac.MonitorOnlyTaggedEntities)
 	if ac.SupportingServices != nil {
 		entries := []any{}
 		for _, entry := range ac.SupportingServices {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
 
-		result["supporting_services"] = entries
+		properties["supporting_services"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (ac *AzureCredentials) UnmarshalHCL(decoder hcl.Decoder) error {

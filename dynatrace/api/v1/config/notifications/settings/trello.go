@@ -117,29 +117,23 @@ func (me *TrelloConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *TrelloConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *TrelloConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
-	result["resolved_list_id"] = me.ResolvedListID
-	result["text"] = me.Text
-	result["application_key"] = me.ApplicationKey
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
+	properties["resolved_list_id"] = me.ResolvedListID
+	properties["text"] = me.Text
+	properties["application_key"] = me.ApplicationKey
 	if me.AuthorizationToken != nil {
-		result["authorization_token"] = *me.AuthorizationToken
+		properties["authorization_token"] = *me.AuthorizationToken
 	}
-	result["board_id"] = me.BoardID
-	result["description"] = me.Description
-	result["list_id"] = me.ListID
-	return result, nil
+	properties["board_id"] = me.BoardID
+	properties["description"] = me.Description
+	properties["list_id"] = me.ListID
+	return nil
 }
 
 func (me *TrelloConfig) UnmarshalHCL(decoder hcl.Decoder) error {

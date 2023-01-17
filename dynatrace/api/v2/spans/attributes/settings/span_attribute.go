@@ -54,11 +54,11 @@ func (me *SpanAttribute) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpanAttribute) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
+func (me *SpanAttribute) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"key":     me.Key,
 		"masking": string(me.Masking),
-	}, nil
+	})
 }
 
 func (me *SpanAttribute) UnmarshalHCL(decoder hcl.Decoder) error {

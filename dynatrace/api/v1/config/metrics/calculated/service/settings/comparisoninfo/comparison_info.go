@@ -71,10 +71,9 @@ func (me *BaseComparisonInfo) GetType() Type {
 	return me.Type
 }
 
-func (me *BaseComparisonInfo) MarshalHCL() (map[string]any, error) {
-	properties, err := hcl.NewProperties(me, me.Unknowns)
-	if err != nil {
-		return nil, err
+func (me *BaseComparisonInfo) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	fmt.Printf("BaseComparisonInfo.Unknowns: %v", me.Unknowns)
 	return properties.EncodeAll(map[string]any{

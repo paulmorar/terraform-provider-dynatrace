@@ -35,19 +35,18 @@ func (me *PredefinedEventFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *PredefinedEventFilter) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *PredefinedEventFilter) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["event_type"] = string(me.EventType)
-	result["negate"] = me.Negate
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"event_type": me.EventType,
+		"negate":     me.Negate,
+	})
 }
 
 func (me *PredefinedEventFilter) UnmarshalHCL(decoder hcl.Decoder) error {

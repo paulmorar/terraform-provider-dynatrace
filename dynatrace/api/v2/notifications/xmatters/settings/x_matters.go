@@ -104,8 +104,8 @@ func (me *XMatters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *XMatters) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *XMatters) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"active":  me.Enabled,
 		"profile": me.ProfileID,

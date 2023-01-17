@@ -102,24 +102,22 @@ func (ct *CloudTag) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (ct *CloudTag) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (ct *CloudTag) MarshalHCL(properties hcl.Properties) error {
 	if len(ct.Unknowns) > 0 {
 		data, err := json.Marshal(ct.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
 
 	if ct.Value != nil {
-		result["value"] = *ct.Value
+		properties["value"] = *ct.Value
 	}
 	if ct.Name != nil {
-		result["name"] = *ct.Name
+		properties["name"] = *ct.Name
 	}
-	return result, nil
+	return nil
 }
 
 func (ct *CloudTag) UnmarshalHCL(decoder hcl.Decoder) error {

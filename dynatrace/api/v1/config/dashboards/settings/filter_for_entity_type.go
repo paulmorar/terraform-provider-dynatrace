@@ -47,21 +47,21 @@ func (me *FilterForEntityType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FilterForEntityType) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["entity_type"] = me.EntityType
+func (me *FilterForEntityType) MarshalHCL(properties hcl.Properties) error {
+	properties["entity_type"] = me.EntityType
 	if len(me.Filters) > 0 {
 		entries := []any{}
 		for _, entry := range me.Filters {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["match"] = entries
+		properties["match"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *FilterForEntityType) UnmarshalHCL(decoder hcl.Decoder) error {

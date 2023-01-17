@@ -97,9 +97,7 @@ func (me *ManagementZoneAttributeRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ManagementZoneAttributeRule) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *ManagementZoneAttributeRule) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"pg_to_service_propagation":                        me.PgToServicePropagation,
 		"entity_type":                                      me.EntityType,

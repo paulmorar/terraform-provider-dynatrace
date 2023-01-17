@@ -75,30 +75,29 @@ func (me *Device) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Device) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Device) MarshalHCL(properties hcl.Properties) error {
 	if me.Name != nil && len(*me.Name) > 0 {
-		result["name"] = *me.Name
+		properties["name"] = *me.Name
 	}
 	if me.Orientation != nil {
-		result["orientation"] = string(*me.Orientation)
+		properties["orientation"] = string(*me.Orientation)
 	}
 	if me.Mobile != nil {
-		result["mobile"] = *me.Mobile
+		properties["mobile"] = *me.Mobile
 	}
 	if me.TouchEnabled != nil {
-		result["touch_enabled"] = *me.TouchEnabled
+		properties["touch_enabled"] = *me.TouchEnabled
 	}
 	if me.Width != nil {
-		result["width"] = *me.Width
+		properties["width"] = *me.Width
 	}
 	if me.Height != nil {
-		result["height"] = *me.Height
+		properties["height"] = *me.Height
 	}
 	if me.ScaleFactor != nil {
-		result["scale_factor"] = *me.ScaleFactor
+		properties["scale_factor"] = *me.ScaleFactor
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Device) UnmarshalHCL(decoder hcl.Decoder) error {

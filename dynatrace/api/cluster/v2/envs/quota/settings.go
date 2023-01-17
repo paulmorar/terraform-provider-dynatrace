@@ -78,39 +78,38 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *Settings) MarshalHCL(properties hcl.Properties) error {
 	if !me.HostUnits.IsEmpty() {
 		if err := properties.Encode("host_units", me.HostUnits.MaxLimit); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if !me.DEMUnits.IsEmpty() {
 		if err := properties.Encode("dem_units", me.DEMUnits); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if !me.UserSessions.IsEmpty() {
 		if err := properties.Encode("user_sessions", me.UserSessions); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if !me.Synthetic.IsEmpty() {
 		if err := properties.Encode("synthetic", me.Synthetic); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.DDUs != nil && !me.DDUs.IsEmpty() {
 		if err := properties.Encode("ddus", me.DDUs); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.LogMonitoring != nil && !me.LogMonitoring.IsEmpty() {
 		if err := properties.Encode("logs", me.LogMonitoring); err != nil {
-			return nil, err
+			return err
 		}
 	}
-	return properties, nil
+	return nil
 }
 
 func (me *Settings) UnmarshalHCL(decoder hcl.Decoder) error {

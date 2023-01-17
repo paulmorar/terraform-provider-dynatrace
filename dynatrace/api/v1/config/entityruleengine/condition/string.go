@@ -61,19 +61,17 @@ func (sck *String) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (sck *String) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (sck *String) MarshalHCL(properties hcl.Properties) error {
 	if len(sck.Unknowns) > 0 {
 		data, err := json.Marshal(sck.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["attribute"] = string(sck.Attribute)
-	result["dynamic_key"] = sck.DynamicKey
-	return result, nil
+	properties["attribute"] = string(sck.Attribute)
+	properties["dynamic_key"] = sck.DynamicKey
+	return nil
 }
 
 func (sck *String) UnmarshalHCL(decoder hcl.Decoder) error {

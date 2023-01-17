@@ -289,9 +289,9 @@ func ExportDataSource(marshaler hcl.Marshaler, w io.Writer, resourceType string,
 }
 
 func (me *HCLGen) Export(marshaler hcl.Marshaler, w io.Writer, resourceType string, resourceName string, comments ...string) error {
-	var m map[string]any
 	var err error
-	if m, err = marshaler.MarshalHCL(); err != nil {
+	m := hcl.Properties{}
+	if err = marshaler.MarshalHCL(m); err != nil {
 		return err
 	}
 	var schema map[string]*schema.Schema

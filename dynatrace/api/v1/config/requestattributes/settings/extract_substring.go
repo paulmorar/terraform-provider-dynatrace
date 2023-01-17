@@ -78,22 +78,16 @@ func (me *ExtractSubstring) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ExtractSubstring) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *ExtractSubstring) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.EndDelimiter != nil {
-		result["end_delimiter"] = *me.EndDelimiter
+		properties["end_delimiter"] = *me.EndDelimiter
 	}
-	result["position"] = string(me.Position)
-	result["delimiter"] = me.Delimiter
-	return result, nil
+	properties["position"] = string(me.Position)
+	properties["delimiter"] = me.Delimiter
+	return nil
 }
 
 func (me *ExtractSubstring) UnmarshalHCL(decoder hcl.Decoder) error {

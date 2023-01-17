@@ -46,8 +46,8 @@ func (me *RestrictionSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RestrictionSettings) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *RestrictionSettings) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"mode":         me.Mode,
 		"restrictions": me.BrowserRestrictions,
 	})

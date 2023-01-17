@@ -77,23 +77,21 @@ func (sc *String) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (sc *String) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (sc *String) MarshalHCL(properties hcl.Properties) error {
 	if len(sc.Unknowns) > 0 {
 		data, err := json.Marshal(sc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = sc.Negate
-	result["operator"] = string(sc.Operator)
-	result["case_sensitive"] = sc.CaseSensitive
+	properties["negate"] = sc.Negate
+	properties["operator"] = string(sc.Operator)
+	properties["case_sensitive"] = sc.CaseSensitive
 	if sc.Value != nil {
-		result["value"] = *sc.Value
+		properties["value"] = *sc.Value
 	}
-	return result, nil
+	return nil
 }
 
 func (sc *String) UnmarshalHCL(decoder hcl.Decoder) error {

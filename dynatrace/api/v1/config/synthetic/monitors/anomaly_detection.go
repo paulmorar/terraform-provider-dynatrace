@@ -48,23 +48,24 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnomalyDetection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *AnomalyDetection) MarshalHCL(properties hcl.Properties) error {
 	if me.OutageHandling != nil {
-		if marshalled, err := me.OutageHandling.MarshalHCL(); err == nil {
-			result["outage_handling"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.OutageHandling.MarshalHCL(marshalled); err == nil {
+			properties["outage_handling"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.LoadingTimeThresholds != nil {
-		if marshalled, err := me.LoadingTimeThresholds.MarshalHCL(); err == nil {
-			result["loading_time_thresholds"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.LoadingTimeThresholds.MarshalHCL(marshalled); err == nil {
+			properties["loading_time_thresholds"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {

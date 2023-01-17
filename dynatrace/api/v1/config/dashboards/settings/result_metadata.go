@@ -45,15 +45,15 @@ func (me *ResultMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ResultMetadata) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *ResultMetadata) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Entries) > 0 {
 		entries := []any{}
 		for _, entry := range me.Entries {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
 		sort.Slice(entries, func(i, j int) bool {
@@ -63,9 +63,9 @@ func (me *ResultMetadata) MarshalHCL() (map[string]any, error) {
 			return (cmp == -1)
 		})
 
-		result["config"] = entries
+		properties["config"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *ResultMetadata) UnmarshalHCL(decoder hcl.Decoder) error {

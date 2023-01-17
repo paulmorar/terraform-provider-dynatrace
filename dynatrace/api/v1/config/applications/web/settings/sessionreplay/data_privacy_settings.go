@@ -54,8 +54,8 @@ func (me *SessionReplayDataPrivacySettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SessionReplayDataPrivacySettings) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *SessionReplayDataPrivacySettings) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"opt_in":                   me.OptIn,
 		"url_exclusion_rules":      me.URLExclusionRules,
 		"content_masking_settings": me.ContentMaskingSettings,

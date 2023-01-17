@@ -35,25 +35,22 @@ func (me Entities) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Entities) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Entities) MarshalHCL(properties hcl.Properties) error {
 	entries := []any{}
 	for _, entry := range *me {
-		if marshalled, err := entry.MarshalHCL(); err == nil {
+		marshalled := hcl.Properties{}
+		if err := entry.MarshalHCL(marshalled); err == nil {
 			entries = append(entries, marshalled)
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["entity"] = entries
-	return result, nil
+	properties["entity"] = entries
+	return nil
 }
 
 func (me *Entities) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("entity", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("entity", me)
 }
 
 type Entity struct {
@@ -91,9 +88,7 @@ func (me *Entity) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Entity) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *Entity) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"entity_id":    me.EntityId,
 		"type":         me.Type,

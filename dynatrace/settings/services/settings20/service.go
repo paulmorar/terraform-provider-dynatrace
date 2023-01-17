@@ -20,7 +20,6 @@ package settings20
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
@@ -126,7 +125,6 @@ func (me *service[T]) List() (settings.Stubs, error) {
 				var itemName string
 				if me.options != nil && me.options.Name != nil {
 					if itemName, err = me.options.Name(item.ObjectID, newItem); err != nil {
-						log.Println(err.Error())
 						itemName = settings.Name(newItem)
 					}
 				} else {

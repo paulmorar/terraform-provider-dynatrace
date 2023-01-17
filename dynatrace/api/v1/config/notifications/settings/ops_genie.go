@@ -93,26 +93,20 @@ func (me *OpsGenieConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *OpsGenieConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *OpsGenieConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
 	if me.APIKey != nil {
-		result["api_key"] = *me.APIKey
+		properties["api_key"] = *me.APIKey
 	}
 
-	result["domain"] = me.Domain
-	result["message"] = me.Message
-	return result, nil
+	properties["domain"] = me.Domain
+	properties["message"] = me.Message
+	return nil
 }
 
 func (me *OpsGenieConfig) UnmarshalHCL(decoder hcl.Decoder) error {

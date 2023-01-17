@@ -69,22 +69,20 @@ func (bc *Bitness) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (bc *Bitness) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (bc *Bitness) MarshalHCL(properties hcl.Properties) error {
 	if len(bc.Unknowns) > 0 {
 		data, err := json.Marshal(bc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = bc.Negate
-	result["operator"] = string(bc.Operator)
+	properties["negate"] = bc.Negate
+	properties["operator"] = string(bc.Operator)
 	if bc.Value != nil {
-		result["value"] = bc.Value.String()
+		properties["value"] = bc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (bc *Bitness) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -69,22 +69,20 @@ func (htc *HypervisorType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (htc *HypervisorType) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (htc *HypervisorType) MarshalHCL(properties hcl.Properties) error {
 	if len(htc.Unknowns) > 0 {
 		data, err := json.Marshal(htc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = htc.Negate
-	result["operator"] = string(htc.Operator)
+	properties["negate"] = htc.Negate
+	properties["operator"] = string(htc.Operator)
 	if htc.Value != nil {
-		result["value"] = htc.Value.String()
+		properties["value"] = htc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (htc *HypervisorType) UnmarshalHCL(decoder hcl.Decoder) error {

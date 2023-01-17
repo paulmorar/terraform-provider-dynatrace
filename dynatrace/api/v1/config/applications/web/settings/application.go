@@ -176,8 +176,8 @@ func (me *Application) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Application) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *Application) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"name":                                 me.Name,
 		"type":                                 me.Type,
 		"real_user_monitoring_enabled":         me.RealUserMonitoringEnabled,

@@ -71,33 +71,16 @@ func (me *String) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *String) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *String) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	if me.Key != nil {
-		result["key"] = *me.Key
-	}
-	if me.Name != nil {
-		result["name"] = *me.Name
-	}
-	if me.Index != nil {
-		result["index"] = *me.Index
-	}
-	if me.TextFilter != nil {
-		if marshalled, err := me.TextFilter.MarshalHCL(); err == nil {
-			result["filter"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"key":    me.Key,
+		"name":   me.Name,
+		"index":  me.Index,
+		"filter": me.TextFilter,
+	})
 }
 
 func (me *String) UnmarshalHCL(decoder hcl.Decoder) error {

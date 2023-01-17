@@ -115,39 +115,38 @@ func (me *PrivateSyntheticLocation) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *PrivateSyntheticLocation) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["name"] = me.Name
+func (me *PrivateSyntheticLocation) MarshalHCL(properties hcl.Properties) error {
+	properties["name"] = me.Name
 	if me.CountryCode != nil {
-		result["country_code"] = me.CountryCode
+		properties["country_code"] = me.CountryCode
 	}
 	if me.RegionCode != nil {
-		result["region_code"] = me.RegionCode
+		properties["region_code"] = me.RegionCode
 	}
 	if me.City != nil {
-		result["city"] = me.City
+		properties["city"] = me.City
 	}
-	result["latitude"] = me.Latitude
-	result["longitude"] = me.Longitude
+	properties["latitude"] = me.Latitude
+	properties["longitude"] = me.Longitude
 	if len(me.Nodes) > 0 {
-		result["nodes"] = me.Nodes
+		properties["nodes"] = me.Nodes
 	}
-	result["availability_location_outage"] = me.AvailabilityLocationOutage
-	result["availability_node_outage"] = me.AvailabilityNodeOutage
+	properties["availability_location_outage"] = me.AvailabilityLocationOutage
+	properties["availability_node_outage"] = me.AvailabilityNodeOutage
 	if me.LocationNodeOutageDelayInMinutes != nil {
-		result["location_node_outage_delay_in_minutes"] = *me.LocationNodeOutageDelayInMinutes
+		properties["location_node_outage_delay_in_minutes"] = *me.LocationNodeOutageDelayInMinutes
 	} else {
-		result["location_node_outage_delay_in_minutes"] = nil
+		properties["location_node_outage_delay_in_minutes"] = nil
 	}
-	result["availability_notifications_enabled"] = me.AvailabilityNotificationsEnabled
+	properties["availability_notifications_enabled"] = me.AvailabilityNotificationsEnabled
 	if me.DeploymentType != nil {
-		result["deployment_type"] = string(*me.DeploymentType)
+		properties["deployment_type"] = string(*me.DeploymentType)
 	} else {
-		result["deployment_type"] = nil
+		properties["deployment_type"] = nil
 	}
-	result["auto_update_chromium"] = me.AutoUpdateChromium
+	properties["auto_update_chromium"] = me.AutoUpdateChromium
 
-	return result, nil
+	return nil
 }
 
 func (me *PrivateSyntheticLocation) UnmarshalHCL(decoder hcl.Decoder) error {

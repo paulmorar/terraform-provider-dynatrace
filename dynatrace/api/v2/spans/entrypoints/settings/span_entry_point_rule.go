@@ -55,9 +55,7 @@ func (me *SpanEntrypointRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpanEntrypointRule) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *SpanEntrypointRule) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"action":  me.Action,

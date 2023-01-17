@@ -38,15 +38,10 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
-		"percentage": int(me.FreeInodesPercentage),
-	}, nil
+func (me *Thresholds) MarshalHCL(properties hcl.Properties) error {
+	return properties.Encode("percentage", me.FreeInodesPercentage)
 }
 
 func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {
-	if value, ok := decoder.GetOk("percentage"); ok {
-		me.FreeInodesPercentage = int32(value.(int))
-	}
-	return nil
+	return decoder.Decode("percentage", &me.FreeInodesPercentage)
 }

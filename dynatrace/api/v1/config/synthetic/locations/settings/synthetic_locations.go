@@ -39,18 +39,18 @@ func (me *SyntheticLocations) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SyntheticLocations) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *SyntheticLocations) MarshalHCL(properties hcl.Properties) error {
 	entries := []any{}
 	for _, entry := range me.Locations {
-		if marshalled, err := entry.MarshalHCL(); err == nil {
+		marshalled := hcl.Properties{}
+		if err := entry.MarshalHCL(marshalled); err == nil {
 			entries = append(entries, marshalled)
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["location"] = entries
-	return result, nil
+	properties["location"] = entries
+	return nil
 }
 
 type SyntheticLocation struct {
@@ -108,24 +108,23 @@ func (me *SyntheticLocation) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SyntheticLocation) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["entity_id"] = me.ID
-	result["name"] = me.Name
-	result["type"] = string(me.Type)
+func (me *SyntheticLocation) MarshalHCL(properties hcl.Properties) error {
+	properties["entity_id"] = me.ID
+	properties["name"] = me.Name
+	properties["type"] = string(me.Type)
 	if me.Stage != nil {
-		result["stage"] = string(*me.Stage)
+		properties["stage"] = string(*me.Stage)
 	}
 	if me.Status != nil {
-		result["status"] = string(*me.Status)
+		properties["status"] = string(*me.Status)
 	}
 	if me.CloudPlatform != nil {
-		result["cloud_platform"] = string(*me.CloudPlatform)
+		properties["cloud_platform"] = string(*me.CloudPlatform)
 	}
 	if me.IPs != nil {
-		result["ips"] = append([]string{}, me.IPs...)
+		properties["ips"] = append([]string{}, me.IPs...)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *SyntheticLocation) UnmarshalHCL(decoder hcl.Decoder) error {

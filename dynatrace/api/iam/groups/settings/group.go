@@ -39,8 +39,8 @@ func (me *Group) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Group) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *Group) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"name":                       me.Name,
 		"description":                me.Description,
 		"federated_attribute_values": me.FederatedAttributeValues,

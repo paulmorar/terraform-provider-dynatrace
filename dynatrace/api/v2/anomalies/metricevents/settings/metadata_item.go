@@ -43,9 +43,7 @@ func (me *MetadataItem) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MetadataItem) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *MetadataItem) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"metadata_key":   me.MetadataKey,
 		"metadata_value": me.MetadataValue,

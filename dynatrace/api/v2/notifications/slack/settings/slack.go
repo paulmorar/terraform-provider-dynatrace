@@ -88,12 +88,11 @@ func (me *Slack) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Slack) MarshalHCL() (map[string]any, error) {
-	// The url field MUST NOT get serialized into HCL here
+func (me *Slack) MarshalHCL(properties hcl.Properties) error { // The url field MUST NOT get serialized into HCL here
 	// The Dynatrace Settings 2.0 API delivers a scrambled version of any previously stored url here
 	// Evaluation at this point would lead to that scrambled version to make it into the Terraform State
 	// As a result any plans would be non-empty
-	return hcl.Properties{}.EncodeAll(map[string]any{
+	return properties.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"active":  me.Enabled,
 		"profile": me.ProfileID,

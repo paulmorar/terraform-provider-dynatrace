@@ -129,9 +129,7 @@ func (kc *KubernetesCredentials) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (kc *KubernetesCredentials) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (kc *KubernetesCredentials) MarshalHCL(properties hcl.Properties) error {
 	if kc.Unknowns != nil {
 		if data, ok := kc.Unknowns["activeGateGroup"]; ok {
 			json.Unmarshal(data, &kc.ActiveGateGroup)
@@ -142,37 +140,39 @@ func (kc *KubernetesCredentials) MarshalHCL() (map[string]any, error) {
 		if len(kc.Unknowns) > 0 {
 			data, err := json.Marshal(kc.Unknowns)
 			if err != nil {
-				return nil, err
+				return err
 			}
-			result["unknowns"] = string(data)
+			properties["unknowns"] = string(data)
 		}
 	}
-	result["active"] = kc.Active
-	result["hostname_verification"] = opt.Bool(kc.HostnameVerificationEnabled)
-	result["prometheus_exporters"] = opt.Bool(kc.PrometheusExportersIntegrationEnabled)
-	result["workload_integration_enabled"] = opt.Bool(kc.WorkloadIntegrationEnabled)
-	result["certificate_check_enabled"] = opt.Bool(kc.CertificateCheckEnabled)
-	result["events_integration_enabled"] = opt.Bool(kc.EventsIntegrationEnabled)
-	result["davis_events_integration_enabled"] = opt.Bool(kc.DavisEventsIntegrationEnabled)
-	result["event_analysis_and_alerting_enabled"] = opt.Bool(kc.EventAnalysisAndAlertingEnabled)
+	properties["active"] = kc.Active
+	properties["hostname_verification"] = opt.Bool(kc.HostnameVerificationEnabled)
+	properties["prometheus_exporters"] = opt.Bool(kc.PrometheusExportersIntegrationEnabled)
+	properties["workload_integration_enabled"] = opt.Bool(kc.WorkloadIntegrationEnabled)
+	properties["certificate_check_enabled"] = opt.Bool(kc.CertificateCheckEnabled)
+	properties["events_integration_enabled"] = opt.Bool(kc.EventsIntegrationEnabled)
+	properties["davis_events_integration_enabled"] = opt.Bool(kc.DavisEventsIntegrationEnabled)
+	properties["event_analysis_and_alerting_enabled"] = opt.Bool(kc.EventAnalysisAndAlertingEnabled)
 
-	result["label"] = kc.Label
+	properties["label"] = kc.Label
 	if kc.AuthToken != nil {
-		result["auth_token"] = *kc.AuthToken
+		properties["auth_token"] = *kc.AuthToken
 	}
-	result["endpoint_url"] = kc.EndpointURL
+	properties["endpoint_url"] = kc.EndpointURL
 	if kc.EventsFieldSelectors != nil {
 		entries := []any{}
 		for _, eventPattern := range kc.EventsFieldSelectors {
-			if marshalled, err := eventPattern.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+
+			if err := eventPattern.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["events_field_selectors"] = entries
+		properties["events_field_selectors"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (kc *KubernetesCredentials) UnmarshalHCL(decoder hcl.Decoder) error {

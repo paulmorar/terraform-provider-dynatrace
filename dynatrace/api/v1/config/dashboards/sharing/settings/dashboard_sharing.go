@@ -74,26 +74,27 @@ func (me *DashboardSharing) Schema() map[string]*schema.Schema {
 }
 
 // MarshalHCL has no documentation
-func (me *DashboardSharing) MarshalHCL() (map[string]any, error) {
-	m := map[string]any{}
-	m["dashboard_id"] = me.DashboardID
-	m["enabled"] = me.Enabled
-	m["preset"] = me.Preset
+func (me *DashboardSharing) MarshalHCL(properties hcl.Properties) error {
+	properties["dashboard_id"] = me.DashboardID
+	properties["enabled"] = me.Enabled
+	properties["preset"] = me.Preset
 	if len(me.Permissions) > 0 {
-		if marshalled, err := me.Permissions.MarshalHCL(); err != nil {
-			return nil, err
+		marshalled := hcl.Properties{}
+		if err := me.Permissions.MarshalHCL(marshalled); err != nil {
+			return err
 		} else {
-			m["permissions"] = []any{marshalled}
+			properties["permissions"] = []any{marshalled}
 		}
 	}
 	if me.PublicAccess != nil && !me.PublicAccess.IsEmpty() {
-		if marshalled, err := me.PublicAccess.MarshalHCL(); err != nil {
-			return nil, err
+		marshalled := hcl.Properties{}
+		if err := me.PublicAccess.MarshalHCL(marshalled); err != nil {
+			return err
 		} else {
-			m["public"] = []any{marshalled}
+			properties["public"] = []any{marshalled}
 		}
 	}
-	return m, nil
+	return nil
 }
 
 // UnmarshalHCL has no documentation

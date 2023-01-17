@@ -71,21 +71,16 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *Thresholds) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["load"] = string(me.LoadThreshold)
-	result["sensitivity"] = string(me.Sensitivity)
-	result["milliseconds"] = int(me.Milliseconds)
-	result["slowest_milliseconds"] = int(me.SlowestMilliseconds)
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"load":                 me.LoadThreshold,
+		"sensitivity":          me.Sensitivity,
+		"milliseconds":         me.Milliseconds,
+		"slowest_milliseconds": me.SlowestMilliseconds,
+	})
 }
 
 func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {

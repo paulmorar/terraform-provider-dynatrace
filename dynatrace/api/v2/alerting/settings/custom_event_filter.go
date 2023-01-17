@@ -49,24 +49,24 @@ func (me *CustomEventFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomEventFilter) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *CustomEventFilter) MarshalHCL(properties hcl.Properties) error {
 	if me.Description != nil {
-		if marshalled, err := me.Description.MarshalHCL(); err == nil {
-			result["description"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Description.MarshalHCL(marshalled); err == nil {
+			properties["description"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Title != nil {
-		if marshalled, err := me.Title.MarshalHCL(); err == nil {
-			result["title"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Title.MarshalHCL(marshalled); err == nil {
+			properties["title"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *CustomEventFilter) UnmarshalHCL(decoder hcl.Decoder) error {

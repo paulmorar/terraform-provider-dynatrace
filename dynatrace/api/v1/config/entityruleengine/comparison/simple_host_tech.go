@@ -73,26 +73,25 @@ func (shtc *SimpleHostTech) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (shtc *SimpleHostTech) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (shtc *SimpleHostTech) MarshalHCL(properties hcl.Properties) error {
 	if len(shtc.Unknowns) > 0 {
 		data, err := json.Marshal(shtc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = shtc.Negate
-	result["operator"] = string(shtc.Operator)
+	properties["negate"] = shtc.Negate
+	properties["operator"] = string(shtc.Operator)
 	if shtc.Value != nil {
-		if marshalled, err := shtc.Value.MarshalHCL(); err == nil {
-			result["value"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := shtc.Value.MarshalHCL(marshalled); err == nil {
+			properties["value"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (shtc *SimpleHostTech) UnmarshalHCL(decoder hcl.Decoder) error {

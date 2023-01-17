@@ -81,10 +81,9 @@ func (me *DimensionDefinition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DimensionDefinition) MarshalHCL() (map[string]any, error) {
-	properties, err := hcl.NewProperties(me, me.Unknowns)
-	if err != nil {
-		return nil, err
+func (me *DimensionDefinition) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	return properties.EncodeAll(map[string]any{
 		"name":              me.Name,

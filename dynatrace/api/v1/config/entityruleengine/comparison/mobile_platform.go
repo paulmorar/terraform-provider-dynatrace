@@ -69,22 +69,20 @@ func (mpc *MobilePlatform) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (mpc *MobilePlatform) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (mpc *MobilePlatform) MarshalHCL(properties hcl.Properties) error {
 	if len(mpc.Unknowns) > 0 {
 		data, err := json.Marshal(mpc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = mpc.Negate
-	result["operator"] = string(mpc.Operator)
+	properties["negate"] = mpc.Negate
+	properties["operator"] = string(mpc.Operator)
 	if mpc.Value != nil {
-		result["value"] = mpc.Value.String()
+		properties["value"] = mpc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (mpc *MobilePlatform) UnmarshalHCL(decoder hcl.Decoder) error {

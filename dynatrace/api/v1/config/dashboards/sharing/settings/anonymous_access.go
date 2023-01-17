@@ -46,13 +46,8 @@ func (me *AnonymousAccess) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnonymousAccess) MarshalHCL() (map[string]any, error) {
-	if len(me.ManagementZoneIDs) > 0 {
-		return map[string]any{
-			"management_zones": me.ManagementZoneIDs,
-		}, nil
-	}
-	return map[string]any{}, nil
+func (me *AnonymousAccess) MarshalHCL(properties hcl.Properties) error {
+	return properties.Encode("management_zones", me.ManagementZoneIDs)
 }
 
 func (me *AnonymousAccess) UnmarshalHCL(decoder hcl.Decoder) error {

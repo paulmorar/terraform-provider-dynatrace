@@ -62,9 +62,7 @@ func (me *GeneralProperties) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *GeneralProperties) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *GeneralProperties) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"name":              me.Name,
 		"description":       me.Description,

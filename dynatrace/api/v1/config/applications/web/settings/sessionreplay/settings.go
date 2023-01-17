@@ -58,22 +58,22 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]any, error) {
-	res, err := hcl.Properties{}.EncodeAll(map[string]any{
+func (me *Settings) MarshalHCL(properties hcl.Properties) error {
+	err := properties.EncodeAll(map[string]any{
 		"enabled":                                me.Enabled,
 		"cost_control_percentage":                me.CostControlPercentage,
 		"enable_css_resource_capturing":          me.EnableCSSResourceCapturing,
 		"css_resource_capturing_exclusion_rules": me.CSSResourceCapturingExclusionRules,
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if len(me.CSSResourceCapturingExclusionRules) == 0 {
 		me.CSSResourceCapturingExclusionRules = nil
-		res["css_resource_capturing_exclusion_rules"] = nil
-		delete(res, "css_resource_capturing_exclusion_rules")
+		properties["css_resource_capturing_exclusion_rules"] = nil
+		delete(properties, "css_resource_capturing_exclusion_rules")
 	}
-	return res, nil
+	return nil
 }
 
 func (me *Settings) UnmarshalHCL(decoder hcl.Decoder) error {

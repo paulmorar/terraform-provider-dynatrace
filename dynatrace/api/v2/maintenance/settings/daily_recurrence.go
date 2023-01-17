@@ -51,9 +51,7 @@ func (me *DailyRecurrence) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DailyRecurrence) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *DailyRecurrence) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"time_window":      me.TimeWindow,
 		"recurrence_range": me.RecurrenceRange,

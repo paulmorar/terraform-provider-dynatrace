@@ -48,13 +48,14 @@ func (me *ConnectionFailureDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ConnectionFailureDetection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	result["connection_fails_count"] = int(*me.ConnectionFailsCount)
-	result["eval_period"] = int(*me.TimePeriodMinutes)
-
-	return result, nil
+func (me *ConnectionFailureDetection) MarshalHCL(properties hcl.Properties) error {
+	if !me.Enabled {
+		return nil
+	}
+	return properties.EncodeAll(map[string]any{
+		"connection_fails_count": me.ConnectionFailsCount,
+		"eval_period":            me.TimePeriodMinutes,
+	})
 }
 
 func (me *ConnectionFailureDetection) UnmarshalHCL(decoder hcl.Decoder) error {

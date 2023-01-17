@@ -45,9 +45,7 @@ func (me *EntityFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EntityFilter) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *EntityFilter) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"dimension_key": me.DimensionKey,
 		"conditions":    me.Conditions,

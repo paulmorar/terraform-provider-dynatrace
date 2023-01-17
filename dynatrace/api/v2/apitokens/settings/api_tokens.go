@@ -158,9 +158,8 @@ func (me *APIToken) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *APIToken) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-	if _, err := properties.EncodeAll(map[string]any{
+func (me *APIToken) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.EncodeAll(map[string]any{
 		"name":                  me.Name,
 		"enabled":               me.Enabled,
 		"personal_access_token": me.PersonalAccessToken,
@@ -172,14 +171,14 @@ func (me *APIToken) MarshalHCL() (map[string]any, error) {
 		"last_used_ip_address":  me.LastUsedIpAddress,
 		"scopes":                me.Scopes,
 	}); err != nil {
-		return nil, err
+		return err
 	}
 	if me.Token != nil {
 		if err := properties.Encode("token", me.Token); err != nil {
-			return nil, err
+			return err
 		}
 	}
-	return properties, nil
+	return nil
 }
 
 func (me *APIToken) UnmarshalHCL(decoder hcl.Decoder) error {

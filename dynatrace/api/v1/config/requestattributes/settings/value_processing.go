@@ -104,40 +104,36 @@ func (me *ValueProcessing) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ValueProcessing) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *ValueProcessing) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.ExtractSubstring != nil {
-		if marshalled, err := me.ExtractSubstring.MarshalHCL(); err == nil {
-			result["extract_substring"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.ExtractSubstring.MarshalHCL(marshalled); err == nil {
+			properties["extract_substring"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.SplitAt != nil {
-		result["split_at"] = *me.SplitAt
+		properties["split_at"] = *me.SplitAt
 	}
 	if me.Trim != nil {
-		result["trim"] = opt.Bool(me.Trim)
+		properties["trim"] = opt.Bool(me.Trim)
 	}
 	if me.ValueCondition != nil {
-		if marshalled, err := me.ValueCondition.MarshalHCL(); err == nil {
-			result["value_condition"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.ValueCondition.MarshalHCL(marshalled); err == nil {
+			properties["value_condition"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.ValueExtractorRegex != nil {
-		result["value_extractor_regex"] = *me.ValueExtractorRegex
+		properties["value_extractor_regex"] = *me.ValueExtractorRegex
 	}
-	return result, nil
+	return nil
 }
 
 func (me *ValueProcessing) UnmarshalHCL(decoder hcl.Decoder) error {

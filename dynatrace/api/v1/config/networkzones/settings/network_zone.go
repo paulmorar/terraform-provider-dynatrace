@@ -78,8 +78,7 @@ func (me *NetworkZone) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NetworkZone) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *NetworkZone) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"description":                       me.Description,
 		"alternative_zones":                 me.AltZones,

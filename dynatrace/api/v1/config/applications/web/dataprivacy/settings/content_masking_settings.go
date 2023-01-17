@@ -49,8 +49,8 @@ func (me *ContentMaskingSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ContentMaskingSettings) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *ContentMaskingSettings) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"recording": me.RecordingMaskingSettings,
 		"playback":  me.PlaybackMaskingSettings,
 	})

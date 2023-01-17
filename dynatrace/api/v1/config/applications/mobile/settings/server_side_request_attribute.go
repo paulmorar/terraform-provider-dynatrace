@@ -100,41 +100,15 @@ func (me *ServerSideRequestAttribute) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *ServerSideRequestAttribute) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-	if err := properties.Encode("key", me.Key); err != nil {
-		return nil, err
-	}
-	if err := properties.Encode("id", me.ServerSideRequestAttribute); err != nil {
-		return nil, err
-	}
-	if err := properties.Encode("type", me.Type); err != nil {
-		return nil, err
-	}
-	if me.DisplayName != nil {
-		if err := properties.Encode("display_name", me.DisplayName); err != nil {
-			return nil, err
-		}
-	}
-	if me.StoreAsSessionProperty {
-		if err := properties.Encode("store_as_session_property", me.StoreAsSessionProperty); err != nil {
-			return nil, err
-		}
-	}
-	if me.StoreAsUserActionProperty {
-		if err := properties.Encode("store_as_user_action_property", me.StoreAsUserActionProperty); err != nil {
-			return nil, err
-		}
-	}
-	if me.CleanupRule != nil {
-		if err := properties.Encode("cleanup_rule", *me.CleanupRule); err != nil {
-			return nil, err
-		}
-	}
-	if me.Aggregation != nil {
-		if err := properties.Encode("aggregation", string(*me.Aggregation)); err != nil {
-			return nil, err
-		}
-	}
-	return properties, nil
+func (me *ServerSideRequestAttribute) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"key":                           me.Key,
+		"id":                            me.ServerSideRequestAttribute,
+		"type":                          me.Type,
+		"display_name":                  me.DisplayName,
+		"store_as_session_property":     me.StoreAsSessionProperty,
+		"store_as_user_action_property": me.StoreAsUserActionProperty,
+		"cleanup_rule":                  me.CleanupRule,
+		"aggregation":                   me.Aggregation,
+	})
 }

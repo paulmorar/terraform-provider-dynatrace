@@ -69,22 +69,20 @@ func (stc *ServiceTopology) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (stc *ServiceTopology) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (stc *ServiceTopology) MarshalHCL(properties hcl.Properties) error {
 	if len(stc.Unknowns) > 0 {
 		data, err := json.Marshal(stc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = stc.Negate
-	result["operator"] = string(stc.Operator)
+	properties["negate"] = stc.Negate
+	properties["operator"] = string(stc.Operator)
 	if stc.Value != nil {
-		result["value"] = stc.Value.String()
+		properties["value"] = stc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (stc *ServiceTopology) UnmarshalHCL(decoder hcl.Decoder) error {

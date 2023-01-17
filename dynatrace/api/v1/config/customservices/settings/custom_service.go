@@ -96,43 +96,38 @@ func (me *CustomService) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomService) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *CustomService) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
+	properties["name"] = me.Name
 	// if me.Order != nil {
-	// 	result["order"] = *me.Order
+	// 	properties["order"] = *me.Order
 	// }
-	result["technology"] = string(me.Technology)
-	result["enabled"] = me.Enabled
+	properties["technology"] = string(me.Technology)
+	properties["enabled"] = me.Enabled
 	if len(me.Rules) > 0 {
 		entries := []any{}
 		for _, entry := range me.Rules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["rule"] = entries
+		properties["rule"] = entries
 	}
 	if me.QueueEntryPoint != nil {
-		result["queue_entry_point"] = opt.Bool(me.QueueEntryPoint)
+		properties["queue_entry_point"] = opt.Bool(me.QueueEntryPoint)
 	}
 	if me.QueueEntryPointType != nil {
-		result["queue_entry_point_type"] = string(*me.QueueEntryPointType)
+		properties["queue_entry_point_type"] = string(*me.QueueEntryPointType)
 	}
 	if me.ProcessGroups != nil {
-		result["process_groups"] = me.ProcessGroups
+		properties["process_groups"] = me.ProcessGroups
 	}
-	return result, nil
+	return nil
 }
 
 func (me *CustomService) UnmarshalHCL(decoder hcl.Decoder) error {

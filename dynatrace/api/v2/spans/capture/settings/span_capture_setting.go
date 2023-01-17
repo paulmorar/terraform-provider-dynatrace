@@ -36,8 +36,8 @@ func (me *SpanCaptureSetting) Schema() map[string]*schema.Schema {
 	return new(SpanCaptureRule).Schema()
 }
 
-func (me *SpanCaptureSetting) MarshalHCL() (map[string]any, error) {
-	return me.SpanCaptureRule.MarshalHCL()
+func (me *SpanCaptureSetting) MarshalHCL(properties hcl.Properties) error {
+	return me.SpanCaptureRule.MarshalHCL(properties)
 }
 
 func (me *SpanCaptureSetting) UnmarshalHCL(decoder hcl.Decoder) error {

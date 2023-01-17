@@ -81,23 +81,17 @@ func (me *DynamicFilters) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *DynamicFilters) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *DynamicFilters) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if len(me.Filters) > 0 {
-		result["filters"] = me.Filters
+		properties["filters"] = me.Filters
 	}
 	if len(me.TagSuggestionTypes) > 0 {
-		result["tag_suggestion_types"] = me.TagSuggestionTypes
+		properties["tag_suggestion_types"] = me.TagSuggestionTypes
 	}
-	return result, nil
+	return nil
 }
 
 func (me *DynamicFilters) MarshalJSON() ([]byte, error) {

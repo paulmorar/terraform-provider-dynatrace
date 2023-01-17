@@ -56,11 +56,11 @@ func (me *Credential) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Credential) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
+func (me *Credential) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"vault_id": me.ID,
 		"field":    me.Field,
-	}, nil
+	})
 }
 
 func (me *Credential) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -125,48 +125,51 @@ func (me *KeyStrokes) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *KeyStrokes) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *KeyStrokes) MarshalHCL(properties hcl.Properties) error {
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(); err == nil {
-			result["target"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Target.MarshalHCL(marshalled); err == nil {
+			properties["target"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Credential != nil {
-		if marshalled, err := me.Credential.MarshalHCL(); err == nil {
-			result["credential"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Credential.MarshalHCL(marshalled); err == nil {
+			properties["credential"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Wait != nil {
-		if marshalled, err := me.Wait.MarshalHCL(); err == nil {
-			result["wait"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Wait.MarshalHCL(marshalled); err == nil {
+			properties["wait"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if len(me.Validate) > 0 {
-		if marshalled, err := me.Validate.MarshalHCL(); err == nil {
-			result["validate"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Validate.MarshalHCL(marshalled); err == nil {
+			properties["validate"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Credential == nil {
 		if me.Masked != nil && *me.Masked {
-			result["masked"] = me.Masked
+			properties["masked"] = me.Masked
 		} else {
-			result["masked"] = false
+			properties["masked"] = false
 		}
 	} else {
-		result["masked"] = false
+		properties["masked"] = false
 	}
-	result["text"] = me.TextValue
-	result["simulate_blur_event"] = me.SimulateBlurEvent
-	return result, nil
+	properties["text"] = me.TextValue
+	properties["simulate_blur_event"] = me.SimulateBlurEvent
+	return nil
 }
 
 func (me *KeyStrokes) UnmarshalHCL(decoder hcl.Decoder) error {

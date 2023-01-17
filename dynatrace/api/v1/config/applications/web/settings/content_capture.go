@@ -68,8 +68,8 @@ func (me *ContentCapture) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ContentCapture) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *ContentCapture) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"resource_timing_settings":          me.ResourceTimingSettings,
 		"javascript_errors":                 me.JavaScriptErrors,
 		"timeout_settings":                  me.TimeoutSettings,

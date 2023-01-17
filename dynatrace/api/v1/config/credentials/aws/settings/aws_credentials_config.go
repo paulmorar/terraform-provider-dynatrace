@@ -216,50 +216,51 @@ func (awscc *AWSCredentialsConfig) PrepareMarshalHCL(decoder hcl.Decoder) error 
 	return nil
 }
 
-func (awscc *AWSCredentialsConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (awscc *AWSCredentialsConfig) MarshalHCL(properties hcl.Properties) error {
 	if awscc.Unknowns != nil {
 		data, err := json.Marshal(awscc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
 	if awscc.SupportingServicesToMonitor != nil {
 		entries := []any{}
 		for _, entry := range awscc.SupportingServicesToMonitor {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["supporting_services_to_monitor"] = entries
+		properties["supporting_services_to_monitor"] = entries
 	}
-	result["label"] = awscc.Label
-	result["tagged_only"] = opt.Bool(awscc.TaggedOnly)
+	properties["label"] = awscc.Label
+	properties["tagged_only"] = opt.Bool(awscc.TaggedOnly)
 
 	if awscc.AuthenticationData != nil {
-		if marshalled, err := awscc.AuthenticationData.MarshalHCL(); err == nil {
-			result["authentication_data"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := awscc.AuthenticationData.MarshalHCL(marshalled); err == nil {
+			properties["authentication_data"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["partition_type"] = awscc.PartitionType
+	properties["partition_type"] = awscc.PartitionType
 	if awscc.TagsToMonitor != nil {
 		entries := []any{}
 		for _, entry := range awscc.TagsToMonitor {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["tags_to_monitor"] = entries
+		properties["tags_to_monitor"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (awscc *AWSCredentialsConfig) UnmarshalHCL(decoder hcl.Decoder) error {

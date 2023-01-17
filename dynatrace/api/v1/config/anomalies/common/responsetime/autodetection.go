@@ -75,22 +75,21 @@ func (me *Autodetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Autodetection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *Autodetection) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["load"] = string(me.LoadThreshold)
-	result["milliseconds"] = int(me.Milliseconds)
-	result["percent"] = int(me.Percent)
-	result["slowest_milliseconds"] = int(me.SlowestMilliseconds)
-	result["slowest_percent"] = int(me.SlowestPercent)
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"load":                 me.LoadThreshold,
+		"milliseconds":         me.Milliseconds,
+		"percent":              me.Percent,
+		"slowest_milliseconds": me.SlowestMilliseconds,
+		"slowest_percent":      me.SlowestPercent,
+	})
 }
 
 func (me *Autodetection) UnmarshalHCL(decoder hcl.Decoder) error {

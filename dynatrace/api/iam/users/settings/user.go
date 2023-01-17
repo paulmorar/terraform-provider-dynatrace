@@ -26,11 +26,11 @@ func (me *User) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *User) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
+func (me *User) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"email":  me.Email,
 		"groups": me.Groups,
-	}, nil
+	})
 }
 
 func (me *User) UnmarshalHCL(decoder hcl.Decoder) error {

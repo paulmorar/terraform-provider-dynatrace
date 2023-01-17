@@ -69,22 +69,20 @@ func (asc *AzureSku) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (asc *AzureSku) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (asc *AzureSku) MarshalHCL(properties hcl.Properties) error {
 	if len(asc.Unknowns) > 0 {
 		data, err := json.Marshal(asc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = asc.Negate
-	result["operator"] = string(asc.Operator)
+	properties["negate"] = asc.Negate
+	properties["operator"] = string(asc.Operator)
 	if asc.Value != nil {
-		result["value"] = asc.Value.String()
+		properties["value"] = asc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (asc *AzureSku) UnmarshalHCL(decoder hcl.Decoder) error {

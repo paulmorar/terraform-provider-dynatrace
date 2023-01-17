@@ -38,10 +38,8 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
-		"exception_count": int(me.ExceptionCount),
-	}, nil
+func (me *Thresholds) MarshalHCL(properties hcl.Properties) error {
+	return properties.Encode("exception_count", me.ExceptionCount)
 }
 
 func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {

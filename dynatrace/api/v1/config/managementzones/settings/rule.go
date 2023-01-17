@@ -91,38 +91,37 @@ func (mzr *Rule) SortConditions() {
 	}
 }
 
-func (mzr *Rule) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (mzr *Rule) MarshalHCL(properties hcl.Properties) error {
 	if len(mzr.Unknowns) > 0 {
 		data, err := json.Marshal(mzr.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["enabled"] = mzr.Enabled
-	result["type"] = string(mzr.Type)
+	properties["enabled"] = mzr.Enabled
+	properties["type"] = string(mzr.Type)
 	if len(mzr.PropagationTypes) > 0 {
 		entries := []any{}
 		for _, entry := range mzr.PropagationTypes {
 			entries = append(entries, string(entry))
 		}
-		result["propagation_types"] = entries
+		properties["propagation_types"] = entries
 	}
 	if len(mzr.Conditions) > 0 {
 		mzr.SortConditions()
 		entries := []any{}
 		for _, entry := range mzr.Conditions {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["conditions"] = entries
+		properties["conditions"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (mzr *Rule) UnmarshalHCL(decoder hcl.Decoder) error {

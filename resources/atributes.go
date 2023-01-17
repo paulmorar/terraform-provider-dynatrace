@@ -23,6 +23,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 )
 
 type Attributes map[string]string
@@ -70,6 +72,10 @@ func (attributes Attributes) collect(addr address, v any) {
 	case int, int8, int16, int32, int64, float32, float64, uint, uint8, uint16, uint32, uint64, bool:
 		attributes[string(addr)] = fmt.Sprintf("%v", value)
 	case map[string]any:
+		for k := range value {
+			attributes.collect(addr.dot(k), value[k])
+		}
+	case hcl.Properties:
 		for k := range value {
 			attributes.collect(addr.dot(k), value[k])
 		}
@@ -212,6 +218,12 @@ func store(m map[string]any, key string, value string) {
 		prefix = remainder[:idx]
 		remainder = remainder[idx+1:]
 		cidx, _ := strconv.Atoi(prefix)
-		store(container[cidx].(map[string]any), remainder, value)
+		cont := container[cidx]
+		switch tcont := cont.(type) {
+		case map[string]any:
+			store(tcont, remainder, value)
+		case hcl.Properties:
+			store(map[string]any(tcont), remainder, value)
+		}
 	}
 }

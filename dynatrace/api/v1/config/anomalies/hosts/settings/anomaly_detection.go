@@ -117,75 +117,29 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnomalyDetection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	if me.HighMemoryDetection != nil && me.HighMemoryDetection.Enabled {
-		if marshalled, err := me.HighMemoryDetection.MarshalHCL(); err == nil {
-			result["memory"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	if me.HighCPUSaturationDetection != nil && me.HighCPUSaturationDetection.Enabled {
-		if marshalled, err := me.HighCPUSaturationDetection.MarshalHCL(); err == nil {
-			result["cpu"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-
-	if me.HighGcActivityDetection != nil && me.HighGcActivityDetection.Enabled {
-		if marshalled, err := me.HighGcActivityDetection.MarshalHCL(); err == nil {
-			result["gc"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	if me.ConnectionLostDetection != nil && me.ConnectionLostDetection.Enabled {
-		if marshalled, err := me.ConnectionLostDetection.MarshalHCL(); err == nil {
-			result["connections"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	jdc := &java.DetectionConfig{
-		OutOfMemoryDetection:  me.OutOfMemoryDetection,
-		OutOfThreadsDetection: me.OutOfThreadsDetection,
-	}
-	if jdc.IsConfigured() {
-		if marshalled, err := jdc.MarshalHCL(); err == nil {
-			result["java"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	ndc := &network.DetectionConfig{
-		NetworkDroppedPacketsDetection:     me.NetworkDroppedPacketsDetection,
-		HighNetworkDetection:               me.HighNetworkDetection,
-		NetworkHighRetransmissionDetection: me.NetworkHighRetransmissionDetection,
-		NetworkTcpProblemsDetection:        me.NetworkTcpProblemsDetection,
-		NetworkErrorsDetection:             me.NetworkErrorsDetection,
-	}
-	if ndc.IsConfigured() {
-		if marshalled, err := ndc.MarshalHCL(); err == nil {
-			result["network"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	ddc := &disks.DetectionConfig{
-		Speed:  me.DiskSlowWritesAndReadsDetection,
-		Space:  me.DiskLowSpaceDetection,
-		Inodes: me.DiskLowInodesDetection,
-	}
-	if ddc.IsConfigured() {
-		if marshalled, err := ddc.MarshalHCL(); err == nil {
-			result["disks"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	return result, nil
+func (me *AnomalyDetection) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"memory":      me.HighMemoryDetection,
+		"cpu":         me.HighCPUSaturationDetection,
+		"gc":          me.HighGcActivityDetection,
+		"connections": me.ConnectionLostDetection,
+		"java": &java.DetectionConfig{
+			OutOfMemoryDetection:  me.OutOfMemoryDetection,
+			OutOfThreadsDetection: me.OutOfThreadsDetection,
+		},
+		"network": &network.DetectionConfig{
+			NetworkDroppedPacketsDetection:     me.NetworkDroppedPacketsDetection,
+			HighNetworkDetection:               me.HighNetworkDetection,
+			NetworkHighRetransmissionDetection: me.NetworkHighRetransmissionDetection,
+			NetworkTcpProblemsDetection:        me.NetworkTcpProblemsDetection,
+			NetworkErrorsDetection:             me.NetworkErrorsDetection,
+		},
+		"disks": &disks.DetectionConfig{
+			Speed:  me.DiskSlowWritesAndReadsDetection,
+			Space:  me.DiskLowSpaceDetection,
+			Inodes: me.DiskLowInodesDetection,
+		},
+	})
 }
 
 func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {

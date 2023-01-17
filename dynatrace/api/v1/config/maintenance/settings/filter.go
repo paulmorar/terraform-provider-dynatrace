@@ -71,41 +71,40 @@ func (me *Filter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Filter) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *Filter) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if dmgmzid, ok := me.Unknowns["managementZoneId"]; ok {
 			json.Unmarshal(dmgmzid, &me.MzID)
 		}
 		delete(me.Unknowns, "managementZoneId")
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
 	if me.Type != nil {
-		result["type"] = string(*me.Type)
+		properties["type"] = string(*me.Type)
 	}
 	if me.MzID != nil {
-		result["mz_id"] = *me.MzID
+		properties["mz_id"] = *me.MzID
 	}
 	if me.TagCombination != nil {
-		result["tag_combination"] = string(*me.TagCombination)
+		properties["tag_combination"] = string(*me.TagCombination)
 	}
 	if len(me.Tags) > 0 {
 		entries := []any{}
 		for _, entry := range sortTags(me.Tags) {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["tags"] = entries
+		properties["tags"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func sortTags(tags []*TagInfo) []*TagInfo {

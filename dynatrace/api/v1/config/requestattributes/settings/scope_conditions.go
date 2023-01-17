@@ -68,29 +68,23 @@ func (me *ScopeConditions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ScopeConditions) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *ScopeConditions) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.HostGroup != nil {
-		result["host_group"] = *me.HostGroup
+		properties["host_group"] = *me.HostGroup
 	}
 	if me.ProcessGroup != nil {
-		result["process_group"] = *me.ProcessGroup
+		properties["process_group"] = *me.ProcessGroup
 	}
 	if me.ServiceTechnology != nil {
-		result["service_technology"] = string(*me.ServiceTechnology)
+		properties["service_technology"] = string(*me.ServiceTechnology)
 	}
 	if me.TagOfProcessGroup != nil {
-		result["tag_of_process_group"] = *me.TagOfProcessGroup
+		properties["tag_of_process_group"] = *me.TagOfProcessGroup
 	}
-	return result, nil
+	return nil
 }
 
 func (me *ScopeConditions) UnmarshalHCL(decoder hcl.Decoder) error {

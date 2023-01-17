@@ -43,8 +43,28 @@ type Generic struct {
 }
 
 func (me *Generic) Resource() *schema.Resource {
+	stngs := me.Descriptor.NewSettings()
+	sch := stngs.Schema()
+	// implicitUpate := false
+	// stnt := reflect.ValueOf(stngs).Elem().Type()
+	// for idx := 0; idx < stnt.NumField(); idx++ {
+	// 	field := stnt.Field(idx)
+	// 	if field.Type == implicitUpdateType {
+	// 		implicitUpate = true
+	// 		break
+	// 	}
+	// }
+	// if implicitUpate {
+	// 	sch["replaced_value"] = &schema.Schema{
+	// 		Type:        schema.TypeString,
+	// 		Description: "for internal use only",
+	// 		Optional:    true,
+	// 		Computed:    true,
+	// 	}
+	// }
+
 	return &schema.Resource{
-		Schema:        me.Descriptor.NewSettings().Schema(),
+		Schema:        sch,
 		CreateContext: logging.Enable(me.Create),
 		UpdateContext: logging.Enable(me.Update),
 		ReadContext:   logging.Enable(me.Read),
@@ -70,12 +90,58 @@ func (me *Generic) Service(m any) settings.CRUDService[settings.Settings] {
 }
 
 func (me *Generic) Create(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	settings := me.Settings()
-	if err := settings.UnmarshalHCL(hcl.DecoderFrom(d)); err != nil {
+	sttngs := me.Settings()
+	if err := sttngs.UnmarshalHCL(hcl.DecoderFrom(d)); err != nil {
 		return diag.FromErr(err)
 	}
-	stub, err := me.Service(m).Create(settings)
+	stub, err := me.Service(m).Create(sttngs)
 	if err != nil {
+		// if restError, ok := err.(rest.Error); ok {
+		// 	if len(restError.ConstraintViolations) == 1 {
+		// 		if restError.ConstraintViolations[0].Message == "Management zone with this name already exists. Please provide a different one." {
+		// 			stubs, e2 := me.Service(m).List()
+		// 			if e2 != nil {
+		// 				return diag.FromErr(err)
+		// 			}
+		// 			foundID := ""
+		// 			for _, stub := range stubs {
+		// 				if settings.Name(sttngs) == stub.Name {
+		// 					foundID = stub.ID
+		// 					break
+		// 				}
+		// 			}
+		// 			if foundID == "" {
+		// 				return diag.FromErr(err)
+		// 			}
+		// 			d.SetId(foundID)
+		// 			replaceSettings := me.Settings()
+		// 			if e2 = me.Service(m).Get(foundID, replaceSettings); e2 != nil {
+		// 				return diag.FromErr(err)
+		// 			}
+		// 			if err := me.Service(m).Update(foundID, sttngs); err != nil {
+		// 				return diag.FromErr(err)
+		// 			}
+		// 			data, e2 := json.Marshal(replaceSettings)
+		// 			if e2 != nil {
+		// 				return diag.FromErr(err)
+		// 			}
+		// 			buf := new(bytes.Buffer)
+		// 			// writer, e2 := gzip.NewWriterLevel(buf, gzip.BestCompression)
+		// 			writer, e2 := zlib.NewWriterLevel(buf, gzip.BestCompression)
+		// 			if e2 != nil {
+		// 				return diag.FromErr(err)
+		// 			}
+		// 			writer.Write(data)
+		// 			writer.Flush()
+
+		// 			if e2 != nil {
+		// 				return diag.FromErr(err)
+		// 			}
+		// 			d.Set("replaced_value", base64.StdEncoding.EncodeToString(buf.Bytes()))
+		// 			return me.Read(ctx, d, m)
+		// 		}
+		// 	}
+		// }
 		return diag.FromErr(err)
 	}
 	d.SetId(stub.ID)
@@ -83,11 +149,11 @@ func (me *Generic) Create(ctx context.Context, d *schema.ResourceData, m any) di
 }
 
 func (me *Generic) Update(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	settings := me.Settings()
-	if err := settings.UnmarshalHCL(hcl.DecoderFrom(d)); err != nil {
+	sttngs := me.Settings()
+	if err := sttngs.UnmarshalHCL(hcl.DecoderFrom(d)); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := me.Service(m).Update(d.Id(), settings); err != nil {
+	if err := me.Service(m).Update(d.Id(), sttngs); err != nil {
 		return diag.FromErr(err)
 	}
 	return me.Read(ctx, d, m)
@@ -122,10 +188,10 @@ func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag
 			demoSettings.FillDemoValues()
 		}
 	}
-
-	marshalled, err := sttngs.MarshalHCL()
+	marshalled := hcl.Properties{}
+	err = sttngs.MarshalHCL(marshalled)
 	attributes := Attributes{}
-	attributes.collect("", marshalled)
+	attributes.collect("", map[string]any(marshalled))
 	stateAttributes := NewAttributes(d.State().Attributes)
 	for key, value := range attributes {
 		if value == "${state.secret_value}" {

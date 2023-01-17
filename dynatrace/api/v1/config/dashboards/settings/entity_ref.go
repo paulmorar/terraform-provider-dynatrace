@@ -60,24 +60,18 @@ func (me *EntityRef) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EntityRef) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *EntityRef) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["id"] = me.ID
+	properties["id"] = me.ID
 	if me.Name != nil {
-		result["name"] = opt.String(me.Name)
+		properties["name"] = opt.String(me.Name)
 	}
 	if me.Description != nil {
-		result["description"] = opt.String(me.Description)
+		properties["description"] = opt.String(me.Description)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *EntityRef) UnmarshalHCL(decoder hcl.Decoder) error {

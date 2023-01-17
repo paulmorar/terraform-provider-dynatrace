@@ -72,31 +72,15 @@ func (me *DetectionConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DetectionConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if me.Space != nil {
-		if marshalled, err := me.Space.MarshalHCL(); err == nil {
-			result["space"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
+func (me *DetectionConfig) MarshalHCL(properties hcl.Properties) error {
+	if !me.IsConfigured() {
+		return nil
 	}
-	if me.Speed != nil {
-		if marshalled, err := me.Speed.MarshalHCL(); err == nil {
-			result["speed"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	if me.Inodes != nil {
-		if marshalled, err := me.Inodes.MarshalHCL(); err == nil {
-			result["inodes"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"space":  me.Space,
+		"speed":  me.Speed,
+		"inodes": me.Inodes,
+	})
 }
 
 func (me *DetectionConfig) UnmarshalHCL(decoder hcl.Decoder) error {

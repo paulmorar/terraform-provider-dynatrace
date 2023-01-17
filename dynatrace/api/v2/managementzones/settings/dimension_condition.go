@@ -37,20 +37,20 @@ func (me *DimensionConditions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me DimensionConditions) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me DimensionConditions) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["condition"] = entries
+		properties["condition"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *DimensionConditions) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -103,9 +103,7 @@ func (me *DimensionCondition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DimensionCondition) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *DimensionCondition) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"condition_type": me.ConditionType,
 		"key":            me.Key,

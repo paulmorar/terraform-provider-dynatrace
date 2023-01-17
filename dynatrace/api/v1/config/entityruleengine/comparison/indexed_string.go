@@ -71,22 +71,20 @@ func (isc *IndexedString) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (isc *IndexedString) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (isc *IndexedString) MarshalHCL(properties hcl.Properties) error {
 	if len(isc.Unknowns) > 0 {
 		data, err := json.Marshal(isc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = isc.Negate
-	result["operator"] = string(isc.Operator)
+	properties["negate"] = isc.Negate
+	properties["operator"] = string(isc.Operator)
 	if isc.Value != nil {
-		result["value"] = *isc.Value
+		properties["value"] = *isc.Value
 	}
-	return result, nil
+	return nil
 }
 
 func (isc *IndexedString) UnmarshalHCL(decoder hcl.Decoder) error {

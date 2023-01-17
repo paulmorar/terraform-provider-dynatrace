@@ -109,10 +109,9 @@ func (me *Placeholder) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Placeholder) MarshalHCL() (map[string]any, error) {
-	properties, err := hcl.NewProperties(me, me.Unknowns)
-	if err != nil {
-		return nil, err
+func (me *Placeholder) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	return properties.EncodeAll(map[string]any{
 		"name":                 me.Name,

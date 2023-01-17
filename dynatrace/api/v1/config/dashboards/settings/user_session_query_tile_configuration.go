@@ -48,20 +48,14 @@ func (me *UserSessionQueryTileConfiguration) Schema() map[string]*schema.Schema 
 	}
 }
 
-func (me *UserSessionQueryTileConfiguration) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *UserSessionQueryTileConfiguration) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.HasAxisBucketing != nil {
-		result["has_axis_bucketing"] = opt.Bool(me.HasAxisBucketing)
+		properties["has_axis_bucketing"] = opt.Bool(me.HasAxisBucketing)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *UserSessionQueryTileConfiguration) UnmarshalHCL(decoder hcl.Decoder) error {

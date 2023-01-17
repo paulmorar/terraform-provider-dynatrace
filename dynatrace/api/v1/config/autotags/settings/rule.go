@@ -87,43 +87,38 @@ func (me *Rule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Rule) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *Rule) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["enabled"] = me.Enabled
-	result["type"] = me.Type
+	properties["enabled"] = me.Enabled
+	properties["type"] = me.Type
 	if len(me.PropagationTypes) > 0 {
 		entries := []any{}
 		for _, entry := range me.PropagationTypes {
 			entries = append(entries, string(entry))
 		}
-		result["propagation_types"] = entries
+		properties["propagation_types"] = entries
 	}
 	if len(me.Conditions) > 0 {
 		entries := []any{}
 		for _, entry := range me.Conditions {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["conditions"] = entries
+		properties["conditions"] = entries
 	}
 	if me.ValueFormat != nil {
-		result["value_format"] = *me.ValueFormat
+		properties["value_format"] = *me.ValueFormat
 	}
 	if me.Normalization != nil {
-		result["normalization"] = *me.Normalization
+		properties["normalization"] = *me.Normalization
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Rule) UnmarshalHCL(decoder hcl.Decoder) error {

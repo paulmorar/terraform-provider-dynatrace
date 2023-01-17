@@ -91,20 +91,20 @@ func (me *RequestNaming) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RequestNaming) MarshalHCL() (map[string]any, error) {
-	if properties, err := hcl.NewProperties(me, me.Unknowns); err != nil {
-		return nil, err
-	} else {
-		return properties.EncodeAll(map[string]any{
-			// "order":            me.Order,
-			"enabled":          me.Enabled,
-			"naming_pattern":   me.NamingPattern,
-			"management_zones": me.ManagementZones,
-			"conditions":       me.Conditions,
-			"placeholders":     me.Placeholders,
-			"unknowns":         me.Unknowns,
-		})
+func (me *RequestNaming) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
+	return properties.EncodeAll(map[string]any{
+		// "order":            me.Order,
+		"enabled":          me.Enabled,
+		"naming_pattern":   me.NamingPattern,
+		"management_zones": me.ManagementZones,
+		"conditions":       me.Conditions,
+		"placeholders":     me.Placeholders,
+		"unknowns":         me.Unknowns,
+	})
+
 }
 
 func (me *RequestNaming) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -34,7 +34,7 @@ type NotificationConfig interface {
 	GetID() *string
 	SetID(*string)
 	GetName() string
-	MarshalHCL() (map[string]any, error)
+	MarshalHCL(hcl.Properties) error
 	UnmarshalHCL(decoder hcl.Decoder) error
 }
 
@@ -95,22 +95,16 @@ func (me *BaseNotificationConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *BaseNotificationConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *BaseNotificationConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["type"] = me.Type
-	result["alerting_profile"] = me.AlertingProfile
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["type"] = me.Type
+	properties["alerting_profile"] = me.AlertingProfile
 
-	return result, nil
+	return nil
 }
 
 func (me *BaseNotificationConfig) UnmarshalHCL(decoder hcl.Decoder) error {

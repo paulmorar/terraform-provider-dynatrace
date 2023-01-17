@@ -72,17 +72,16 @@ func (me *Authentication) Schema() map[string]*schema.Schema {
 }
 
 // MarshalHCL serializes the fields of an Authentication struct into a map, using the keys specified within the Schema function
-func (me *Authentication) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["type"] = string(me.Type)
-	result["credentials"] = me.Credentials
+func (me *Authentication) MarshalHCL(properties hcl.Properties) error {
+	properties["type"] = string(me.Type)
+	properties["credentials"] = me.Credentials
 	if me.RealmName != nil {
-		result["realm_name"] = *me.RealmName
+		properties["realm_name"] = *me.RealmName
 	}
 	if me.KdcIP != nil {
-		result["kdc_ip"] = *me.KdcIP
+		properties["kdc_ip"] = *me.KdcIP
 	}
-	return result, nil
+	return nil
 }
 
 // UnmarshalHCL deserializes data available via terraform provider into the Authentication struct. The keys to be used are defined by the Schema function

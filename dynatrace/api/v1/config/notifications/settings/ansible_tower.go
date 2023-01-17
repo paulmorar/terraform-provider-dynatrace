@@ -131,28 +131,22 @@ func (me *AnsibleTowerConfig) PrepareMarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *AnsibleTowerConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *AnsibleTowerConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
-	result["accept_any_certificate"] = me.AcceptAnyCertificate
-	result["custom_message"] = me.CustomMessage
-	result["job_template_id"] = int(me.JobTemplateID)
-	result["job_template_url"] = me.JobTemplateURL
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
+	properties["accept_any_certificate"] = me.AcceptAnyCertificate
+	properties["custom_message"] = me.CustomMessage
+	properties["job_template_id"] = int(me.JobTemplateID)
+	properties["job_template_url"] = me.JobTemplateURL
 	if me.Password != nil {
-		result["password"] = *me.Password
+		properties["password"] = *me.Password
 	}
-	result["username"] = me.Username
-	return result, nil
+	properties["username"] = me.Username
+	return nil
 }
 
 func (me *AnsibleTowerConfig) UnmarshalHCL(decoder hcl.Decoder) error {

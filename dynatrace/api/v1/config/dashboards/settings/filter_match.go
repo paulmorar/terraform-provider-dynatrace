@@ -45,14 +45,13 @@ func (me *FilterMatch) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FilterMatch) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["key"] = me.Key
+func (me *FilterMatch) MarshalHCL(properties hcl.Properties) error {
+	properties["key"] = me.Key
 	if len(me.Values) > 0 {
-		result["values"] = me.Values
+		properties["values"] = me.Values
 	}
 
-	return result, nil
+	return nil
 }
 
 func (me *FilterMatch) UnmarshalHCL(decoder hcl.Decoder) error {

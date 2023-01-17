@@ -59,9 +59,7 @@ func (me *ClusterQueues) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ClusterQueue) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *ClusterQueue) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"local_queue_name":   me.LocalQueueName,
 		"cluster_visibility": me.ClusterVisibility,
@@ -75,8 +73,8 @@ func (me *ClusterQueue) UnmarshalHCL(decoder hcl.Decoder) error {
 	})
 }
 
-func (me ClusterQueues) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("cluster_queue", me)
+func (me ClusterQueues) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("cluster_queue", me)
 }
 
 func (me *ClusterQueues) UnmarshalHCL(decoder hcl.Decoder) error {

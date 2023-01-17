@@ -46,14 +46,14 @@ func (me *SpikeDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpikeDetection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	result["enabled"] = me.Enabled
-	if me.TrafficSpikePercent != nil {
-		result["percent"] = int(*me.TrafficSpikePercent)
+func (me *SpikeDetection) MarshalHCL(properties hcl.Properties) error {
+	if !me.Enabled {
+		return nil
 	}
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"enabled": me.Enabled,
+		"percent": me.TrafficSpikePercent,
+	})
 }
 
 func (me *SpikeDetection) UnmarshalHCL(decoder hcl.Decoder) error {

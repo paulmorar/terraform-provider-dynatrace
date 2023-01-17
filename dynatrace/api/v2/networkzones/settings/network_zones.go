@@ -41,9 +41,7 @@ func (me *NetworkZones) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NetworkZones) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *NetworkZones) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"enabled": me.Enabled,
 	})

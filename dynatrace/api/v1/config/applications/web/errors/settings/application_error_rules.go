@@ -73,8 +73,8 @@ func (me *Rules) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Rules) MarshalHCL() (map[string]any, error) {
-	p, e := hcl.Properties{}.EncodeAll(map[string]any{
+func (me *Rules) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"web_application_id":         me.WebApplicationID,
 		"ignore_js_errors_apdex":     me.IgnoreJavaScriptErrorsInApdexCalculation,
 		"ignore_http_errors_apdex":   me.IgnoreHttpErrorsInApdexCalculation,
@@ -82,7 +82,6 @@ func (me *Rules) MarshalHCL() (map[string]any, error) {
 		"http_errors":                me.HTTPErrors,
 		"custom_errors":              me.CustomErrors,
 	})
-	return p, e
 }
 
 func (me *Rules) UnmarshalHCL(decoder hcl.Decoder) error {

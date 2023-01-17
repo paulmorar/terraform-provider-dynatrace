@@ -55,23 +55,14 @@ func (me *Detection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Detection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if me.AutomaticDetection != nil {
-		if marshalled, err := me.AutomaticDetection.MarshalHCL(); err == nil {
-			result["auto"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	} else if me.Thresholds != nil {
-		if marshalled, err := me.Thresholds.MarshalHCL(); err == nil {
-			result["thresholds"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
+func (me *Detection) MarshalHCL(properties hcl.Properties) error {
+	if me.DetectionMode == detection.Modes.DontDetect {
+		return nil
 	}
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"auto":       me.AutomaticDetection,
+		"thresholds": me.Thresholds,
+	})
 }
 
 func (me *Detection) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -54,9 +54,7 @@ func (me *QueueSharingGroup) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *QueueSharingGroup) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *QueueSharingGroup) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"name":           me.Name,
 		"queue_managers": me.QueueManagers,

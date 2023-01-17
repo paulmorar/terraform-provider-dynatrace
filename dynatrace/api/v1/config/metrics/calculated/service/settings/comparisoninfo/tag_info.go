@@ -59,8 +59,7 @@ func (me *TagInfo) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TagInfo) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *TagInfo) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"key":     me.Key,
 		"value":   me.Value,
@@ -140,13 +139,10 @@ func (me TagInfos) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me TagInfos) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("value", me)
+func (me TagInfos) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("value", me)
 }
 
 func (me *TagInfos) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("value", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("value", me)
 }

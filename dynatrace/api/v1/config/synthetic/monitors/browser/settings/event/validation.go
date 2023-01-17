@@ -37,25 +37,22 @@ func (me *Validations) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Validations) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me Validations) MarshalHCL(properties hcl.Properties) error {
 	entries := []any{}
 	for _, entry := range me {
-		if marshalled, err := entry.MarshalHCL(); err == nil {
+		marshalled := hcl.Properties{}
+		if err := entry.MarshalHCL(marshalled); err == nil {
 			entries = append(entries, marshalled)
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["validation"] = entries
-	return result, nil
+	properties["validation"] = entries
+	return nil
 }
 
 func (me *Validations) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("validation", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("validation", me)
 }
 
 type Validation struct {
@@ -99,22 +96,22 @@ func (me *Validation) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Validation) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["type"] = string(me.Type)
+func (me *Validation) MarshalHCL(properties hcl.Properties) error {
+	properties["type"] = string(me.Type)
 	if len(me.Match) > 0 {
-		result["match"] = me.Match
+		properties["match"] = me.Match
 	}
-	result["regex"] = me.IsRegex
-	result["fail_if_found"] = me.FailIfFound
+	properties["regex"] = me.IsRegex
+	properties["fail_if_found"] = me.FailIfFound
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(); err == nil {
-			result["target"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Target.MarshalHCL(marshalled); err == nil {
+			properties["target"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Validation) UnmarshalHCL(decoder hcl.Decoder) error {

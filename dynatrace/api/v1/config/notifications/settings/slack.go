@@ -93,28 +93,22 @@ func (me *SlackConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *SlackConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *SlackConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
-	result["title"] = me.Title
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
+	properties["title"] = me.Title
 	if me.URL != nil {
-		result["url"] = *me.URL
+		properties["url"] = *me.URL
 	}
 	if me.URL != nil {
-		result["url"] = *me.URL
+		properties["url"] = *me.URL
 	}
-	result["channel"] = me.Channel
-	return result, nil
+	properties["channel"] = me.Channel
+	return nil
 }
 
 func (me *SlackConfig) UnmarshalHCL(decoder hcl.Decoder) error {

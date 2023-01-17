@@ -69,22 +69,20 @@ func (ctc *CloudType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ctc *CloudType) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (ctc *CloudType) MarshalHCL(properties hcl.Properties) error {
 	if len(ctc.Unknowns) > 0 {
 		data, err := json.Marshal(ctc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = ctc.Negate
-	result["operator"] = string(ctc.Operator)
+	properties["negate"] = ctc.Negate
+	properties["operator"] = string(ctc.Operator)
 	if ctc.Value != nil {
-		result["value"] = ctc.Value.String()
+		properties["value"] = ctc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (ctc *CloudType) UnmarshalHCL(decoder hcl.Decoder) error {

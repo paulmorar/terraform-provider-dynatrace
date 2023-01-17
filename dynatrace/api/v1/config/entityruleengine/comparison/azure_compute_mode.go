@@ -69,22 +69,20 @@ func (acmc *AzureComputeMode) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (acmc *AzureComputeMode) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (acmc *AzureComputeMode) MarshalHCL(properties hcl.Properties) error {
 	if len(acmc.Unknowns) > 0 {
 		data, err := json.Marshal(acmc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = acmc.Negate
-	result["operator"] = string(acmc.Operator)
+	properties["negate"] = acmc.Negate
+	properties["operator"] = string(acmc.Operator)
 	if acmc.Value != nil {
-		result["value"] = acmc.Value.String()
+		properties["value"] = acmc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (acmc *AzureComputeMode) UnmarshalHCL(decoder hcl.Decoder) error {

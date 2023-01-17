@@ -51,26 +51,19 @@ func (me *ProfileSeverityRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ProfileSeverityRule) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *ProfileSeverityRule) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	if me.TagFilter != nil {
-		if marshalled, err := me.TagFilter.MarshalHCL(); err == nil {
-			result["tag_filter"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	result["delay_in_minutes"] = int(me.DelayInMinutes)
-	result["severity_level"] = string(me.SeverityLevel)
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"tag_filter":       me.TagFilter,
+		"delay_in_minutes": int(me.DelayInMinutes),
+		"severity_level":   string(me.SeverityLevel),
+	})
 }
 
 func (me *ProfileSeverityRule) UnmarshalHCL(decoder hcl.Decoder) error {

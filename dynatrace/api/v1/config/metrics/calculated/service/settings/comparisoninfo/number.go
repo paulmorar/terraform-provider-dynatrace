@@ -66,23 +66,22 @@ func (me *Number) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Number) MarshalHCL() (map[string]any, error) {
-	properties, err := hcl.NewProperties(me, me.Unknowns)
-	if err != nil {
-		return nil, err
+func (me *Number) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	if _, err = properties.EncodeAll(map[string]any{
+	if err := properties.EncodeAll(map[string]any{
 		"values":   me.Values,
 		"value":    me.Value,
 		"operator": me.Comparison,
 		"unknowns": me.Unknowns,
 	}); err != nil {
-		return nil, err
+		return err
 	}
 	// if len(me.Values) > 0 {
 	// 	properties["values"] = me.Values
 	// }
-	return properties, nil
+	return nil
 }
 
 func (me *Number) UnmarshalHCL(decoder hcl.Decoder) error {

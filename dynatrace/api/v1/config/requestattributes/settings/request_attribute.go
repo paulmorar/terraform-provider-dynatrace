@@ -96,46 +96,41 @@ func (me *RequestAttribute) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RequestAttribute) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *RequestAttribute) MarshalHCL(properties hcl.Properties) error {
 	if me.Unknowns != nil {
 		delete(me.Unknowns, "metadata")
 		delete(me.Unknowns, "id")
 	}
 
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
+	properties["name"] = me.Name
 	if me.SkipPersonalDataMasking != nil {
-		result["skip_personal_data_masking"] = opt.Bool(me.SkipPersonalDataMasking)
+		properties["skip_personal_data_masking"] = opt.Bool(me.SkipPersonalDataMasking)
 	}
 	if me.Confidential != nil {
-		result["confidential"] = opt.Bool(me.Confidential)
+		properties["confidential"] = opt.Bool(me.Confidential)
 	}
 	if len(me.DataSources) > 0 {
 		entries := []any{}
 		for _, entry := range me.DataSources {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["data_sources"] = entries
+		properties["data_sources"] = entries
 	}
-	result["data_type"] = string(me.DataType)
-	result["normalization"] = string(me.Normalization)
+	properties["data_type"] = string(me.DataType)
+	properties["normalization"] = string(me.Normalization)
 	if me.Enabled != nil {
-		result["enabled"] = opt.Bool(me.Enabled)
+		properties["enabled"] = opt.Bool(me.Enabled)
 	}
-	result["aggregation"] = string(me.Aggregation)
-	return result, nil
+	properties["aggregation"] = string(me.Aggregation)
+	return nil
 }
 
 func (me *RequestAttribute) UnmarshalHCL(decoder hcl.Decoder) error {

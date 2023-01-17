@@ -52,12 +52,11 @@ func (me *Rule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Rule) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["type"] = string(me.Type)
-	result["pass_if_found"] = me.PassIfFound
-	result["value"] = me.Value
-	return result, nil
+func (me *Rule) MarshalHCL(properties hcl.Properties) error {
+	properties["type"] = string(me.Type)
+	properties["pass_if_found"] = me.PassIfFound
+	properties["value"] = me.Value
+	return nil
 }
 
 func (me *Rule) UnmarshalHCL(decoder hcl.Decoder) error {

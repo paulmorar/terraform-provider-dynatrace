@@ -50,8 +50,8 @@ func (me *TimeoutSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TimeoutSettings) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *TimeoutSettings) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"timed_action_support":           me.TimedActionSupport,
 		"temporary_action_limit":         me.TemporaryActionLimit,
 		"temporary_action_total_timeout": me.TemporaryActionTotalTimeout,

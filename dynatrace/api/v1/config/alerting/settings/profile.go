@@ -84,32 +84,17 @@ func (me *Profile) EnsurePredictableOrder() {
 	}
 }
 
-func (me *Profile) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *Profile) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["display_name"] = me.DisplayName
-	if me.MzID != nil {
-		result["mz_id"] = me.MzID
-	}
-	if me.Rules != nil {
-		me.EnsurePredictableOrder()
-		entries := []any{}
-		for _, entry := range me.Rules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return nil, err
-			}
-		}
-		result["rules"] = entries
-	}
+
+	me.EnsurePredictableOrder()
+
 	if me.EventTypeFilters != nil {
 		filters := append([]*EventTypeFilter{}, me.EventTypeFilters...)
 		sort.Slice(filters, func(i, j int) bool {
@@ -118,17 +103,16 @@ func (me *Profile) MarshalHCL() (map[string]any, error) {
 			cmp := strings.Compare(string(d1), string(d2))
 			return (cmp == -1)
 		})
-		entries := []any{}
-		for _, entry := range filters {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return nil, err
-			}
-		}
-		result["event_type_filters"] = entries
+		me.EventTypeFilters = filters
 	}
-	return result, nil
+
+	return properties.EncodeAll(map[string]any{
+		"display_name":       me.DisplayName,
+		"mz_id":              me.MzID,
+		"rules":              me.Rules,
+		"event_type_filters": me.EventTypeFilters,
+	})
+
 }
 
 func (me *Profile) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -309,19 +293,17 @@ func (me *ConfigMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ConfigMetadata) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *ConfigMetadata) MarshalHCL(properties hcl.Properties) error {
 	if me.ClusterVersion != nil && len(*me.ClusterVersion) > 0 {
-		result["cluster_version"] = *me.ClusterVersion
+		properties["cluster_version"] = *me.ClusterVersion
 	}
 	if len(me.ConfigurationVersions) > 0 {
-		result["configuration_versions"] = me.ConfigurationVersions
+		properties["configuration_versions"] = me.ConfigurationVersions
 	}
 	if len(me.CurrentConfigurationVersions) > 0 {
-		result["current_configuration_versions"] = me.CurrentConfigurationVersions
+		properties["current_configuration_versions"] = me.CurrentConfigurationVersions
 	}
-	return result, nil
+	return nil
 }
 
 func (me *ConfigMetadata) UnmarshalHCL(decoder hcl.Decoder) error {

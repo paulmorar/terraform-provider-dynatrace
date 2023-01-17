@@ -66,10 +66,9 @@ func (me *FailedState) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FailedState) MarshalHCL() (map[string]any, error) {
-	properties, err := hcl.NewProperties(me, me.Unknowns)
-	if err != nil {
-		return nil, err
+func (me *FailedState) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	return properties.EncodeAll(map[string]any{
 		"values":   me.Values,

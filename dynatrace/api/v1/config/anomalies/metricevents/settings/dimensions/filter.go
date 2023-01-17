@@ -44,11 +44,11 @@ func (me *Filter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Filter) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["operator"] = string(me.Operator)
-	result["value"] = me.Value
-	return result, nil
+func (me *Filter) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"operator": me.Operator,
+		"value":    me.Value,
+	})
 }
 
 func (me *Filter) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -39,8 +39,8 @@ func (me *Headers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Headers) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("header", me)
+func (me Headers) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("header", me)
 }
 
 func (me *Headers) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -117,19 +117,18 @@ func (me *Header) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Header) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["name"] = me.Name
+func (me *Header) MarshalHCL(properties hcl.Properties) error {
+	properties["name"] = me.Name
 	if me.Value != nil {
-		result["value"] = me.Value
+		properties["value"] = me.Value
 	}
 	if me.Secret {
 		if me.SecretValue != nil {
-			result["secret_value"] = "${state.secret_value}"
+			properties["secret_value"] = "${state.secret_value}"
 		}
 	}
 
-	return result, nil
+	return nil
 }
 
 func (me *Header) UnmarshalHCL(decoder hcl.Decoder) error {

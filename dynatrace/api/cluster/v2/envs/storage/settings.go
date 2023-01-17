@@ -60,29 +60,28 @@ func (me *limits) Schema() map[string]*schema.Schema {
 		}}
 }
 
-func (me *limits) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *limits) MarshalHCL(properties hcl.Properties) error {
 	if me.Transactions != nil {
 		if err := properties.Encode("transactions", me.Transactions); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.SessionReplay != nil {
 		if err := properties.Encode("session_replay", me.SessionReplay); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.SymbolFiles != nil {
 		if err := properties.Encode("symbol_files", me.SymbolFiles); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.Logs != nil {
 		if err := properties.Encode("logs", me.Logs); err != nil {
-			return nil, err
+			return err
 		}
 	}
-	return properties, nil
+	return nil
 }
 
 func (me *limits) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -137,39 +136,38 @@ func (me *retent) Schema() map[string]*schema.Schema {
 		}}
 }
 
-func (me *retent) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *retent) MarshalHCL(properties hcl.Properties) error {
 	if me.ServiceCodeLevel != 0 {
 		if err := properties.Encode("service_code_level", me.ServiceCodeLevel); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.ServiceCodeLevel != 0 {
 		if err := properties.Encode("service_request_level", me.ServiceRequestLevel); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.RUM != 0 {
 		if err := properties.Encode("rum", me.RUM); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.Synthetic != 0 {
 		if err := properties.Encode("synthetic", me.Synthetic); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.SessionReplay != 0 {
 		if err := properties.Encode("session_replay", me.SessionReplay); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if me.Logs != 0 {
 		if err := properties.Encode("logs", me.Logs); err != nil {
-			return nil, err
+			return err
 		}
 	}
-	return properties, nil
+	return nil
 }
 
 func (me *retent) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -212,16 +210,15 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *Settings) MarshalHCL(properties hcl.Properties) error {
 	if !me.UserActionsPerMinute.IsEmpty() {
 		if err := properties.Encode("user_actions", me.UserActionsPerMinute.MaxLimit); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if !me.TransactionTrafficQuota.IsEmpty() {
 		if err := properties.Encode("transactions", me.TransactionTrafficQuota.MaxLimit); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	vLimits := new(limits)
@@ -240,7 +237,7 @@ func (me *Settings) MarshalHCL() (map[string]any, error) {
 	}
 	if !vLimits.IsEmpty() {
 		if err := properties.Encode("limits", vLimits); err != nil {
-			return nil, err
+			return err
 		}
 	}
 
@@ -252,10 +249,10 @@ func (me *Settings) MarshalHCL() (map[string]any, error) {
 		RUM:                 me.RealUserMonitoringRetention.MaxLimitInDays,
 		Synthetic:           me.SyntheticMonitoringRetention.MaxLimitInDays,
 	}); err != nil {
-		return nil, err
+		return err
 	}
 
-	return properties, nil
+	return nil
 }
 
 func (me *Settings) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -63,24 +63,11 @@ func (me *Detection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Detection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if me.Drops != nil && me.Drops.Enabled {
-		if marshalled, err := me.Drops.MarshalHCL(); err == nil {
-			result["drops"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	if me.Spikes != nil && me.Spikes.Enabled {
-		if marshalled, err := me.Spikes.MarshalHCL(); err == nil {
-			result["spikes"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	return result, nil
+func (me *Detection) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"drops":  me.Drops,
+		"spikes": me.Spikes,
+	})
 }
 
 func (me *Detection) UnmarshalHCL(decoder hcl.Decoder) error {

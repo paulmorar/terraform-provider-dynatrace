@@ -66,18 +66,16 @@ func (me *GroupConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *GroupConfig) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-	properties, err := properties.EncodeAll(map[string]any{
+func (me *GroupConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.EncodeAll(map[string]any{
 		"name":           me.Name,
 		"cluster_admin":  me.IsClusterAdminGroup,
 		"access_account": me.AccessAccount,
 		"manage_account": me.ManageAccount,
 		"ldap_groups":    me.LDAPGroupNames,
 		"sso_groups":     me.SSOGroupNames,
-	})
-	if err != nil {
-		return nil, err
+	}); err != nil {
+		return err
 	}
 	if len(me.AccessRight) > 0 {
 		perms := PermissionAssignments{}
@@ -93,7 +91,7 @@ func (me *GroupConfig) MarshalHCL() (map[string]any, error) {
 		})
 		properties.Encode("permissions", perms)
 	}
-	return properties, nil
+	return nil
 }
 
 func (me *GroupConfig) UnmarshalHCL(decoder hcl.Decoder) error {

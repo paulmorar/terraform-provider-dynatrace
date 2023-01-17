@@ -37,13 +37,10 @@ func (me *Conditions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Conditions) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("condition", me)
+func (me Conditions) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("condition", me)
 }
 
 func (me *Conditions) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("condition", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("condition", me)
 }

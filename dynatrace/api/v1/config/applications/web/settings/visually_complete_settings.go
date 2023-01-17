@@ -62,8 +62,8 @@ func (me *VisuallyCompleteSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *VisuallyCompleteSettings) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *VisuallyCompleteSettings) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"exclude_url_regex":      me.ExcludeURLRegex,
 		"ignored_mutations_list": me.IgnoredMutationsList,
 		"mutation_timeout":       me.MutationTimeout,

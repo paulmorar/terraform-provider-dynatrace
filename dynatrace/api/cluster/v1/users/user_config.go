@@ -46,8 +46,7 @@ func (me *UserConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *UserConfig) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *UserConfig) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"user_name":  me.UserName,
 		"email":      me.Email,

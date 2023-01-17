@@ -115,24 +115,25 @@ func SuppressEquivalent(k, old, new string, d *schema.ResourceData) bool {
 	return equalLineByLine(old, new)
 }
 
-func (me *Javascript) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["code"] = me.Javascript
+func (me *Javascript) MarshalHCL(properties hcl.Properties) error {
+	properties["code"] = me.Javascript
 	if me.Wait != nil {
-		if marshalled, err := me.Wait.MarshalHCL(); err == nil {
-			result["wait"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Wait.MarshalHCL(marshalled); err == nil {
+			properties["wait"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(); err == nil {
-			result["target"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Target.MarshalHCL(marshalled); err == nil {
+			properties["target"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Javascript) UnmarshalHCL(decoder hcl.Decoder) error {

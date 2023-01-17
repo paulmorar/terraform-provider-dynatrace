@@ -54,21 +54,15 @@ func (me *CustomChartingItemMetadataConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomChartingItemMetadataConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *CustomChartingItemMetadataConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.LastModified != nil {
-		result["last_modified"] = int(opt.Int64(me.LastModified))
+		properties["last_modified"] = int(opt.Int64(me.LastModified))
 	}
-	result["custom_color"] = me.CustomColor
-	return result, nil
+	properties["custom_color"] = me.CustomColor
+	return nil
 }
 
 func (me *CustomChartingItemMetadataConfig) UnmarshalHCL(decoder hcl.Decoder) error {

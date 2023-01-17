@@ -38,15 +38,10 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
-		"write_and_read_time": int(me.WriteAndReadTime),
-	}, nil
+func (me *Thresholds) MarshalHCL(properties hcl.Properties) error {
+	return properties.Encode("write_and_read_time", me.WriteAndReadTime)
 }
 
 func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {
-	if value, ok := decoder.GetOk("write_and_read_time"); ok {
-		me.WriteAndReadTime = int32(value.(int))
-	}
-	return nil
+	return decoder.Decode("write_and_read_time", &me.WriteAndReadTime)
 }

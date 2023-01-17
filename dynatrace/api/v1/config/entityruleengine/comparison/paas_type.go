@@ -69,22 +69,20 @@ func (ptc *PaasType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ptc *PaasType) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (ptc *PaasType) MarshalHCL(properties hcl.Properties) error {
 	if len(ptc.Unknowns) > 0 {
 		data, err := json.Marshal(ptc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = ptc.Negate
-	result["operator"] = string(ptc.Operator)
+	properties["negate"] = ptc.Negate
+	properties["operator"] = string(ptc.Operator)
 	if ptc.Value != nil {
-		result["value"] = ptc.Value.String()
+		properties["value"] = ptc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (ptc *PaasType) UnmarshalHCL(decoder hcl.Decoder) error {

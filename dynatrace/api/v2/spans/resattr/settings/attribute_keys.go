@@ -37,8 +37,8 @@ func (me *AttributeKeys) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me AttributeKeys) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("rule", me)
+func (me AttributeKeys) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("rule", me)
 }
 
 func (me *AttributeKeys) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -123,85 +123,108 @@ func (me *NotificationRecord) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NotificationRecord) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *NotificationRecord) MarshalHCL(properties hcl.Properties) error {
 	if me.NotificationConfig != nil {
 		switch config := me.NotificationConfig.(type) {
 		case *AnsibleTowerConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["ansible_tower"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["ansible_tower"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *EmailConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["email"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["email"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *JiraConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["jira"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["jira"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *OpsGenieConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["ops_genie"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["ops_genie"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *PagerDutyConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["pager_duty"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["pager_duty"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *ServiceNowConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["service_now"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["service_now"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *SlackConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["slack"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["slack"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *TrelloConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["trello"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["trello"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *VictorOpsConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["victor_ops"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["victor_ops"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *WebHookConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["web_hook"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["web_hook"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		case *XMattersConfig:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["xmatters"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["xmatters"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		default:
-			if marshalled, err := config.MarshalHCL(); err == nil {
-				result["config"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+
+			if err := config.MarshalHCL(marshalled); err == nil {
+				properties["config"] = []any{marshalled}
 			} else {
-				return nil, err
+				return nil
 			}
 		}
 	}
-	return result, nil
+	return nil
 }
 
 type MarshalPreparer interface {

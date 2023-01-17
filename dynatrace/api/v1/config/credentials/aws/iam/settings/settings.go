@@ -26,8 +26,8 @@ type Settings struct {
 	Token string `json:"token"`
 }
 
-func (me *Settings) MarshalHCL() (map[string]any, error) {
-	return nil, nil
+func (me *Settings) MarshalHCL(properties hcl.Properties) error {
+	return nil
 }
 
 func (me *Settings) UnmarshalHCL(decoder hcl.Decoder) error {

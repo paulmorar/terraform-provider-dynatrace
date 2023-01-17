@@ -69,22 +69,20 @@ func (ddc *DCRumDecoder) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ddc *DCRumDecoder) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (ddc *DCRumDecoder) MarshalHCL(properties hcl.Properties) error {
 	if len(ddc.Unknowns) > 0 {
 		data, err := json.Marshal(ddc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = ddc.Negate
-	result["operator"] = string(ddc.Operator)
+	properties["negate"] = ddc.Negate
+	properties["operator"] = string(ddc.Operator)
 	if ddc.Value != nil {
-		result["value"] = ddc.Value.String()
+		properties["value"] = ddc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (ddc *DCRumDecoder) UnmarshalHCL(decoder hcl.Decoder) error {

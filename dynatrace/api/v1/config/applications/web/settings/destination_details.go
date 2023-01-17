@@ -52,8 +52,8 @@ func (me *DestinationDetails) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DestinationDetails) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *DestinationDetails) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"url_or_path":    me.URLOrPath,
 		"match_type":     me.MatchType,
 		"case_sensitive": me.CaseSensitive,

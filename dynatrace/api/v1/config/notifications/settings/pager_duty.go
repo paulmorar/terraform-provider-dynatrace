@@ -93,27 +93,21 @@ func (me *PagerDutyConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *PagerDutyConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *PagerDutyConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
-	result["account"] = me.Account
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
+	properties["account"] = me.Account
 	if me.ServiceAPIKey != nil {
-		result["service_api_key"] = *me.ServiceAPIKey
+		properties["service_api_key"] = *me.ServiceAPIKey
 	}
 
-	result["service_name"] = me.ServiceName
+	properties["service_name"] = me.ServiceName
 
-	return result, nil
+	return nil
 }
 
 func (me *PagerDutyConfig) UnmarshalHCL(decoder hcl.Decoder) error {

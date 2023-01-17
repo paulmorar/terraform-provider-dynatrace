@@ -102,46 +102,42 @@ func (me *Window) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Window) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *Window) MarshalHCL(properties hcl.Properties) error {
 	if me.Unknowns != nil {
 		delete(me.Unknowns, "managementZoneId")
 	}
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
+	properties["name"] = me.Name
 	if len(me.Description) > 0 {
-		result["description"] = me.Description
+		properties["description"] = me.Description
 	}
 	if me.Schedule != nil {
-		if marshalled, err := me.Schedule.MarshalHCL(); err == nil {
-			result["schedule"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Schedule.MarshalHCL(marshalled); err == nil {
+			properties["schedule"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.SuppressSyntheticMonitorsExecution != nil {
-		result["suppress_synth_mon_exec"] = opt.Bool(me.SuppressSyntheticMonitorsExecution)
+		properties["suppress_synth_mon_exec"] = opt.Bool(me.SuppressSyntheticMonitorsExecution)
 	}
 	if !me.Enabled {
-		result["enabled"] = me.Enabled
+		properties["enabled"] = me.Enabled
 	}
 	if me.Scope != nil && !me.Scope.IsEmpty() {
-		if marshalled, err := me.Scope.MarshalHCL(); err == nil {
-			result["scope"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Scope.MarshalHCL(marshalled); err == nil {
+			properties["scope"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["suppression"] = string(me.Suppression)
-	result["type"] = string(me.Type)
-	return result, nil
+	properties["suppression"] = string(me.Suppression)
+	properties["type"] = string(me.Type)
+	return nil
 }
 
 func (me *Window) UnmarshalHCL(decoder hcl.Decoder) error {

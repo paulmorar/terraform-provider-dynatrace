@@ -20,8 +20,8 @@ func (me *Permissions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Permissions) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("permission", me)
+func (me Permissions) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("permission", me)
 }
 
 func (me *Permissions) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -51,12 +51,12 @@ func (me *Permission) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Permission) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
+func (me *Permission) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"name":  me.Name,
 		"scope": me.Scope,
 		"type":  string(me.ScopeType),
-	}, nil
+	})
 }
 
 func (me *Permission) UnmarshalHCL(decoder hcl.Decoder) error {

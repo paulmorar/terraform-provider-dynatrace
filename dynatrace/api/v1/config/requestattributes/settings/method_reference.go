@@ -96,39 +96,33 @@ func (me *MethodReference) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MethodReference) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *MethodReference) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["return_type"] = me.ReturnType
-	result["visibility"] = Visibility(me.Visibility)
+	properties["return_type"] = me.ReturnType
+	properties["visibility"] = Visibility(me.Visibility)
 	if len(me.ArgumentTypes) > 0 {
-		result["argument_types"] = me.ArgumentTypes
+		properties["argument_types"] = me.ArgumentTypes
 	}
 	if me.ClassName != nil {
-		result["class_name"] = *me.ClassName
+		properties["class_name"] = *me.ClassName
 	}
 	if me.FileName != nil {
-		result["file_name"] = *me.FileName
+		properties["file_name"] = *me.FileName
 	}
 	if me.FileNameMatcher != nil {
-		result["file_name_matcher"] = string(*me.FileNameMatcher)
+		properties["file_name_matcher"] = string(*me.FileNameMatcher)
 	}
-	result["method_name"] = me.MethodName
+	properties["method_name"] = me.MethodName
 	if len(me.Modifiers) > 0 {
 		mods := []string{}
 		for _, mod := range me.Modifiers {
 			mods = append(mods, string(mod))
 		}
-		result["modifiers"] = mods
+		properties["modifiers"] = mods
 	}
-	return result, nil
+	return nil
 }
 
 func (me *MethodReference) UnmarshalHCL(decoder hcl.Decoder) error {

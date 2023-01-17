@@ -37,27 +37,24 @@ func (me *Ranges) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Ranges) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me Ranges) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["range"] = entries
+		properties["range"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Ranges) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("range", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("range", me)
 }
 
 // Range The IP address or the IP address range to be mapped to the location
@@ -87,8 +84,8 @@ func (me *Range) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Range) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *Range) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"subnet_mask": me.SubNetMask,
 		"address":     me.Address,
 		"address_to":  me.ToAddress,

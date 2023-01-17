@@ -93,30 +93,25 @@ func (me *CustomFilterChartConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomFilterChartConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *CustomFilterChartConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.LegendShown != nil {
-		result["legend"] = opt.Bool(me.LegendShown)
+		properties["legend"] = opt.Bool(me.LegendShown)
 	}
-	result["type"] = string(me.Type)
+	properties["type"] = string(me.Type)
 	if len(me.Series) > 0 {
 		entries := []any{}
 		for _, entry := range me.Series {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["series"] = entries
+		properties["series"] = entries
 	}
 	if len(me.ResultMetadata) > 0 {
 		resultMetadata := &ResultMetadata{Entries: []*ResultMetadataEntry{}}
@@ -127,26 +122,27 @@ func (me *CustomFilterChartConfig) MarshalHCL() (map[string]any, error) {
 			}
 			resultMetadata.Entries = append(resultMetadata.Entries, entry)
 		}
-		if marshalled, err := resultMetadata.MarshalHCL(); err == nil {
-			result["result_metadata"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := resultMetadata.MarshalHCL(marshalled); err == nil {
+			properties["result_metadata"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if len(me.AxisLimits) > 0 {
 		data, err := json.Marshal(me.AxisLimits)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["axis_limits"] = string(data)
+		properties["axis_limits"] = string(data)
 	}
 	if me.LeftAxisCustomUnit != nil {
-		result["left_axis_custom_unit"] = string(*me.LeftAxisCustomUnit)
+		properties["left_axis_custom_unit"] = string(*me.LeftAxisCustomUnit)
 	}
 	if me.RightAxisCustomUnit != nil {
-		result["right_axis_custom_unit"] = string(*me.RightAxisCustomUnit)
+		properties["right_axis_custom_unit"] = string(*me.RightAxisCustomUnit)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *CustomFilterChartConfig) UnmarshalHCL(decoder hcl.Decoder) error {

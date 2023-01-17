@@ -167,44 +167,46 @@ func (me *Request) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Request) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Request) MarshalHCL(properties hcl.Properties) error {
 	if me.Description != nil && len(*me.Description) > 0 {
-		result["description"] = *me.Description
+		properties["description"] = *me.Description
 	}
-	result["url"] = me.URL
-	result["method"] = me.Method
+	properties["url"] = me.URL
+	properties["method"] = me.Method
 	if me.RequestBody != nil && len(*me.RequestBody) > 0 {
-		result["body"] = *me.RequestBody
+		properties["body"] = *me.RequestBody
 	}
 	if me.PreProcessing != nil && len(*me.PreProcessing) > 0 {
-		result["pre_processing"] = *me.PreProcessing
+		properties["pre_processing"] = *me.PreProcessing
 	}
 	if me.PostProcessing != nil && len(*me.PostProcessing) > 0 {
-		result["post_processing"] = *me.PostProcessing
+		properties["post_processing"] = *me.PostProcessing
 	}
 	if me.Validation != nil {
-		if marshalled, err := me.Validation.MarshalHCL(); err == nil {
-			result["validation"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Validation.MarshalHCL(marshalled); err == nil {
+			properties["validation"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Authentication != nil {
-		if marshalled, err := me.Authentication.MarshalHCL(); err == nil {
-			result["authentication"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Authentication.MarshalHCL(marshalled); err == nil {
+			properties["authentication"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Configuration != nil {
-		if marshalled, err := me.Configuration.MarshalHCL(); err == nil {
-			result["configuration"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Configuration.MarshalHCL(marshalled); err == nil {
+			properties["configuration"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Request) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -68,25 +68,19 @@ func (me *Recurrence) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Recurrence) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *Recurrence) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.DayOfMonth != nil {
-		result["day_of_month"] = int(opt.Int32(me.DayOfMonth))
+		properties["day_of_month"] = int(opt.Int32(me.DayOfMonth))
 	}
 	if me.DayOfWeek != nil {
-		result["day_of_week"] = string(*me.DayOfWeek)
+		properties["day_of_week"] = string(*me.DayOfWeek)
 	}
-	result["duration_minutes"] = int(me.DurationMinutes)
-	result["start_time"] = me.StartTime
-	return result, nil
+	properties["duration_minutes"] = int(me.DurationMinutes)
+	properties["start_time"] = me.StartTime
+	return nil
 }
 
 func (me *Recurrence) UnmarshalHCL(decoder hcl.Decoder) error {

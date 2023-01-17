@@ -46,23 +46,24 @@ func (me *HeadersSection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *HeadersSection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *HeadersSection) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Headers) > 0 {
 		entries := []any{}
 		for _, header := range me.Headers {
-			if marshalled, err := header.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+
+			if err := header.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["header"] = entries
+		properties["header"] = entries
 	}
 	if len(me.Restrictions) > 0 {
-		result["restrictions"] = me.Restrictions
+		properties["restrictions"] = me.Restrictions
 	}
-	return result, nil
+	return nil
 }
 
 func (me *HeadersSection) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -97,20 +98,21 @@ func (me *Headers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Headers) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me Headers) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, header := range me {
-			if marshalled, err := header.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+
+			if err := header.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["header"] = entries
+		properties["header"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Headers) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -147,8 +149,8 @@ func (me *Header) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Header) MarshalHCL() (map[string]any, error) {
-	return map[string]any{"name": me.Name, "value": me.Value}, nil
+func (me *Header) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{"name": me.Name, "value": me.Value})
 }
 
 func (me *Header) UnmarshalHCL(decoder hcl.Decoder) error {

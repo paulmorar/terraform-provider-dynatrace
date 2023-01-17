@@ -46,8 +46,8 @@ func (me *MaskingSetting) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MaskingSetting) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *MaskingSetting) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"preset": me.Preset,
 		"rules":  me.Rules,
 	})

@@ -57,21 +57,21 @@ func (me *WaitCondition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *WaitCondition) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["wait_for"] = me.WaitFor
+func (me *WaitCondition) MarshalHCL(properties hcl.Properties) error {
+	properties["wait_for"] = me.WaitFor
 	if me.Milliseconds != nil {
-		result["milliseconds"] = *me.Milliseconds
+		properties["milliseconds"] = *me.Milliseconds
 	}
 	if me.TimeoutInMilliseconds != nil {
-		result["timeout"] = *me.TimeoutInMilliseconds
+		properties["timeout"] = *me.TimeoutInMilliseconds
 	}
 	if me.Validation != nil {
-		if marshalled, err := me.Validation.MarshalHCL(); err == nil {
-			result["validation"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Validation.MarshalHCL(marshalled); err == nil {
+			properties["validation"] = []any{marshalled}
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *WaitCondition) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -80,24 +80,19 @@ func (me *CustomFilterConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomFilterConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *CustomFilterConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["type"] = string(me.Type)
-	result["custom_name"] = me.CustomName
-	result["default_name"] = me.DefaultName
+	properties["type"] = string(me.Type)
+	properties["custom_name"] = me.CustomName
+	properties["default_name"] = me.DefaultName
 	if me.ChartConfig != nil {
-		if marshalled, err := me.ChartConfig.MarshalHCL(); err == nil {
-			result["chart_config"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.ChartConfig.MarshalHCL(marshalled); err == nil {
+			properties["chart_config"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if len(me.FiltersPerEntityType) > 0 {
@@ -116,13 +111,14 @@ func (me *CustomFilterConfig) MarshalHCL() (map[string]any, error) {
 			}
 			filtersPerEntityType.Filters = append(filtersPerEntityType.Filters, filterForEntityType)
 		}
-		if marshalled, err := filtersPerEntityType.MarshalHCL(); err == nil {
-			result["filters"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := filtersPerEntityType.MarshalHCL(marshalled); err == nil {
+			properties["filters"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *CustomFilterConfig) UnmarshalHCL(decoder hcl.Decoder) error {

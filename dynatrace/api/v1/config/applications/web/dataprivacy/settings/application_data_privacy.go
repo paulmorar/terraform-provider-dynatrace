@@ -66,8 +66,8 @@ func (me *ApplicationDataPrivacy) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ApplicationDataPrivacy) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *ApplicationDataPrivacy) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"web_application_id":                  me.WebApplicationID,
 		"data_capture_opt_in":                 me.DataCaptureOptInEnabled,
 		"persistent_cookie_for_user_tracking": me.PersistentCookieForUserTracking,

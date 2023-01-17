@@ -50,45 +50,46 @@ func (me Dimensions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Dimensions) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me Dimensions) MarshalHCL(properties hcl.Properties) error {
 	Entitys := []any{}
 	Strings := []any{}
 	baseDimensions := []map[string]any{}
 	for _, dimension := range me {
 		switch dim := dimension.(type) {
 		case *Entity:
-			if marshalled, err := dim.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := dim.MarshalHCL(marshalled); err == nil {
 				Entitys = append(Entitys, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		case *String:
-			if marshalled, err := dim.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := dim.MarshalHCL(marshalled); err == nil {
 				Strings = append(Strings, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		case *BaseDimension:
-			if marshalled, err := dim.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := dim.MarshalHCL(marshalled); err == nil {
 				baseDimensions = append(baseDimensions, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		default:
 		}
 	}
 	if len(Entitys) > 0 {
-		result["entity"] = Entitys
+		properties["entity"] = Entitys
 	}
 	if len(Strings) > 0 {
-		result["string"] = Strings
+		properties["string"] = Strings
 	}
 	if len(baseDimensions) > 0 {
-		result["dimension"] = baseDimensions
+		properties["dimension"] = baseDimensions
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Dimensions) UnmarshalHCL(decoder hcl.Decoder) error {

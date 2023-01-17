@@ -98,38 +98,18 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AnomalyDetection) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-	properties, err := properties.EncodeAll(map[string]any{
+func (me *AnomalyDetection) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"name":              me.Name,
 		"threshold":         me.Threshold,
 		"enabled":           me.Enabled,
 		"violating_samples": me.ViolatingSamples,
 		"samples":           me.Samples,
 		"metric":            me.Metric,
+		"host_group_id":     me.HostGroupID,
+		"disk_name":         me.DiskNameFilter,
+		"tags":              me.TagFilters,
 	})
-	if err != nil {
-		return nil, err
-	}
-	if me.HostGroupID != nil {
-		properties["host_group_id"] = *me.HostGroupID
-	}
-	if me.DiskNameFilter != nil {
-		if marshalled, err := me.DiskNameFilter.MarshalHCL(); err != nil {
-			return nil, err
-		} else {
-			properties["disk_name"] = []any{marshalled}
-		}
-
-	}
-	if len(me.TagFilters) > 0 {
-		if marshalled, err := me.TagFilters.MarshalHCL(); err != nil {
-			return nil, err
-		} else {
-			properties["tags"] = []any{marshalled}
-		}
-	}
-	return properties, nil
 }
 
 func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {

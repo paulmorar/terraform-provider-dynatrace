@@ -37,27 +37,24 @@ func (me *UserActionAndSessionProperties) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me UserActionAndSessionProperties) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me UserActionAndSessionProperties) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["property"] = entries
+		properties["property"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *UserActionAndSessionProperties) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("property", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("property", me)
 }
 
 type UserActionAndSessionProperty struct {
@@ -146,8 +143,8 @@ func (me *UserActionAndSessionProperty) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *UserActionAndSessionProperty) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *UserActionAndSessionProperty) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"display_name":                  me.DisplayName,
 		"type":                          me.Type,
 		"origin":                        me.Origin,

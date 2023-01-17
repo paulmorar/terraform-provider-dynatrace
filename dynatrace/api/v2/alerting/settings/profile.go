@@ -99,23 +99,22 @@ func (me *Profile) EnsurePredictableOrder() {
 }
 
 // MarshalHCL produces HCL structures for Terraform
-func (me *Profile) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	result["name"] = me.Name
+func (me *Profile) MarshalHCL(properties hcl.Properties) error {
+	properties["name"] = me.Name
 	if me.ManagementZone != nil {
-		result["management_zone"] = me.ManagementZone
+		properties["management_zone"] = me.ManagementZone
 	}
 	if me.LegacyID != nil {
-		result["legacy_id"] = *me.LegacyID
+		properties["legacy_id"] = *me.LegacyID
 	}
 	if len(me.SeverityRules) > 0 {
 		me.EnsurePredictableOrder()
-		marshalled, err := me.SeverityRules.MarshalHCL()
+		marshalled := hcl.Properties{}
+		err := me.SeverityRules.MarshalHCL(marshalled)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["rules"] = []any{marshalled}
+		properties["rules"] = []any{marshalled}
 	}
 	if len(me.EventFilters) > 0 {
 		filters := append(EventFilters{}, me.EventFilters...)
@@ -125,13 +124,14 @@ func (me *Profile) MarshalHCL() (map[string]any, error) {
 			cmp := strings.Compare(string(d1), string(d2))
 			return (cmp == -1)
 		})
-		marshalled, err := me.EventFilters.MarshalHCL()
+		marshalled := hcl.Properties{}
+		err := me.EventFilters.MarshalHCL(marshalled)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["filters"] = []any{marshalled}
+		properties["filters"] = []any{marshalled}
 	}
-	return result, nil
+	return nil
 }
 
 // UnmarshalHCL decodes HCL code and fills this object

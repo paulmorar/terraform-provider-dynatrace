@@ -38,15 +38,10 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
-		"saturation": int(me.CPUSaturation),
-	}, nil
+func (me *Thresholds) MarshalHCL(properties hcl.Properties) error {
+	return properties.Encode("saturation", me.CPUSaturation)
 }
 
 func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {
-	if value, ok := decoder.GetOk("saturation"); ok {
-		me.CPUSaturation = int32(value.(int))
-	}
-	return nil
+	return decoder.Decode("saturation", &me.CPUSaturation)
 }

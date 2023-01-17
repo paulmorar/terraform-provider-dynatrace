@@ -28,7 +28,7 @@ import (
 // Comparison Defines how the matching is actually performed: what and how are we comparing.
 // The actual set of fields and possible values of the **operator** field depend on the **type** of the comparison. \n\nFind the list of actual models in the description of the **type** field and check the description of the model you need.
 type Comparison interface {
-	MarshalHCL() (map[string]any, error)
+	MarshalHCL(hcl.Properties) error
 	UnmarshalHCL(decoder hcl.Decoder) error
 	MarshalJSON() ([]byte, error)
 	UnmarshalJSON(data []byte) error
@@ -73,19 +73,17 @@ func (bcb *BaseComparison) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (bcb *BaseComparison) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (bcb *BaseComparison) MarshalHCL(properties hcl.Properties) error {
 	if len(bcb.Unknowns) > 0 {
 		data, err := json.Marshal(bcb.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = bcb.Negate
-	result["type"] = string(bcb.Type)
-	return result, nil
+	properties["negate"] = bcb.Negate
+	properties["type"] = string(bcb.Type)
+	return nil
 }
 
 func (bcb *BaseComparison) UnmarshalHCL(decoder hcl.Decoder) error {

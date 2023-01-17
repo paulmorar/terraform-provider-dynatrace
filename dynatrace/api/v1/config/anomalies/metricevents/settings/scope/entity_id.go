@@ -52,18 +52,11 @@ func (me *EntityID) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EntityID) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *EntityID) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["id"] = me.EntityID
-	return result, nil
+	return properties.Encode("id", me.EntityID)
 }
 
 func (me *EntityID) UnmarshalHCL(decoder hcl.Decoder) error {

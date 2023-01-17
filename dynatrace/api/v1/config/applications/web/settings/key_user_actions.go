@@ -68,27 +68,24 @@ func (me *KeyUserActions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me KeyUserActions) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me KeyUserActions) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["action"] = entries
+		properties["action"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *KeyUserActions) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("action", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("action", me)
 }
 
 // KeyUserAction represents configuration of the key user action
@@ -158,8 +155,8 @@ func (me *KeyUserAction) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *KeyUserAction) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *KeyUserAction) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"name":   me.Name,
 		"type":   me.Type,
 		"domain": me.Domain,

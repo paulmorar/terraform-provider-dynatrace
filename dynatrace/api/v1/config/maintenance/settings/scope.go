@@ -66,31 +66,26 @@ func (me *Scope) IsEmpty() bool {
 	return len(me.Entities) == 0 && len(me.Matches) == 0
 }
 
-func (me *Scope) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *Scope) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if len(me.Entities) > 0 {
-		result["entities"] = me.Entities
+		properties["entities"] = me.Entities
 	}
 	if len(me.Matches) > 0 {
 		entries := []any{}
 		for _, entry := range me.Matches {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["matches"] = entries
+		properties["matches"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Scope) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -90,26 +90,27 @@ func (me *OutageHandlingPolicy) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *OutageHandlingPolicy) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["global_outage"] = me.GlobalOutage
-	result["local_outage"] = me.LocalOutage
-	result["retry_on_error"] = me.RetryOnError
+func (me *OutageHandlingPolicy) MarshalHCL(properties hcl.Properties) error {
+	properties["global_outage"] = me.GlobalOutage
+	properties["local_outage"] = me.LocalOutage
+	properties["retry_on_error"] = me.RetryOnError
 	if me.LocalOutagePolicy != nil && (me.LocalOutagePolicy.AffectedLocations != nil || me.LocalOutagePolicy.ConsecutiveRuns != nil) {
-		if marshalled, err := me.LocalOutagePolicy.MarshalHCL(); err == nil {
-			result["local_outage_policy"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.LocalOutagePolicy.MarshalHCL(marshalled); err == nil {
+			properties["local_outage_policy"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.GlobalOutagePolicy != nil && me.GlobalOutagePolicy.ConsecutiveRuns != nil {
-		if marshalled, err := me.GlobalOutagePolicy.MarshalHCL(); err == nil {
-			result["global_outage_policy"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.GlobalOutagePolicy.MarshalHCL(marshalled); err == nil {
+			properties["global_outage_policy"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *OutageHandlingPolicy) UnmarshalHCL(decoder hcl.Decoder) error {

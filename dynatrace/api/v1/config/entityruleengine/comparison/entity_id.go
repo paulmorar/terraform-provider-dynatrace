@@ -72,22 +72,20 @@ func (eic *EntityID) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (eic *EntityID) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (eic *EntityID) MarshalHCL(properties hcl.Properties) error {
 	if len(eic.Unknowns) > 0 {
 		data, err := json.Marshal(eic.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = eic.Negate
-	result["operator"] = string(eic.Operator)
+	properties["negate"] = eic.Negate
+	properties["operator"] = string(eic.Operator)
 	if eic.Value != nil {
-		result["value"] = *eic.Value
+		properties["value"] = *eic.Value
 	}
-	return result, nil
+	return nil
 }
 
 func (eic *EntityID) UnmarshalHCL(decoder hcl.Decoder) error {

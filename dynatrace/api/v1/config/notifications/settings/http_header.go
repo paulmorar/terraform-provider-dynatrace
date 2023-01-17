@@ -50,15 +50,13 @@ func (me *HTTPHeader) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *HTTPHeader) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	result["name"] = me.Name
+func (me *HTTPHeader) MarshalHCL(properties hcl.Properties) error {
+	properties["name"] = me.Name
 	if me.Value != nil {
-		result["value"] = *me.Value
+		properties["value"] = *me.Value
 	}
 
-	return result, nil
+	return nil
 }
 
 func (me *HTTPHeader) UnmarshalHCL(decoder hcl.Decoder) error {

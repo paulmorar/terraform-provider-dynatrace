@@ -43,9 +43,7 @@ func (me *RecurrenceRange) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RecurrenceRange) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *RecurrenceRange) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"start_date": me.StartDate,
 		"end_date":   me.EndDate,

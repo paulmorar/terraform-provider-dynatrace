@@ -46,18 +46,11 @@ func (me *DetectionConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DetectionConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	result["enabled"] = me.Enabled
-	if me.CustomThresholds != nil {
-		if marshalled, err := me.CustomThresholds.MarshalHCL(); err == nil {
-			result["thresholds"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	return result, nil
+func (me *DetectionConfig) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"enabled":    me.Enabled,
+		"thresholds": me.CustomThresholds,
+	})
 }
 
 func (me *DetectionConfig) UnmarshalHCL(decoder hcl.Decoder) error {

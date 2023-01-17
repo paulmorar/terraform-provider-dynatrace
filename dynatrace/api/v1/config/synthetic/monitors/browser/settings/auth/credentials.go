@@ -44,11 +44,10 @@ func (me *Credentials) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Credentials) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["type"] = me.Type
-	result["creds"] = me.Credential.ID
-	return result, nil
+func (me *Credentials) MarshalHCL(properties hcl.Properties) error {
+	properties["type"] = me.Type
+	properties["creds"] = me.Credential.ID
+	return nil
 }
 
 func (me *Credentials) UnmarshalHCL(decoder hcl.Decoder) error {

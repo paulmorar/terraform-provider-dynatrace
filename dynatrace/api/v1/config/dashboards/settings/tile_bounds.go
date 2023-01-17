@@ -66,21 +66,15 @@ func (me *TileBounds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TileBounds) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *TileBounds) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["left"] = int(me.Left)
-	result["top"] = int(me.Top)
-	result["width"] = int(me.Width)
-	result["height"] = int(me.Height)
-	return result, nil
+	properties["left"] = int(me.Left)
+	properties["top"] = int(me.Top)
+	properties["width"] = int(me.Width)
+	properties["height"] = int(me.Height)
+	return nil
 }
 
 func (me *TileBounds) UnmarshalHCL(decoder hcl.Decoder) error {

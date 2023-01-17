@@ -104,25 +104,23 @@ func (amm *AzureMonitoredMetric) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (amm *AzureMonitoredMetric) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (amm *AzureMonitoredMetric) MarshalHCL(properties hcl.Properties) error {
 	if len(amm.Unknowns) > 0 {
 		data, err := json.Marshal(amm.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["name"] = *amm.Name
+	properties["name"] = *amm.Name
 	if amm.Dimensions != nil {
 		entries := []any{}
 		for _, dimension := range amm.Dimensions {
 			entries = append(entries, dimension)
 		}
-		result["dimensions"] = entries
+		properties["dimensions"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (amm *AzureMonitoredMetric) UnmarshalHCL(decoder hcl.Decoder) error {

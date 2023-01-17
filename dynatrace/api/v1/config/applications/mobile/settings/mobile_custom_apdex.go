@@ -63,18 +63,10 @@ func (me *MobileCustomApdex) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *MobileCustomApdex) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-	if err := properties.Encode("tolerable", me.ToleratedThreshold); err != nil {
-		return nil, err
-	}
-	if err := properties.Encode("frustrated", me.FrustratingThreshold); err != nil {
-		return nil, err
-	}
-	if me.FrustratedOnError {
-		if err := properties.Encode("frustrated_on_error", me.FrustratedOnError); err != nil {
-			return nil, err
-		}
-	}
-	return properties, nil
+func (me *MobileCustomApdex) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"tolerable":           me.ToleratedThreshold,
+		"frustrated":          me.FrustratingThreshold,
+		"frustrated_on_error": me.FrustratedOnError,
+	})
 }

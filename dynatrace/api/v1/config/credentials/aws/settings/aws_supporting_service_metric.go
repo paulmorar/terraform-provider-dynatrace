@@ -121,26 +121,24 @@ func (assm *AWSSupportingServiceMetric) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (assm *AWSSupportingServiceMetric) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (assm *AWSSupportingServiceMetric) MarshalHCL(properties hcl.Properties) error {
 	if len(assm.Unknowns) > 0 {
 		data, err := json.Marshal(assm.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["name"] = assm.Name
-	result["statistic"] = assm.Statistic
+	properties["name"] = assm.Name
+	properties["statistic"] = assm.Statistic
 	if assm.Dimensions != nil {
 		entries := []any{}
 		for _, dimension := range assm.Dimensions {
 			entries = append(entries, dimension)
 		}
-		result["dimensions"] = entries
+		properties["dimensions"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (assm *AWSSupportingServiceMetric) UnmarshalHCL(decoder hcl.Decoder) error {

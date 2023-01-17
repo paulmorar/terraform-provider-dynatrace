@@ -37,27 +37,24 @@ func (me *Restrictions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Restrictions) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me Restrictions) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["restriction"] = entries
+		properties["restriction"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Restrictions) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("restriction", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("restriction", me)
 }
 
 // Restriction Browser exclusion rules for the browsers that are to be excluded
@@ -93,8 +90,8 @@ func (me *Restriction) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Restriction) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *Restriction) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"browser_version": me.BrowserVersion,
 		"browser_type":    me.BrowserType,
 		"platform":        me.Platform,

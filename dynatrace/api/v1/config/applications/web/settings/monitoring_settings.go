@@ -173,8 +173,8 @@ func (me *MonitoringSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MonitoringSettings) MarshalHCL() (map[string]any, error) {
-	res, err := hcl.Properties{}.EncodeAll(map[string]any{
+func (me *MonitoringSettings) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.EncodeAll(map[string]any{
 		"fetch_requests":                       me.FetchRequests,
 		"xml_http_request":                     me.XmlHttpRequest,
 		"javascript_framework_support":         me.JavaScriptFrameworkSupport,
@@ -196,21 +196,20 @@ func (me *MonitoringSettings) MarshalHCL() (map[string]any, error) {
 		"ip_address_restriction_settings":      me.IPAddressRestrictionSettings,
 		"javascript_injection_rules":           me.JavaScriptInjectionRules,
 		"angular_package_name":                 me.AngularPackageName,
-	})
-	if err != nil {
-		return nil, err
+	}); err != nil {
+		return err
 	}
 	if me.BrowserRestrictionSettings != nil {
 		if len(me.BrowserRestrictionSettings.BrowserRestrictions) == 0 {
-			delete(res, "browser_restriction_settings")
+			delete(properties, "browser_restriction_settings")
 		}
 	}
 	if me.IPAddressRestrictionSettings != nil {
 		if len(me.IPAddressRestrictionSettings.Restrictions) == 0 {
-			delete(res, "ip_address_restriction_settings")
+			delete(properties, "ip_address_restriction_settings")
 		}
 	}
-	return res, err
+	return nil
 }
 
 func (me *MonitoringSettings) UnmarshalHCL(decoder hcl.Decoder) error {

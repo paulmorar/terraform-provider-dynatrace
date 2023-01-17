@@ -100,40 +100,35 @@ func (me *CustomFilterChartSeriesConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomFilterChartSeriesConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *CustomFilterChartSeriesConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["metric"] = me.Metric
-	result["aggregation"] = string(me.Aggregation)
+	properties["metric"] = me.Metric
+	properties["aggregation"] = string(me.Aggregation)
 	if me.Percentile != nil {
-		result["percentile"] = int(opt.Int64(me.Percentile))
+		properties["percentile"] = int(opt.Int64(me.Percentile))
 	}
-	result["type"] = string(me.Type)
-	result["entity_type"] = me.EntityType
-	result["sort_ascending"] = me.SortAscending
-	result["sort_column"] = me.SortColumn
+	properties["type"] = string(me.Type)
+	properties["entity_type"] = me.EntityType
+	properties["sort_ascending"] = me.SortAscending
+	properties["sort_column"] = me.SortColumn
 	if me.AggregationRate != nil {
-		result["aggregation_rate"] = string(*me.AggregationRate)
+		properties["aggregation_rate"] = string(*me.AggregationRate)
 	}
 	if len(me.Dimensions) > 0 {
 		entries := []any{}
 		for _, entry := range me.Dimensions {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["dimension"] = entries
+		properties["dimension"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *CustomFilterChartSeriesConfig) UnmarshalHCL(decoder hcl.Decoder) error {

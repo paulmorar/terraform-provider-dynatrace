@@ -90,8 +90,8 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *Settings) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"placeholders":                   me.Placeholders,
 		"load_action_naming_rules":       me.LoadActionNamingRules,
 		"xhr_action_naming_rules":        me.XHRActionNamingRules,

@@ -97,29 +97,29 @@ func (me *EventWrapper) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EventWrapper) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["description"] = me.Event.GetDescription()
-	if marshalled, err := me.Event.MarshalHCL(); err == nil {
+func (me *EventWrapper) MarshalHCL(properties hcl.Properties) error {
+	properties["description"] = me.Event.GetDescription()
+	marshalled := hcl.Properties{}
+	if err := me.Event.MarshalHCL(marshalled); err == nil {
 		if me.Event.GetType() == Types.Click {
-			result["click"] = []any{marshalled}
+			properties["click"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.Tap {
-			result["tap"] = []any{marshalled}
+			properties["tap"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.Cookie {
-			result["cookie"] = []any{marshalled}
+			properties["cookie"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.Javascript {
-			result["javascript"] = []any{marshalled}
+			properties["javascript"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.KeyStrokes {
-			result["keystrokes"] = []any{marshalled}
+			properties["keystrokes"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.Navigate {
-			result["navigate"] = []any{marshalled}
+			properties["navigate"] = []any{marshalled}
 		} else if me.Event.GetType() == Types.SelectOption {
-			result["select"] = []any{marshalled}
+			properties["select"] = []any{marshalled}
 		} else {
-			return nil, fmt.Errorf("events of type %s are not supported", me.Event.GetType())
+			return fmt.Errorf("events of type %s are not supported", me.Event.GetType())
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *EventWrapper) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -211,21 +211,21 @@ func (me *Events) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me Events) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me Events) MarshalHCL(properties hcl.Properties) error {
 	entries := []any{}
 	for _, event := range me {
 		evtw := &EventWrapper{Event: event}
-		if marshalled, err := evtw.MarshalHCL(); err == nil {
+		marshalled := hcl.Properties{}
+		if err := evtw.MarshalHCL(marshalled); err == nil {
 			entries = append(entries, marshalled)
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if len(entries) > 0 {
-		result["event"] = entries
+		properties["event"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 type evt struct {
@@ -291,7 +291,7 @@ type Event interface {
 	GetType() Type
 	GetDescription() string
 	SetDescription(string)
-	MarshalHCL() (map[string]any, error)
+	MarshalHCL(hcl.Properties) error
 }
 
 type EventBase struct {

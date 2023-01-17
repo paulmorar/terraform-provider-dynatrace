@@ -72,8 +72,8 @@ func (me *EventWrapperSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EventWrapperSettings) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *EventWrapperSettings) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"click":       me.Click,
 		"mouseup":     me.MouseUp,
 		"change":      me.Change,

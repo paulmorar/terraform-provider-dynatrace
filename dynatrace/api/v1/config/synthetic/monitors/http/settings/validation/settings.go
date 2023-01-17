@@ -40,20 +40,20 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Settings) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Rules) > 0 {
 		entries := []any{}
 		for _, entry := range me.Rules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["rule"] = entries
+		properties["rule"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Settings) UnmarshalHCL(decoder hcl.Decoder) error {

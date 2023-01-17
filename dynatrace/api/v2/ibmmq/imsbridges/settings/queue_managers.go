@@ -59,9 +59,7 @@ func (me *QueueManagers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *QueueManager) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *QueueManager) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"name":                me.Name,
 		"queue_manager_queue": me.QueueManagerQueue,
@@ -75,8 +73,8 @@ func (me *QueueManager) UnmarshalHCL(decoder hcl.Decoder) error {
 	})
 }
 
-func (me QueueManagers) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("queue_manager", me)
+func (me QueueManagers) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("queue_manager", me)
 }
 
 func (me *QueueManagers) UnmarshalHCL(decoder hcl.Decoder) error {

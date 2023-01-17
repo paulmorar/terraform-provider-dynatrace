@@ -74,8 +74,8 @@ func (me *AdditionalEventHandlers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AdditionalEventHandlers) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *AdditionalEventHandlers) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"use_mouse_up_event_for_clicks": me.UseMouseUpEventForClicks,
 		"click":                         me.ClickEventHandler,
 		"mouseup":                       me.MouseUpEventHandler,

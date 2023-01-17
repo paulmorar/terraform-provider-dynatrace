@@ -104,55 +104,56 @@ func (mz *ManagementZone) SortRules() {
 	}
 }
 
-func (mz *ManagementZone) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (mz *ManagementZone) MarshalHCL(properties hcl.Properties) error {
 	if len(mz.Unknowns) > 0 {
 		data, err := json.Marshal(mz.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["name"] = mz.Name
+	properties["name"] = mz.Name
 	if mz.Description != nil && len(*mz.Description) > 0 {
-		result["description"] = *mz.Description
+		properties["description"] = *mz.Description
 	}
 	if mz.Rules != nil {
 		mz.SortRules()
 		entries := []any{}
 		for _, entry := range mz.Rules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["rules"] = entries
+		properties["rules"] = entries
 	}
 	if len(mz.DimensionalRules) > 0 {
 		entries := []any{}
 		for _, entry := range mz.DimensionalRules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["dimensional_rule"] = entries
+		properties["dimensional_rule"] = entries
 	}
 	if len(mz.EntitySelectorBasedRules) > 0 {
 		entries := []any{}
 		for _, entry := range mz.EntitySelectorBasedRules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["entity_selector_based_rule"] = entries
+		properties["entity_selector_based_rule"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (mz *ManagementZone) UnmarshalHCL(decoder hcl.Decoder) error {

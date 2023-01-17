@@ -60,22 +60,20 @@ func (ti *Info) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (ti *Info) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (ti *Info) MarshalHCL(properties hcl.Properties) error {
 	if len(ti.Unknowns) > 0 {
 		data, err := json.Marshal(ti.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["context"] = string(ti.Context)
-	result["key"] = ti.Key
+	properties["context"] = string(ti.Context)
+	properties["key"] = ti.Key
 	if ti.Value != nil {
-		result["value"] = opt.String(ti.Value)
+		properties["value"] = opt.String(ti.Value)
 	}
-	return result, nil
+	return nil
 }
 
 func (ti *Info) UnmarshalHCL(decoder hcl.Decoder) error {

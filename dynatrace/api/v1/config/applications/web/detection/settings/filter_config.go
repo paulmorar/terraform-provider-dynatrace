@@ -49,9 +49,7 @@ func (me *FilterConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *FilterConfig) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *FilterConfig) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"pattern":                  me.Pattern,
 		"application_match_type":   me.ApplicationMatchType,

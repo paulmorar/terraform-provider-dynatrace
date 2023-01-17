@@ -77,9 +77,7 @@ func (me *Schedule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Schedule) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *Schedule) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"type":               me.Type,
 		"once_recurrence":    me.OnceRecurrence,

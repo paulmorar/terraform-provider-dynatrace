@@ -84,9 +84,7 @@ func (me *Filters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Filters) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *Filters) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"cics_mq_queue_id_includes": me.CICSMQQueueIdIncludes,
 		"cics_mq_queue_id_excludes": me.CICSMQQueueIdExcludes,

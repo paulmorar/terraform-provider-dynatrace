@@ -37,8 +37,8 @@ func (me *SeverityRules) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me SeverityRules) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("rule", me)
+func (me SeverityRules) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("rule", me)
 }
 
 func (me *SeverityRules) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -78,17 +78,15 @@ func (me *SeverityRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SeverityRule) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	result["delay_in_minutes"] = int(me.DelayInMinutes)
-	result["severity_level"] = string(me.SeverityLevel)
-	result["include_mode"] = string(me.TagFilterIncludeMode)
+func (me *SeverityRule) MarshalHCL(properties hcl.Properties) error {
+	properties["delay_in_minutes"] = int(me.DelayInMinutes)
+	properties["severity_level"] = string(me.SeverityLevel)
+	properties["include_mode"] = string(me.TagFilterIncludeMode)
 
 	if len(me.Tags) > 0 {
-		result["tags"] = me.Tags
+		properties["tags"] = me.Tags
 	}
-	return result, nil
+	return nil
 }
 
 func (me *SeverityRule) UnmarshalHCL(decoder hcl.Decoder) error {

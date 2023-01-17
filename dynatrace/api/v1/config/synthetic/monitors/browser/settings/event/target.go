@@ -45,19 +45,19 @@ func (me *Target) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Target) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Target) MarshalHCL(properties hcl.Properties) error {
 	if me.Window != nil {
-		result["window"] = string(*me.Window)
+		properties["window"] = string(*me.Window)
 	}
 	if len(me.Locators) > 0 {
-		if marshalled, err := me.Locators.MarshalHCL(); err == nil {
-			result["locators"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Locators.MarshalHCL(marshalled); err == nil {
+			properties["locators"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Target) UnmarshalHCL(decoder hcl.Decoder) error {

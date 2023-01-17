@@ -76,28 +76,23 @@ func (me *Schedule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Schedule) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *Schedule) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["start"] = me.Start
-	result["end"] = me.End
-	result["zone_id"] = me.ZoneID
+	properties["start"] = me.Start
+	properties["end"] = me.End
+	properties["zone_id"] = me.ZoneID
 	if me.Recurrence != nil {
-		if marshalled, err := me.Recurrence.MarshalHCL(); err == nil {
-			result["recurrence"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Recurrence.MarshalHCL(marshalled); err == nil {
+			properties["recurrence"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["recurrence_type"] = string(me.RecurrenceType)
-	return result, nil
+	properties["recurrence_type"] = string(me.RecurrenceType)
+	return nil
 }
 
 func (me *Schedule) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -70,22 +70,20 @@ func (oac *OSArchitecture) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (oac *OSArchitecture) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (oac *OSArchitecture) MarshalHCL(properties hcl.Properties) error {
 	if len(oac.Unknowns) > 0 {
 		data, err := json.Marshal(oac.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = oac.Negate
-	result["operator"] = string(oac.Operator)
+	properties["negate"] = oac.Negate
+	properties["operator"] = string(oac.Operator)
 	if oac.Value != nil {
-		result["value"] = oac.Value.String()
+		properties["value"] = oac.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (oac *OSArchitecture) UnmarshalHCL(decoder hcl.Decoder) error {

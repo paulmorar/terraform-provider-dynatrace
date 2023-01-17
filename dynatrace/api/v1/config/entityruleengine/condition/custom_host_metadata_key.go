@@ -53,19 +53,17 @@ func (chmk *CustomHostMetadataKey) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (chmk *CustomHostMetadataKey) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (chmk *CustomHostMetadataKey) MarshalHCL(properties hcl.Properties) error {
 	if len(chmk.Unknowns) > 0 {
 		data, err := json.Marshal(chmk.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["key"] = chmk.Key
-	result["source"] = string(chmk.Source)
-	return result, nil
+	properties["key"] = chmk.Key
+	properties["source"] = string(chmk.Source)
+	return nil
 }
 
 func (chmk *CustomHostMetadataKey) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -20,199 +20,60 @@ package hcl
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"reflect"
 )
 
 type Properties map[string]any
 
-func NewProperties(v any, unknowns ...map[string]json.RawMessage) (Properties, error) {
-	properties := Properties{}
-	if len(unknowns) == 0 || len(unknowns[0]) == 0 {
-		return properties, nil
-	}
-	data, err := json.Marshal(unknowns[0])
-	if err != nil {
-		return nil, err
-	}
-	properties["unknowns"] = string(data)
-	return properties, nil
-}
-
-func (me Properties) MarshalAll(decoder Decoder, items map[string]any) error {
-	if items == nil {
+func (me Properties) Unknowns(unknowns map[string]json.RawMessage) error {
+	if len(unknowns) == 0 {
 		return nil
 	}
-	for k, v := range items {
-		if err := me.Marshal(decoder, k, v); err != nil {
-			return err
-		}
+	data, err := json.Marshal(unknowns)
+	if err != nil {
+		return err
 	}
+	me["unknowns"] = string(data)
 	return nil
 }
 
-func (me Properties) Marshal(decoder Decoder, key string, v any) error {
-	switch t := v.(type) {
-	case *string:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *bool:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *int:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *int8:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *int16:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *int32:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *int64:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *uint:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *uint16:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *uint8:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *uint32:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *uint64:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *float32:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case *float64:
-		if t == nil {
-			return nil
-		}
-		return me.Marshal(decoder, key, *t)
-	case string:
-		me[key] = t
-	case int:
-		me[key] = t
-	case bool:
-		me[key] = t
-	case int8:
-		me[key] = int(t)
-	case int16:
-		me[key] = int(t)
-	case int32:
-		me[key] = int(t)
-	case int64:
-		me[key] = int(t)
-	case uint:
-		me[key] = int(t)
-	case uint8:
-		me[key] = int(t)
-	case uint16:
-		me[key] = int(t)
-	case uint32:
-		me[key] = int(t)
-	case uint64:
-		me[key] = int(t)
-	case float32:
-		me[key] = float64(t)
-	case float64:
-		me[key] = float64(t)
-	default:
-		switch reflect.TypeOf(v).Kind() {
-		case reflect.String:
-			me[key] = fmt.Sprintf("%v", v)
-		case reflect.Ptr:
-			switch reflect.TypeOf(v).Elem().Kind() {
-			case reflect.String:
-				if reflect.ValueOf(v).IsNil() {
-					return nil
-				}
-				if reflect.ValueOf(v).IsZero() {
-					return nil
-				}
-				if !reflect.ValueOf(v).Elem().IsValid() {
-					return nil
-				}
-				return me.Marshal(decoder, key, reflect.ValueOf(v).Elem().Interface())
-			}
-
-		default:
-			log.Printf("unsupported type %T", v)
-		}
-	}
-	return nil
-}
-
-func (me Properties) EncodeSlice(key string, v any) (Properties, error) {
+func (me Properties) EncodeSlice(key string, v any) error {
 	rv := reflect.ValueOf(v)
 	if rv.Type().Kind() != reflect.Slice {
-		return nil, fmt.Errorf("type %T is not a slice", v)
+		return fmt.Errorf("type %T is not a slice", v)
 	}
 	if rv.Len() == 0 {
-		return me, nil
+		return nil
 	}
 	entries := []any{}
 	for idx := 0; idx < rv.Len(); idx++ {
 		vElem := rv.Index(idx)
 		elem := vElem.Interface()
 		if marshaler, ok := elem.(Marshaler); ok {
-			if marshalled, err := marshaler.MarshalHCL(); err == nil {
+			marshalled := Properties{}
+			if err := marshaler.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		} else {
-			return nil, fmt.Errorf("slice entries of type %T are expected to implement hcl.Marshaler but don't", elem)
+			return fmt.Errorf("slice entries of type %T are expected to implement hcl.Marshaler but don't", elem)
 		}
 	}
 	me[key] = entries
-	return me, nil
+	return nil
 }
 
-func (me Properties) EncodeAll(items map[string]any) (Properties, error) {
+func (me Properties) EncodeAll(items map[string]any) error {
 	if items == nil {
-		return me, nil
+		return nil
 	}
 	for k, v := range items {
 		if err := me.Encode(k, v); err != nil {
-			return me, err
+			return err
 		}
 	}
-	return me, nil
+	return nil
 }
 
 type StringSet []string
@@ -342,6 +203,20 @@ func (me Properties) Encode(key string, v any) error {
 		}
 		me["unknowns"] = string(data)
 	default:
+		if marshaller, ok := v.(Marshaler); ok {
+			if reflect.ValueOf(v).IsNil() {
+				return nil
+			}
+			marshalled := Properties{}
+			if err := marshaller.MarshalHCL(marshalled); err == nil {
+				if len(marshalled) > 0 {
+					me[key] = []any{marshalled}
+				}
+				return nil
+			} else {
+				return err
+			}
+		}
 		if reflect.TypeOf(v).Kind() == reflect.Slice {
 			if reflect.ValueOf(v).Len() == 0 {
 				return nil
@@ -362,6 +237,19 @@ func (me Properties) Encode(key string, v any) error {
 				}
 				me[key] = entries
 				return nil
+			} else if reflect.TypeOf(v).Elem().Implements(marshalerType) {
+				entries := []any{}
+				vValue := reflect.ValueOf(v)
+				for i := 0; i < vValue.Len(); i++ {
+					mars := vValue.Index(i).Interface().(Marshaler)
+					marshalled := Properties{}
+					if err := mars.MarshalHCL(marshalled); err != nil {
+						return err
+					}
+					entries = append(entries, marshalled)
+				}
+				me[key] = entries
+				return nil
 			}
 
 		}
@@ -372,8 +260,11 @@ func (me Properties) Encode(key string, v any) error {
 			if reflect.ValueOf(v).IsNil() {
 				return nil
 			}
-			if marshalled, err := marshaller.MarshalHCL(); err == nil {
-				me[key] = []any{marshalled}
+			marshalled := Properties{}
+			if err := marshaller.MarshalHCL(marshalled); err == nil {
+				if len(marshalled) > 0 {
+					me[key] = []any{marshalled}
+				}
 				return nil
 			} else {
 				return err

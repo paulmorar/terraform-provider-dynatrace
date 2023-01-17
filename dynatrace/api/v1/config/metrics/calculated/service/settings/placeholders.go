@@ -37,13 +37,10 @@ func (me *Placeholders) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Placeholders) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("placeholder", me)
+func (me Placeholders) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("placeholder", me)
 }
 
 func (me *Placeholders) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("placeholder", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("placeholder", me)
 }

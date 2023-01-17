@@ -70,27 +70,21 @@ func (me *CustomFilterChartSeriesDimensionConfig) Schema() map[string]*schema.Sc
 	}
 }
 
-func (me *CustomFilterChartSeriesDimensionConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *CustomFilterChartSeriesDimensionConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["id"] = me.ID
+	properties["id"] = me.ID
 	if me.Name != nil {
-		result["name"] = opt.String(me.Name)
+		properties["name"] = opt.String(me.Name)
 	}
 	if len(me.Values) > 0 {
-		result["values"] = me.Values
+		properties["values"] = me.Values
 	}
 	if me.EntityDimension != nil {
-		result["entity_dimension"] = opt.Bool(me.EntityDimension)
+		properties["entity_dimension"] = opt.Bool(me.EntityDimension)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *CustomFilterChartSeriesDimensionConfig) UnmarshalHCL(decoder hcl.Decoder) error {

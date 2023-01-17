@@ -62,8 +62,7 @@ func (me *SpanMatcher) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpanMatcher) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *SpanMatcher) MarshalHCL(properties hcl.Properties) error {
 
 	m := map[string]any{
 		"source":         me.Source,
@@ -124,13 +123,10 @@ func (me *SpanMatchers) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me SpanMatchers) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("match", me)
+func (me SpanMatchers) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("match", me)
 }
 
 func (me *SpanMatchers) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("match", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("match", me)
 }

@@ -30,8 +30,8 @@ import (
 )
 
 type Settings interface {
-	MarshalHCL() (map[string]any, error)
-	UnmarshalHCL(decoder hcl.Decoder) error
+	MarshalHCL(hcl.Properties) error
+	UnmarshalHCL(hcl.Decoder) error
 	Schema() map[string]*schema.Schema
 }
 
@@ -148,8 +148,8 @@ type ErrorSettings struct {
 	Error error
 }
 
-func (me *ErrorSettings) MarshalHCL() (map[string]any, error) {
-	return map[string]any{}, nil
+func (me *ErrorSettings) MarshalHCL(properties hcl.Properties) error {
+	return nil
 }
 
 func (me *ErrorSettings) UnmarshalHCL(decoder hcl.Decoder) error {

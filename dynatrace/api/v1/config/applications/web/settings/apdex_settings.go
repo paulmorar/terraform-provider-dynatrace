@@ -66,8 +66,8 @@ func (me *ApdexSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ApdexSettings) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *ApdexSettings) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"threshold":                      me.Threshold,
 		"tolerated_threshold":            me.ToleratedThreshold,
 		"frustrating_threshold":          me.FrustratingThreshold,

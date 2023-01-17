@@ -117,51 +117,50 @@ func (me *Config) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Config) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Config) MarshalHCL(properties hcl.Properties) error {
 	if me.TenantID != nil {
-		result["tenantid"] = me.TenantID
+		properties["tenantid"] = me.TenantID
 	}
 	if me.ClientID != nil {
-		result["clientid"] = me.ClientID
+		properties["clientid"] = me.ClientID
 	}
 	if me.ClientSecret != nil {
-		result["client_secret"] = me.ClientSecret
+		properties["client_secret"] = me.ClientSecret
 	}
 
 	if me.PathtoCredentials != nil {
-		result["path_to_credentials"] = me.PathtoCredentials
+		properties["path_to_credentials"] = me.PathtoCredentials
 	}
 	if me.RoleID != nil {
-		result["roleid"] = me.RoleID
+		properties["roleid"] = me.RoleID
 	}
 	if me.SecretID != nil {
-		result["secretid"] = me.SecretID
+		properties["secretid"] = me.SecretID
 	}
 	if me.VaultNameSpace != nil {
-		result["vault_namespace"] = me.VaultNameSpace
+		properties["vault_namespace"] = me.VaultNameSpace
 	}
 	if me.Certificate != nil {
-		result["certificate"] = me.Certificate
+		properties["certificate"] = me.Certificate
 	}
 
 	if me.VaultURL != nil {
-		result["vault_url"] = me.VaultURL
+		properties["vault_url"] = me.VaultURL
 	}
 	if me.UsernameSecretName != nil {
-		result["username_secret_name"] = me.UsernameSecretName
+		properties["username_secret_name"] = me.UsernameSecretName
 	}
 	if me.PasswordSecretName != nil {
-		result["password_secret_name"] = me.PasswordSecretName
+		properties["password_secret_name"] = me.PasswordSecretName
 	}
 	if me.TokenSecretName != nil {
-		result["token_secret_name"] = me.TokenSecretName
+		properties["token_secret_name"] = me.TokenSecretName
 	}
 	if len(me.CredentialsUsedForExternalSynchronization) > 0 {
-		result["credentials_used_for_external_synchronization"] = me.CredentialsUsedForExternalSynchronization
+		properties["credentials_used_for_external_synchronization"] = me.CredentialsUsedForExternalSynchronization
 	}
 
-	return result, nil
+	return nil
 }
 
 func (me *Config) UnmarshalHCL(decoder hcl.Decoder) error {

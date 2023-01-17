@@ -51,16 +51,14 @@ func (me *DropDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DropDetection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if me.LoadDropPercent != nil {
-		result["percent"] = int(*me.LoadDropPercent)
+func (me *DropDetection) MarshalHCL(properties hcl.Properties) error {
+	if !me.Enabled {
+		return nil
 	}
-	if me.AbnormalMinutes != nil {
-		result["minutes"] = int(*me.AbnormalMinutes)
-	}
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"percent": me.LoadDropPercent,
+		"minutes": me.AbnormalMinutes,
+	})
 }
 
 func (me *DropDetection) UnmarshalHCL(decoder hcl.Decoder) error {

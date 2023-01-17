@@ -38,25 +38,22 @@ func (me *Cookies) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Cookies) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me Cookies) MarshalHCL(properties hcl.Properties) error {
 	entries := []any{}
 	for _, cookie := range me {
-		if marshalled, err := cookie.MarshalHCL(); err == nil {
+		marshalled := hcl.Properties{}
+		if err := cookie.MarshalHCL(marshalled); err == nil {
 			entries = append(entries, marshalled)
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["cookie"] = entries
-	return result, nil
+	properties["cookie"] = entries
+	return nil
 }
 
 func (me *Cookies) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("cookie", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("cookie", me)
 }
 
 // Cookie a request cookie
@@ -92,15 +89,14 @@ func (me *Cookie) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Cookie) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["name"] = me.Name
-	result["value"] = me.Value
-	result["domain"] = me.Domain
+func (me *Cookie) MarshalHCL(properties hcl.Properties) error {
+	properties["name"] = me.Name
+	properties["value"] = me.Value
+	properties["domain"] = me.Domain
 	if me.Path != nil {
-		result["path"] = *me.Path
+		properties["path"] = *me.Path
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Cookie) UnmarshalHCL(decoder hcl.Decoder) error {

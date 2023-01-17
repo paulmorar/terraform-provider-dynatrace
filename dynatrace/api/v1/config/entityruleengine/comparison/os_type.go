@@ -69,22 +69,20 @@ func (otc *OSType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (otc *OSType) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (otc *OSType) MarshalHCL(properties hcl.Properties) error {
 	if len(otc.Unknowns) > 0 {
 		data, err := json.Marshal(otc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = otc.Negate
-	result["operator"] = string(otc.Operator)
+	properties["negate"] = otc.Negate
+	properties["operator"] = string(otc.Operator)
 	if otc.Value != nil {
-		result["value"] = otc.Value.String()
+		properties["value"] = otc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (otc *OSType) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -126,33 +126,31 @@ func (aad *AWSAuthenticationData) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (aad *AWSAuthenticationData) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (aad *AWSAuthenticationData) MarshalHCL(properties hcl.Properties) error {
 	if len(aad.Unknowns) > 0 {
 		data, err := json.Marshal(aad.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
 	if aad.KeyBasedAuthentication != nil {
-		result["access_key"] = aad.KeyBasedAuthentication.AccessKey
+		properties["access_key"] = aad.KeyBasedAuthentication.AccessKey
 		if aad.KeyBasedAuthentication.SecretKey != nil {
 			if len(*aad.KeyBasedAuthentication.SecretKey) > 0 {
-				result["secret_key"] = *aad.KeyBasedAuthentication.SecretKey
+				properties["secret_key"] = *aad.KeyBasedAuthentication.SecretKey
 			}
 		}
 	}
 	if aad.RoleBasedAuthentication != nil {
-		result["account_id"] = aad.RoleBasedAuthentication.AccountID
+		properties["account_id"] = aad.RoleBasedAuthentication.AccountID
 		if aad.RoleBasedAuthentication.ExternalID != nil {
-			result["external_id"] = aad.RoleBasedAuthentication.ExternalID
+			properties["external_id"] = aad.RoleBasedAuthentication.ExternalID
 		}
-		result["iam_role"] = aad.RoleBasedAuthentication.IamRole
+		properties["iam_role"] = aad.RoleBasedAuthentication.IamRole
 
 	}
-	return result, nil
+	return nil
 }
 
 // UnmarshalJSON provides custom JSON deserialization

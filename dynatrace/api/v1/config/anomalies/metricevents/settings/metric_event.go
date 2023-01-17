@@ -139,63 +139,23 @@ func (me *MetricEvent) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MetricEvent) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *MetricEvent) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	if me.MetricSelector != nil {
-		result["metric_selector"] = me.MetricSelector
-	}
-	if me.MetricID != nil {
-		result["metric_id"] = *me.MetricID
-	}
-	result["name"] = me.Name
-	result["description"] = me.Description
-	if me.AggregationType != nil {
-		result["aggregation_type"] = string(*me.AggregationType)
-	}
-	// if me.WarningReason != nil {
-	// 	result["warning_reason"] = string(*me.WarningReason)
-	// }
-	// if me.DisabledReason != nil {
-	// 	result["disabled_reason"] = string(*me.DisabledReason)
-	// }
-	result["enabled"] = me.Enabled
-	if me.PrimaryDimensionKey != nil {
-		result["primary_dimension_key"] = *me.PrimaryDimensionKey
-	}
-	if me.Severity != nil {
-		result["severity"] = string(*me.Severity)
-	}
-	if me.MetricDimensions != nil {
-		if marshalled, err := me.MetricDimensions.MarshalHCL(); err == nil {
-			result["dimensions"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	if me.AlertingScope != nil {
-		if marshalled, err := me.AlertingScope.MarshalHCL(); err == nil {
-			result["scopes"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	if me.MonitoringStrategy != nil {
-		wrapper := &strategy.Wrapper{Strategy: me.MonitoringStrategy}
-		if marshalled, err := wrapper.MarshalHCL(); err == nil {
-			result["strategy"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"metric_selector":       me.MetricSelector,
+		"metric_id":             me.MetricID,
+		"name":                  me.Name,
+		"description":           me.Description,
+		"aggregation_type":      me.AggregationType,
+		"enabled":               me.Enabled,
+		"primary_dimension_key": me.PrimaryDimensionKey,
+		"severity":              me.Severity,
+		"dimensions":            me.MetricDimensions,
+		"scopes":                me.AlertingScope,
+		"strategy":              &strategy.Wrapper{Strategy: me.MonitoringStrategy},
+	})
 }
 
 func (me *MetricEvent) UnmarshalHCL(decoder hcl.Decoder) error {

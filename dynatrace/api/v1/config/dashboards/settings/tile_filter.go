@@ -64,27 +64,22 @@ func (me *TileFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TileFilter) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *TileFilter) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.Timeframe != nil {
-		result["timeframe"] = opt.String(me.Timeframe)
+		properties["timeframe"] = opt.String(me.Timeframe)
 	}
 	if me.ManagementZone != nil {
-		if marshalled, err := me.ManagementZone.MarshalHCL(); err == nil {
-			result["management_zone"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.ManagementZone.MarshalHCL(marshalled); err == nil {
+			properties["management_zone"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *TileFilter) UnmarshalHCL(decoder hcl.Decoder) error {

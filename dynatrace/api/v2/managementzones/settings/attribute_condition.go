@@ -39,20 +39,20 @@ func (me *AttributeConditions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me AttributeConditions) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me AttributeConditions) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["condition"] = entries
+		properties["condition"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *AttributeConditions) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -141,10 +141,8 @@ func (me *AttributeCondition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AttributeCondition) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
-	res, err := properties.EncodeAll(map[string]any{
+func (me *AttributeCondition) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"enum_value":         me.EnumValue,
 		"tag":                me.Tag,
 		"key":                me.Key,
@@ -156,10 +154,6 @@ func (me *AttributeCondition) MarshalHCL() (map[string]any, error) {
 		"string_value":       me.StringValue,
 		"dynamic_key_source": me.DynamicKeySource,
 	})
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
 }
 
 func (me *AttributeCondition) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -94,32 +94,26 @@ func (me *WebHookConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *WebHookConfig) MarshalHCL() (map[string]any, error) {
-	result := hcl.Properties{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *WebHookConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
-	result["accept_any_certificate"] = me.AcceptAnyCertificate
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
+	properties["accept_any_certificate"] = me.AcceptAnyCertificate
 	if me.NotifyEventMergesEnabled != nil {
-		result["notify_event_merges"] = *me.NotifyEventMergesEnabled
+		properties["notify_event_merges"] = *me.NotifyEventMergesEnabled
 	}
 	if len(me.Headers) > 0 {
-		if _, err := result.EncodeSlice("header", me.Headers); err != nil {
-			return nil, err
+		if err := properties.EncodeSlice("header", me.Headers); err != nil {
+			return err
 		}
 	}
-	result["payload"] = me.Payload
-	result["url"] = me.URL
+	properties["payload"] = me.Payload
+	properties["url"] = me.URL
 
-	return result, nil
+	return nil
 }
 
 func (me *WebHookConfig) UnmarshalHCL(decoder hcl.Decoder) error {

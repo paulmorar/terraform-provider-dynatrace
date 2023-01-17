@@ -53,14 +53,13 @@ func (me *SharePermission) Schema() map[string]*schema.Schema {
 }
 
 // MarshalHCL has no documentation
-func (me *SharePermission) MarshalHCL() (map[string]any, error) {
-	m := map[string]any{}
+func (me *SharePermission) MarshalHCL(properties hcl.Properties) error {
 	if me.ID != nil {
-		m["id"] = *me.ID
+		properties["id"] = *me.ID
 	}
-	m["type"] = string(me.Type)
-	m["level"] = string(me.Permission)
-	return m, nil
+	properties["type"] = string(me.Type)
+	properties["level"] = string(me.Permission)
+	return nil
 }
 
 // UnmarshalHCL has no documentation
@@ -92,7 +91,7 @@ func (me *SharePermissions) Schema() map[string]*schema.Schema {
 }
 
 // MarshalHCL has no documentation
-func (me SharePermissions) MarshalHCL() (map[string]any, error) {
+func (me SharePermissions) MarshalHCL(properties hcl.Properties) error {
 	props := hcl.Properties{}
 	return props.EncodeSlice("permission", me)
 }

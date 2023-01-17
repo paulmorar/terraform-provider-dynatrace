@@ -124,59 +124,56 @@ func (me *DashboardMetadata) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DashboardMetadata) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *DashboardMetadata) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Unknowns) > 0 {
 		delete(me.Unknowns, "hasConsistentColors")
 		delete(me.Unknowns, "tilesNameSize")
 	}
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
+	properties["name"] = me.Name
 	if me.Shared != nil {
-		result["shared"] = opt.Bool(me.Shared)
+		properties["shared"] = opt.Bool(me.Shared)
 	}
-	result["preset"] = me.Preset
+	properties["preset"] = me.Preset
 	if me.HasConsistentColors != nil {
-		result["consistent_colors"] = opt.Bool(me.HasConsistentColors)
+		properties["consistent_colors"] = opt.Bool(me.HasConsistentColors)
 	}
 	if me.Owner != nil {
-		result["owner"] = opt.String(me.Owner)
+		properties["owner"] = opt.String(me.Owner)
 	}
 	if len(me.Tags) > 0 {
-		result["tags"] = me.Tags
+		properties["tags"] = me.Tags
 	}
 	if len(me.ValidFilterKeys) > 0 {
-		result["valid_filter_keys"] = me.ValidFilterKeys
+		properties["valid_filter_keys"] = me.ValidFilterKeys
 	}
 	if me.SharingDetails != nil {
-		if marshalled, err := me.SharingDetails.MarshalHCL(); err == nil {
-			result["name"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.SharingDetails.MarshalHCL(marshalled); err == nil {
+			properties["name"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Filter != nil {
-		if marshalled, err := me.Filter.MarshalHCL(); err == nil {
-			result["filter"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Filter.MarshalHCL(marshalled); err == nil {
+			properties["filter"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.DynamicFilters != nil {
-		if marshalled, err := me.DynamicFilters.MarshalHCL(); err == nil {
-			result["dynamic_filters"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.DynamicFilters.MarshalHCL(marshalled); err == nil {
+			properties["dynamic_filters"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *DashboardMetadata) UnmarshalHCL(decoder hcl.Decoder) error {

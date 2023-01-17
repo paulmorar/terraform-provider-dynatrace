@@ -39,25 +39,22 @@ func (me *Locators) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Locators) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me Locators) MarshalHCL(properties hcl.Properties) error {
 	entries := []any{}
 	for _, entry := range me {
-		if marshalled, err := entry.MarshalHCL(); err == nil {
+		marshalled := hcl.Properties{}
+		if err := entry.MarshalHCL(marshalled); err == nil {
 			entries = append(entries, marshalled)
 		} else {
-			return nil, err
+			return err
 		}
-		result["locator"] = entries
+		properties["locator"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Locators) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("locator", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("locator", me)
 }
 
 type Locator struct {
@@ -80,11 +77,10 @@ func (me *Locator) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Locator) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["type"] = string(me.Type)
-	result["value"] = me.Value
-	return result, nil
+func (me *Locator) MarshalHCL(properties hcl.Properties) error {
+	properties["type"] = string(me.Type)
+	properties["value"] = me.Value
+	return nil
 }
 
 func (me *Locator) UnmarshalHCL(decoder hcl.Decoder) error {

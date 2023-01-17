@@ -86,31 +86,30 @@ func (me *DetectionRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DetectionRule) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *DetectionRule) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Unknowns) > 0 {
 		delete(me.Unknowns, "id")
 		data, err := json.Marshal(me.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
 	// if me.ID != nil {
-	// 	result["id"] = opt.String(me.ID)
+	// 	properties["id"] = opt.String(me.ID)
 	// }
-	result["enabled"] = me.Enabled
+	properties["enabled"] = me.Enabled
 	if me.FileName != nil || me.FileNameMatcher != nil {
 		fileSection := &FileSection{
 			Name:  me.FileName,
 			Match: me.FileNameMatcher,
 		}
 		if !fileSection.IsEmpty() {
-			if marshalled, err := fileSection.MarshalHCL(); err == nil {
-				result["file"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+			if err := fileSection.MarshalHCL(marshalled); err == nil {
+				properties["file"] = []any{marshalled}
 			} else {
-				return nil, err
+				return err
 			}
 		}
 	}
@@ -119,27 +118,29 @@ func (me *DetectionRule) MarshalHCL() (map[string]any, error) {
 			Name:  me.ClassName,
 			Match: me.ClassNameMatcher,
 		}
-		if marshalled, err := classSection.MarshalHCL(); err == nil {
-			result["class"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := classSection.MarshalHCL(marshalled); err == nil {
+			properties["class"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if len(me.MethodRules) > 0 {
 		entries := []any{}
 		for _, entry := range me.MethodRules {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["method"] = entries
+		properties["method"] = entries
 	}
 	if len(me.Annotations) > 0 {
-		result["annotations"] = me.Annotations
+		properties["annotations"] = me.Annotations
 	}
-	return result, nil
+	return nil
 }
 
 func (me *DetectionRule) UnmarshalHCL(decoder hcl.Decoder) error {

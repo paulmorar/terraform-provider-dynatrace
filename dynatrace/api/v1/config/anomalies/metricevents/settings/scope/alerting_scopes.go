@@ -92,9 +92,7 @@ func (me AlertingScopes) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me AlertingScopes) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me AlertingScopes) MarshalHCL(properties hcl.Properties) error {
 	customDeviceGroupNames := []any{}
 	entityIDs := []any{}
 	hostGroupNames := []any{}
@@ -108,99 +106,109 @@ func (me AlertingScopes) MarshalHCL() (map[string]any, error) {
 	for _, scope := range me {
 		switch sc := scope.(type) {
 		case *CustomDeviceGroupName:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				customDeviceGroupNames = append(customDeviceGroupNames, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		case *EntityID:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				entityIDs = append(entityIDs, marshalled)
 			} else {
-				return nil, err
+				return nil
 			}
 		case *HostGroupName:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				hostGroupNames = append(hostGroupNames, marshalled)
 			} else {
-				return nil, err
+				return nil
 			}
 		case *HostName:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				hostNames = append(hostNames, marshalled)
 			} else {
-				return nil, err
+				return nil
 			}
 		case *ManagementZone:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				managementZones = append(managementZones, marshalled)
 			} else {
-				return nil, err
+				return nil
 			}
 		case *Name:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				names = append(names, marshalled)
 			} else {
-				return nil, err
+				return nil
 			}
 		case *ProcessGroupID:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				processGroupIDs = append(processGroupIDs, marshalled)
 			} else {
-				return nil, err
+				return nil
 			}
 		case *ProcessGroupName:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				processGroupNames = append(processGroupNames, marshalled)
 			} else {
-				return nil, err
+				return nil
 			}
 		case *TagFilter:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				tags = append(tags, marshalled)
 			} else {
-				return nil, err
+				return nil
 			}
 		case *BaseAlertingScope:
-			if marshalled, err := sc.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := sc.MarshalHCL(marshalled); err == nil {
 				scopes = append(scopes, marshalled)
 			} else {
-				return nil, err
+				return nil
 			}
 		default:
 		}
 		if len(customDeviceGroupNames) > 0 {
-			result["custom_device_group_name"] = customDeviceGroupNames
+			properties["custom_device_group_name"] = customDeviceGroupNames
 		}
 		if len(entityIDs) > 0 {
-			result["entity"] = entityIDs
+			properties["entity"] = entityIDs
 		}
 		if len(hostGroupNames) > 0 {
-			result["host_group_name"] = hostGroupNames
+			properties["host_group_name"] = hostGroupNames
 		}
 		if len(hostNames) > 0 {
-			result["host_name"] = hostNames
+			properties["host_name"] = hostNames
 		}
 		if len(managementZones) > 0 {
-			result["management_zone"] = managementZones
+			properties["management_zone"] = managementZones
 		}
 		if len(names) > 0 {
-			result["name"] = names
+			properties["name"] = names
 		}
 		if len(processGroupIDs) > 0 {
-			result["process_group_id"] = processGroupIDs
+			properties["process_group_id"] = processGroupIDs
 		}
 		if len(processGroupNames) > 0 {
-			result["process_group_name"] = processGroupNames
+			properties["process_group_name"] = processGroupNames
 		}
 		if len(tags) > 0 {
-			result["tag"] = tags
+			properties["tag"] = tags
 		}
 		if len(scopes) > 0 {
-			result["scope"] = scopes
+			properties["scope"] = scopes
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *AlertingScopes) UnmarshalHCL(decoder hcl.Decoder) error {

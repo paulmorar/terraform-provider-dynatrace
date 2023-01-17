@@ -83,65 +83,21 @@ func (me *Application) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-func (me *Application) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-	if err := properties.Encode("name", me.Name); err != nil {
-		return nil, err
-	}
-	if me.ApplicationID != nil {
-		if err := properties.Encode("application_id", me.ApplicationID); err != nil {
-			return nil, err
-		}
-	}
-	if me.ApplicationType != nil {
-		if err := properties.Encode("application_type", string(*me.ApplicationType)); err != nil {
-			return nil, err
-		}
-	}
-	if me.CostControlUserSessionPercentage != nil {
-		if err := properties.Encode("user_session_percentage", me.CostControlUserSessionPercentage); err != nil {
-			return nil, err
-		}
-	}
-	if me.OptInModeEnabled {
-		if err := properties.Encode("opt_in_mode", me.OptInModeEnabled); err != nil {
-			return nil, err
-		}
-	}
-	if me.SessionReplayEnabled {
-		if err := properties.Encode("session_replay", me.SessionReplayEnabled); err != nil {
-			return nil, err
-		}
-	}
-	if me.SessionReplayOnCrashEnabled {
-		if err := properties.Encode("session_replay_on_crash", me.SessionReplayOnCrashEnabled); err != nil {
-			return nil, err
-		}
-	}
-	if err := properties.Encode("beacon_endpoint_type", me.BeaconEndpointType); err != nil {
-		return nil, err
-	}
-	if me.BeaconEndpointUrl != nil {
-		if err := properties.Encode("beacon_endpoint_url", me.BeaconEndpointUrl); err != nil {
-			return nil, err
-		}
-	}
-	if me.ApdexSettings != nil {
-		if err := properties.Encode("apdex", me.ApdexSettings); err != nil {
-			return nil, err
-		}
-	}
-	if len(me.KeyUserActions) > 0 {
-		if err := properties.Encode("key_user_actions", me.KeyUserActions); err != nil {
-			return nil, err
-		}
-	}
-	if len(me.Properties) > 0 {
-		if err := properties.Encode("properties", me.Properties); err != nil {
-			return nil, err
-		}
-	}
-	return properties, nil
+func (me *Application) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"name":                    me.Name,
+		"application_id":          me.ApplicationID,
+		"application_type":        me.ApplicationType,
+		"user_session_percentage": me.CostControlUserSessionPercentage,
+		"opt_in_mode":             me.OptInModeEnabled,
+		"session_replay":          me.SessionReplayEnabled,
+		"session_replay_on_crash": me.SessionReplayOnCrashEnabled,
+		"beacon_endpoint_type":    me.BeaconEndpointType,
+		"beacon_endpoint_url":     me.BeaconEndpointUrl,
+		"apdex":                   me.ApdexSettings,
+		"key_user_actions":        me.KeyUserActions,
+		"properties":              me.Properties,
+	})
 }
 
 func (me *Application) Schema() map[string]*schema.Schema {

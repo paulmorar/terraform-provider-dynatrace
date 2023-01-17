@@ -56,23 +56,17 @@ func (me *SharingInfo) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SharingInfo) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *SharingInfo) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.LinkShared != nil {
-		result["link_shared"] = opt.Bool(me.LinkShared)
+		properties["link_shared"] = opt.Bool(me.LinkShared)
 	}
 	if me.Published != nil {
-		result["published"] = opt.Bool(me.Published)
+		properties["published"] = opt.Bool(me.Published)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *SharingInfo) UnmarshalHCL(decoder hcl.Decoder) error {

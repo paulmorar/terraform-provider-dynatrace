@@ -86,9 +86,7 @@ func (me *MetricEvents) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MetricEvents) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *MetricEvents) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"enabled":                    me.Enabled,
 		"summary":                    me.Summary,

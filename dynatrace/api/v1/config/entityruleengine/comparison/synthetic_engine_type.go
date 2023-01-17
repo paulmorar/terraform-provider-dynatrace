@@ -69,22 +69,20 @@ func (setc *SyntheticEngineType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (setc *SyntheticEngineType) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (setc *SyntheticEngineType) MarshalHCL(properties hcl.Properties) error {
 	if len(setc.Unknowns) > 0 {
 		data, err := json.Marshal(setc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = setc.Negate
-	result["operator"] = string(setc.Operator)
+	properties["negate"] = setc.Negate
+	properties["operator"] = string(setc.Operator)
 	if setc.Value != nil {
-		result["value"] = setc.Value.String()
+		properties["value"] = setc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (setc *SyntheticEngineType) UnmarshalHCL(decoder hcl.Decoder) error {

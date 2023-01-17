@@ -40,27 +40,24 @@ func (me *ConversionGoals) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me ConversionGoals) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me ConversionGoals) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["goal"] = entries
+		properties["goal"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *ConversionGoals) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("goal", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("goal", me)
 }
 
 // ConversionGoal A conversion goal of the application
@@ -123,8 +120,8 @@ func (me *ConversionGoal) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ConversionGoal) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *ConversionGoal) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"name": me.Name,
 		// "id":               me.ID,
 		"type":             me.Type,

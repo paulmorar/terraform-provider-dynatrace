@@ -37,27 +37,24 @@ func (me *JavaScriptInjectionRules) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me JavaScriptInjectionRules) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me JavaScriptInjectionRules) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["rule"] = entries
+		properties["rule"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *JavaScriptInjectionRules) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("rule", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("rule", me)
 }
 
 type JavaScriptInjectionRule struct {
@@ -104,8 +101,8 @@ func (me *JavaScriptInjectionRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *JavaScriptInjectionRule) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *JavaScriptInjectionRule) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"enabled":      me.Enabled,
 		"url_operator": me.URLOperator,
 		"url_pattern":  me.URLPattern,

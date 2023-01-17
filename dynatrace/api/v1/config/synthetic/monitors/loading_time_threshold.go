@@ -37,20 +37,20 @@ func (me *LoadingTimeThresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me LoadingTimeThresholds) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me LoadingTimeThresholds) MarshalHCL(properties hcl.Properties) error {
 	entries := []any{}
 	if len(me) > 0 {
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["threshold"] = entries
+		properties["threshold"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *LoadingTimeThresholds) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -90,17 +90,16 @@ func (me *LoadingTimeThreshold) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *LoadingTimeThreshold) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["type"] = string(me.Type)
-	result["value_ms"] = int(me.ValueMs)
+func (me *LoadingTimeThreshold) MarshalHCL(properties hcl.Properties) error {
+	properties["type"] = string(me.Type)
+	properties["value_ms"] = int(me.ValueMs)
 	if me.RequestIndex != nil {
-		result["request_index"] = int(*me.RequestIndex)
+		properties["request_index"] = int(*me.RequestIndex)
 	}
 	if me.EventIndex != nil {
-		result["event_index"] = int(*me.EventIndex)
+		properties["event_index"] = int(*me.EventIndex)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *LoadingTimeThreshold) UnmarshalHCL(decoder hcl.Decoder) error {

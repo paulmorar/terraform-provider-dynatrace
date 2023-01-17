@@ -37,15 +37,12 @@ func (me *EventFilters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me EventFilters) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("filter", me)
+func (me EventFilters) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("filter", me)
 }
 
 func (me *EventFilters) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("filter", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("filter", me)
 }
 
 type EventFilter struct {
@@ -75,24 +72,24 @@ func (me *EventFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EventFilter) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *EventFilter) MarshalHCL(properties hcl.Properties) error {
 	if me.Custom != nil {
-		if marshalled, err := me.Custom.MarshalHCL(); err == nil {
-			result["custom"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Custom.MarshalHCL(marshalled); err == nil {
+			properties["custom"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Predefined != nil {
-		if marshalled, err := me.Predefined.MarshalHCL(); err == nil {
-			result["predefined"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Predefined.MarshalHCL(marshalled); err == nil {
+			properties["predefined"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *EventFilter) UnmarshalHCL(decoder hcl.Decoder) error {

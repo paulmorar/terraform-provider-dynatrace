@@ -117,34 +117,28 @@ func (me *ServiceNowConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *ServiceNowConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *ServiceNowConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
-	result["send_events"] = me.SendEvents
-	result["send_incidents"] = me.SendIncidents
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
+	properties["send_events"] = me.SendEvents
+	properties["send_incidents"] = me.SendIncidents
 	if me.URL != nil {
-		result["url"] = *me.URL
+		properties["url"] = *me.URL
 	}
-	result["username"] = me.Username
+	properties["username"] = me.Username
 	if me.InstanceName != nil {
-		result["instance_name"] = *me.InstanceName
+		properties["instance_name"] = *me.InstanceName
 	}
-	result["message"] = me.Message
+	properties["message"] = me.Message
 	if me.Password != nil {
-		result["password"] = *me.Password
+		properties["password"] = *me.Password
 	}
 
-	return result, nil
+	return nil
 }
 
 func (me *ServiceNowConfig) UnmarshalHCL(decoder hcl.Decoder) error {

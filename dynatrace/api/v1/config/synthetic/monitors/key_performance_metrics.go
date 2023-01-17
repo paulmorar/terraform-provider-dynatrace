@@ -44,11 +44,10 @@ func (me *KeyPerformanceMetrics) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *KeyPerformanceMetrics) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["load_action_kpm"] = string(me.LoadActionKPM)
-	result["xhr_action_kpm"] = string(me.XHRActionKPM)
-	return result, nil
+func (me *KeyPerformanceMetrics) MarshalHCL(properties hcl.Properties) error {
+	properties["load_action_kpm"] = string(me.LoadActionKPM)
+	properties["xhr_action_kpm"] = string(me.XHRActionKPM)
+	return nil
 }
 
 func (me *KeyPerformanceMetrics) UnmarshalHCL(decoder hcl.Decoder) error {

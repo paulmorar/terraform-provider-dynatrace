@@ -81,37 +81,31 @@ func (me *MethodRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MethodRule) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *MethodRule) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	// if me.ID != nil {
-	// 	result["id"] = opt.String(me.ID)
+	// 	properties["id"] = opt.String(me.ID)
 	// }
-	result["name"] = me.MethodName
+	properties["name"] = me.MethodName
 	if me.ReturnType != nil {
-		result["returns"] = *me.ReturnType
+		properties["returns"] = *me.ReturnType
 	}
 	if len(me.ArgumentTypes) > 0 {
-		result["arguments"] = me.ArgumentTypes
+		properties["arguments"] = me.ArgumentTypes
 	}
 	if len(me.Modifiers) > 0 {
 		arr := []string{}
 		for _, mod := range me.Modifiers {
 			arr = append(arr, string(mod))
 		}
-		result["modifiers"] = arr
+		properties["modifiers"] = arr
 	}
 	if me.Visibility != nil {
-		result["visibility"] = string(*me.Visibility)
+		properties["visibility"] = string(*me.Visibility)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *MethodRule) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -61,18 +61,11 @@ func (me *BaseMonitoringStrategy) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *BaseMonitoringStrategy) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *BaseMonitoringStrategy) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["type"] = string(me.Type)
-	return result, nil
+	return properties.Encode("type", me.Type)
 }
 
 func (me *BaseMonitoringStrategy) UnmarshalHCL(decoder hcl.Decoder) error {

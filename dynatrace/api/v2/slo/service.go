@@ -47,21 +47,25 @@ func (me *service) Get(id string, v *slo.SLO) error {
 		return err
 	}
 
-	length := 0
+	numRequiredSuccesses := 10
+	for numRequiredSuccesses > 0 {
+		length := 0
 
-	for length == 0 {
-		req = client.Get(fmt.Sprintf("/api/v2/slo?sloSelector=id(\"%s\")&pageSize=10000&sort=name&timeFrame=CURRENT&pageIdx=1&demo=false&evaluate=false", url.QueryEscape(id)), 200)
-		var slos sloList
-		if err = req.Finish(&slos); err != nil {
-			return err
+		for length == 0 {
+			req = client.Get(fmt.Sprintf("/api/v2/slo?sloSelector=id(\"%s\")&pageSize=10000&sort=name&timeFrame=CURRENT&pageIdx=1&demo=false&evaluate=false", url.QueryEscape(id)), 200)
+			var slos sloList
+			if err = req.Finish(&slos); err != nil {
+				return err
+			}
+			length = len(slos.SLOs)
+			if length == 0 {
+				time.Sleep(time.Second * 2)
+			}
+			for _, stub := range slos.SLOs {
+				v.Timeframe = stub.Timeframe
+			}
 		}
-		length = len(slos.SLOs)
-		if length == 0 {
-			time.Sleep(time.Second * 2)
-		}
-		for _, stub := range slos.SLOs {
-			v.Timeframe = stub.Timeframe
-		}
+		numRequiredSuccesses--
 	}
 
 	return nil

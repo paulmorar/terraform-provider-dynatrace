@@ -62,9 +62,8 @@ func (me *Environment) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Environment) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-	if _, err := properties.EncodeAll(map[string]any{
+func (me *Environment) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"trial":   me.Trial,
 		"state":   me.State,
@@ -72,7 +71,7 @@ func (me *Environment) MarshalHCL() (map[string]any, error) {
 		"quotas":  me.Quotas,
 		"storage": me.Storage,
 	}); err != nil {
-		return nil, err
+		return err
 	}
 	if me.Trial == nil || !*me.Trial {
 		delete(properties, "trial")
@@ -80,7 +79,7 @@ func (me *Environment) MarshalHCL() (map[string]any, error) {
 	if me.Quotas.IsEmpty() {
 		delete(properties, "quotas")
 	}
-	return properties, nil
+	return nil
 }
 
 func (me *Environment) UnmarshalHCL(decoder hcl.Decoder) error {

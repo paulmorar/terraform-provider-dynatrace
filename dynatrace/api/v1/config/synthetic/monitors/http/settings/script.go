@@ -44,20 +44,21 @@ func (me *Script) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Script) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Script) MarshalHCL(properties hcl.Properties) error {
 	if len(me.Requests) > 0 {
 		entries := []any{}
 		for _, request := range me.Requests {
-			if marshalled, err := request.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+
+			if err := request.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["request"] = entries
+		properties["request"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Script) UnmarshalHCL(decoder hcl.Decoder) error {

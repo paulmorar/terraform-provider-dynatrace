@@ -112,23 +112,17 @@ func (me *TagInfo) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TagInfo) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *TagInfo) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["context"] = string(me.Context)
-	result["key"] = string(me.Key)
+	properties["context"] = string(me.Context)
+	properties["key"] = string(me.Key)
 	if me.Value != nil {
-		result["value"] = *me.Value
+		properties["value"] = *me.Value
 	}
 
-	return result, nil
+	return nil
 }
 
 func (me *TagInfo) UnmarshalHCL(decoder hcl.Decoder) error {

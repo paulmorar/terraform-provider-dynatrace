@@ -105,32 +105,31 @@ func (ass *AzureSupportingService) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (ass *AzureSupportingService) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (ass *AzureSupportingService) MarshalHCL(properties hcl.Properties) error {
 	if len(ass.Unknowns) > 0 {
 		data, err := json.Marshal(ass.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
 
 	if ass.Name != nil {
-		result["name"] = ass.Name
+		properties["name"] = ass.Name
 	}
 	if ass.MonitoredMetrics != nil {
 		entries := []any{}
 		for _, entry := range ass.MonitoredMetrics {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["monitored_metrics"] = entries
+		properties["monitored_metrics"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (ass *AzureSupportingService) UnmarshalHCL(decoder hcl.Decoder) error {

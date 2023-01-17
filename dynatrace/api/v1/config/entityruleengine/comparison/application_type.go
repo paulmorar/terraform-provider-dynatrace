@@ -69,22 +69,20 @@ func (atc *ApplicationType) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (atc *ApplicationType) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (atc *ApplicationType) MarshalHCL(properties hcl.Properties) error {
 	if len(atc.Unknowns) > 0 {
 		data, err := json.Marshal(atc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = atc.Negate
-	result["operator"] = string(atc.Operator)
+	properties["negate"] = atc.Negate
+	properties["operator"] = string(atc.Operator)
 	if atc.Value != nil {
-		result["value"] = atc.Value.String()
+		properties["value"] = atc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (atc *ApplicationType) UnmarshalHCL(decoder hcl.Decoder) error {

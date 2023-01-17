@@ -81,10 +81,9 @@ func (me *CloudFoundryCredentials) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CloudFoundryCredentials) MarshalHCL() (map[string]any, error) {
-	properties, err := hcl.NewProperties(me, me.Unknowns)
-	if err != nil {
-		return nil, err
+func (me *CloudFoundryCredentials) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	return properties.EncodeAll(map[string]any{
 		"login_url": me.LoginURL,

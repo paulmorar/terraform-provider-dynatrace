@@ -69,22 +69,20 @@ func (dtc *DatabaseTopology) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (dtc *DatabaseTopology) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (dtc *DatabaseTopology) MarshalHCL(properties hcl.Properties) error {
 	if len(dtc.Unknowns) > 0 {
 		data, err := json.Marshal(dtc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = dtc.Negate
-	result["operator"] = string(dtc.Operator)
+	properties["negate"] = dtc.Negate
+	properties["operator"] = string(dtc.Operator)
 	if dtc.Value != nil {
-		result["value"] = dtc.Value.String()
+		properties["value"] = dtc.Value.String()
 	}
-	return result, nil
+	return nil
 }
 
 func (dtc *DatabaseTopology) UnmarshalHCL(decoder hcl.Decoder) error {

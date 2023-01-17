@@ -68,12 +68,11 @@ func (me *NamingRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *NamingRule) MarshalHCL() (map[string]any, error) {
-	properties, err := hcl.NewProperties(me, me.Unknowns)
-	if err != nil {
-		return nil, err
+func (me *NamingRule) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	properties, err = properties.EncodeAll(map[string]any{
+	err := properties.EncodeAll(map[string]any{
 		"name":       me.Name,
 		"enabled":    me.Enabled,
 		"format":     me.Format,
@@ -82,7 +81,7 @@ func (me *NamingRule) MarshalHCL() (map[string]any, error) {
 	})
 	delete(me.Unknowns, "metadata")
 	delete(me.Unknowns, "id")
-	return properties, err
+	return err
 }
 
 func (me *NamingRule) UnmarshalHCL(decoder hcl.Decoder) error {

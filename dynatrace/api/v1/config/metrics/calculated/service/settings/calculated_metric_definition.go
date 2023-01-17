@@ -48,12 +48,11 @@ func (me *CalculatedMetricDefinition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CalculatedMetricDefinition) MarshalHCL() (map[string]any, error) {
-	res, err := hcl.Properties{}.EncodeAll(map[string]any{
+func (me *CalculatedMetricDefinition) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"metric":            me.Metric,
 		"request_attribute": me.RequestAttribute,
 	})
-	return res, err
 }
 
 func (me *CalculatedMetricDefinition) UnmarshalHCL(decoder hcl.Decoder) error {

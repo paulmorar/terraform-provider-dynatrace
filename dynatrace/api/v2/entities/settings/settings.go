@@ -57,9 +57,7 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *Settings) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"total_count":   me.TotalCount,
 		"page_size":     me.PageSize,

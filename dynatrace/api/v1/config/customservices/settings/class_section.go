@@ -46,16 +46,14 @@ func (me *ClassSection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ClassSection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *ClassSection) MarshalHCL(properties hcl.Properties) error {
 	if me.Name != nil {
-		result["name"] = opt.String(me.Name)
+		properties["name"] = opt.String(me.Name)
 	}
 	if me.Name != nil {
-		result["match"] = string(*me.Match)
+		properties["match"] = string(*me.Match)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *ClassSection) UnmarshalHCL(decoder hcl.Decoder) error {

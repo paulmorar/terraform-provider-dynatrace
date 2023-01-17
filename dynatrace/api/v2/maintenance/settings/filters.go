@@ -61,9 +61,7 @@ func (me *Filter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Filter) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *Filter) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"entity_type":      me.EntityType,
 		"entity_id":        me.EntityId,
@@ -93,8 +91,8 @@ func (me *Filters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me Filters) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeSlice("filter", me)
+func (me Filters) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeSlice("filter", me)
 }
 
 func (me *Filters) UnmarshalHCL(decoder hcl.Decoder) error {

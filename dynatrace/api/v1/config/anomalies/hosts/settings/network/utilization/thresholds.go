@@ -38,10 +38,8 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
-		"utilization": int(me.UtilizationPercentage),
-	}, nil
+func (me *Thresholds) MarshalHCL(properties hcl.Properties) error {
+	return properties.Encode("utilization", me.UtilizationPercentage)
 }
 
 func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {

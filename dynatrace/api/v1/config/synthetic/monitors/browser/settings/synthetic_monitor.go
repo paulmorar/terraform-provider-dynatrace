@@ -133,46 +133,49 @@ func (me *SyntheticMonitor) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SyntheticMonitor) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["name"] = me.Name
-	result["frequency"] = me.FrequencyMin
+func (me *SyntheticMonitor) MarshalHCL(properties hcl.Properties) error {
+	properties["name"] = me.Name
+	properties["frequency"] = me.FrequencyMin
 	if len(me.Locations) > 0 {
-		result["locations"] = me.Locations
+		properties["locations"] = me.Locations
 	}
-	result["enabled"] = me.Enabled
+	properties["enabled"] = me.Enabled
 	if len(me.ManuallyAssignedApps) > 0 {
-		result["manually_assigned_apps"] = me.ManuallyAssignedApps
+		properties["manually_assigned_apps"] = me.ManuallyAssignedApps
 	}
 	if len(me.Tags) > 0 {
-		if marshalled, err := me.Tags.MarshalHCL(); err == nil {
-			result["tags"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Tags.MarshalHCL(marshalled); err == nil {
+			properties["tags"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.AnomalyDetection != nil {
-		if marshalled, err := me.AnomalyDetection.MarshalHCL(); err == nil {
-			result["anomaly_detection"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.AnomalyDetection.MarshalHCL(marshalled); err == nil {
+			properties["anomaly_detection"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.KeyPerformanceMetrics != nil {
-		if marshalled, err := me.KeyPerformanceMetrics.MarshalHCL(); err == nil {
-			result["key_performance_metrics"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.KeyPerformanceMetrics.MarshalHCL(marshalled); err == nil {
+			properties["key_performance_metrics"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Script != nil {
-		if marshalled, err := me.Script.MarshalHCL(); err == nil {
-			result["script"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Script.MarshalHCL(marshalled); err == nil {
+			properties["script"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *SyntheticMonitor) UnmarshalHCL(decoder hcl.Decoder) error {

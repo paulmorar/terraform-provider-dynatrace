@@ -101,19 +101,17 @@ func (act *AWSConfigTag) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (act *AWSConfigTag) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (act *AWSConfigTag) MarshalHCL(properties hcl.Properties) error {
 	if len(act.Unknowns) > 0 {
 		data, err := json.Marshal(act.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["name"] = act.Name
-	result["value"] = act.Value
-	return result, nil
+	properties["name"] = act.Name
+	properties["value"] = act.Value
+	return nil
 }
 
 func (act *AWSConfigTag) UnmarshalHCL(decoder hcl.Decoder) error {

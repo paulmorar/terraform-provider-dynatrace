@@ -20,6 +20,7 @@ package locations
 import (
 	locations "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations"
 	locsettings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/synthetic/locations/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
@@ -110,8 +111,8 @@ func UniqueDataSourceRead(d *schema.ResourceData, m any) (err error) {
 			}
 		}
 
-		marshalled, err := value.MarshalHCL()
-		if err != nil {
+		marshalled := hcl.Properties{}
+		if err := value.MarshalHCL(marshalled); err != nil {
 			return err
 		}
 		for k, v := range marshalled {

@@ -46,11 +46,11 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
-		"time_percentage":       int(me.GcSuspensionPercentage),
-		"suspension_percentage": int(me.GcTimePercentage),
-	}, nil
+func (me *Thresholds) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"time_percentage":       me.GcSuspensionPercentage,
+		"suspension_percentage": me.GcTimePercentage,
+	})
 }
 
 func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {

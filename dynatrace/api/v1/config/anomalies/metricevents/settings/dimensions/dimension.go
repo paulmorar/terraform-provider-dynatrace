@@ -81,27 +81,16 @@ func (me *BaseDimension) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *BaseDimension) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *BaseDimension) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	if me.Key != nil {
-		result["key"] = *me.Key
-	}
-	if me.Name != nil {
-		result["name"] = *me.Name
-	}
-	if me.Index != nil {
-		result["index"] = *me.Index
-	}
-	result["type"] = string(me.FilterType)
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"key":   me.Key,
+		"name":  me.Name,
+		"index": me.Index,
+		"type":  me.FilterType,
+	})
 }
 
 func (me *BaseDimension) UnmarshalHCL(decoder hcl.Decoder) error {

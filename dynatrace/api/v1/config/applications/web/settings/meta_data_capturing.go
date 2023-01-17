@@ -36,27 +36,24 @@ func (me *MetaDataCaptureSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me MetaDataCaptureSettings) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me MetaDataCaptureSettings) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["capture"] = entries
+		properties["capture"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *MetaDataCaptureSettings) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("capture", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("capture", me)
 }
 
 type MetaDataCapturing struct {
@@ -103,8 +100,8 @@ func (me *MetaDataCapturing) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *MetaDataCapturing) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *MetaDataCapturing) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"type":            me.Type,
 		"capturing_name":  me.CapturingName,
 		"name":            me.Name,

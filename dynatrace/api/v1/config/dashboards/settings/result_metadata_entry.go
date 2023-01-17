@@ -58,22 +58,16 @@ func (me *ResultMetadataEntry) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ResultMetadataEntry) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *ResultMetadataEntry) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	if me.Config.LastModified != nil {
-		result["last_modified"] = int(opt.Int64(me.Config.LastModified))
+		properties["last_modified"] = int(opt.Int64(me.Config.LastModified))
 	}
-	result["custom_color"] = me.Config.CustomColor
-	result["key"] = me.Key
-	return result, nil
+	properties["custom_color"] = me.Config.CustomColor
+	properties["key"] = me.Key
+	return nil
 }
 
 func (me *ResultMetadataEntry) UnmarshalHCL(decoder hcl.Decoder) error {

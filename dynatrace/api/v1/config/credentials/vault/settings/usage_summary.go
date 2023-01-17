@@ -45,11 +45,10 @@ func (me *CredentialUsageObj) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CredentialUsageObj) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["type"] = string(me.MonitorType)
-	result["count"] = int(me.Count)
-	return result, nil
+func (me *CredentialUsageObj) MarshalHCL(properties hcl.Properties) error {
+	properties["type"] = string(me.MonitorType)
+	properties["count"] = int(me.Count)
+	return nil
 }
 
 func (me *CredentialUsageObj) UnmarshalHCL(decoder hcl.Decoder) error {

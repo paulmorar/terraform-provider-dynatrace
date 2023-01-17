@@ -54,18 +54,11 @@ func (me *ManagementZone) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ManagementZone) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *ManagementZone) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["id"] = me.ID
-	return result, nil
+	return properties.Encode("id", me.ID)
 }
 
 func (me *ManagementZone) UnmarshalHCL(decoder hcl.Decoder) error {

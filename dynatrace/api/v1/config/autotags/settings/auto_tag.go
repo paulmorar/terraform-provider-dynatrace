@@ -85,47 +85,44 @@ func (me *AutoTag) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *AutoTag) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *AutoTag) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
+	properties["name"] = me.Name
 	if me.Description != nil {
-		result["description"] = me.Description
+		properties["description"] = me.Description
 	}
 	if len(me.Rules) > 0 {
 		entries := make([]any, 0)
 		for _, rule := range me.Rules {
-			if marshalled, err := rule.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := rule.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["rules"] = entries
+		properties["rules"] = entries
 	} else {
-		result["rules"] = nil
+		properties["rules"] = nil
 	}
 	if me.EntitySelectorBasedRules != nil {
 		entries := make([]any, 0)
 		for _, rule := range me.EntitySelectorBasedRules {
-			if marshalled, err := rule.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+
+			if err := rule.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["entity_selector_based_rule"] = entries
+		properties["entity_selector_based_rule"] = entries
 	} else {
-		result["entity_selector_based_rule"] = nil
+		properties["entity_selector_based_rule"] = nil
 	}
-	return result, nil
+	return nil
 }
 
 func (me *AutoTag) UnmarshalHCL(decoder hcl.Decoder) error {

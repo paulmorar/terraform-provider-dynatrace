@@ -57,9 +57,7 @@ func (me *WeeklyRecurrence) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *WeeklyRecurrence) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *WeeklyRecurrence) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"day_of_week":      me.DayOfWeek,
 		"time_window":      me.TimeWindow,

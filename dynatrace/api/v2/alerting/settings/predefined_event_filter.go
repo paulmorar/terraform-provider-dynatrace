@@ -43,11 +43,11 @@ func (me *PredefinedEventFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *PredefinedEventFilter) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
+func (me *PredefinedEventFilter) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"type":   string(me.EventType),
 		"negate": me.Negate,
-	}, nil
+	})
 }
 
 func (me *PredefinedEventFilter) UnmarshalHCL(decoder hcl.Decoder) error {

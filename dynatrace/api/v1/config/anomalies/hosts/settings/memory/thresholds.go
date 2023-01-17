@@ -53,12 +53,11 @@ func (me *osThresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *osThresholds) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	result["usage"] = int(me.UsedMemoryPercentage)
-	result["page_faults"] = int(me.PageFaultsPerSecond)
-	return result, nil
+func (me *osThresholds) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"usage":       me.UsedMemoryPercentage,
+		"page_faults": me.PageFaultsPerSecond,
+	})
 }
 
 func (me *osThresholds) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -92,25 +91,11 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	thrs := &osThresholds{UsedMemoryPercentage: me.UsedMemoryPercentageNonWindows, PageFaultsPerSecond: me.PageFaultsPerSecondNonWindows}
-	if marshalled, err := thrs.MarshalHCL(); err == nil {
-		result["linux"] = []any{marshalled}
-	} else {
-		return nil, err
-	}
-	thrs = &osThresholds{
-		UsedMemoryPercentage: me.UsedMemoryPercentageWindows,
-		PageFaultsPerSecond:  me.PageFaultsPerSecondWindows,
-	}
-	if marshalled, err := thrs.MarshalHCL(); err == nil {
-		result["windows"] = []any{marshalled}
-	} else {
-		return nil, err
-	}
-	return result, nil
+func (me *Thresholds) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"linux":   &osThresholds{UsedMemoryPercentage: me.UsedMemoryPercentageNonWindows, PageFaultsPerSecond: me.PageFaultsPerSecondNonWindows},
+		"windows": &osThresholds{UsedMemoryPercentage: me.UsedMemoryPercentageWindows, PageFaultsPerSecond: me.PageFaultsPerSecondWindows},
+	})
 }
 
 func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {

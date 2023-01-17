@@ -20,6 +20,7 @@ package notifications
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	ansible "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/ansible/settings"
 	email "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/email/settings"
@@ -192,7 +193,8 @@ func (me *Notification) UnmarshalHCL(decoder hcl.Decoder) error {
 	})
 }
 
-func (me *Notification) MarshalHCL() (map[string]any, error) {
+func (me *Notification) MarshalHCL(properties hcl.Properties) error {
+	log.Println("Notification", "MarshalHCL")
 	m := map[Type]hcl.Marshaler{
 		Types.AnsibleTower: me.AnsibleTower,
 		Types.Email:        me.Email,
@@ -207,26 +209,26 @@ func (me *Notification) MarshalHCL() (map[string]any, error) {
 		Types.ServiceNow:   me.ServiceNow,
 	}
 	if len(me.Type) == 0 {
-		return nil, errors.New("no notification type set")
+		return errors.New("no notification type set")
 	}
 	if config, ok := m[me.Type]; ok {
 		if config == nil {
-			return nil, fmt.Errorf("notification type is `%v` but the corresponding configuration is missing", me.Type)
+			return fmt.Errorf("notification type is `%v` but the corresponding configuration is missing", me.Type)
 		}
-		result, err := config.MarshalHCL()
-		if err != nil {
-			return nil, err
+		if err := config.MarshalHCL(properties); err != nil {
+			return err
 		}
 		// if me.Enabled {
-		// 	result["enabled"] = me.Enabled
+		// 	properties["enabled"] = me.Enabled
 		// }
-		result["name"] = me.Name
-		result["profile"] = me.ProfileID
-		result["active"] = me.Enabled
+		properties["name"] = me.Name
+		properties["profile"] = me.ProfileID
+		properties["active"] = me.Enabled
 		if me.LegacyID != nil {
-			result["legacy_id"] = *me.LegacyID
+			properties["legacy_id"] = *me.LegacyID
 		}
-		return result, nil
+		log.Println("properties", properties)
+		return nil
 	}
-	return nil, fmt.Errorf("notification type `%v` not supported", me.Type)
+	return fmt.Errorf("notification type `%v` not supported", me.Type)
 }

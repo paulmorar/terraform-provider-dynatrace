@@ -66,31 +66,33 @@ func (me *Click) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Click) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["button"] = me.Button
+func (me *Click) MarshalHCL(properties hcl.Properties) error {
+	properties["button"] = me.Button
 	if me.Wait != nil {
-		if marshalled, err := me.Wait.MarshalHCL(); err == nil {
-			result["wait"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Wait.MarshalHCL(marshalled); err == nil {
+			properties["wait"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if len(me.Validate) > 0 {
-		if marshalled, err := me.Validate.MarshalHCL(); err == nil {
-			result["validate"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Validate.MarshalHCL(marshalled); err == nil {
+			properties["validate"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(); err == nil {
-			result["target"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Target.MarshalHCL(marshalled); err == nil {
+			properties["target"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Click) UnmarshalHCL(decoder hcl.Decoder) error {

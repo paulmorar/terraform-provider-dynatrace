@@ -76,38 +76,41 @@ func (me *Navigate) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Navigate) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Navigate) MarshalHCL(properties hcl.Properties) error {
 	if me.Target != nil {
-		if marshalled, err := me.Target.MarshalHCL(); err == nil {
-			result["target"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Target.MarshalHCL(marshalled); err == nil {
+			properties["target"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Wait != nil {
-		if marshalled, err := me.Wait.MarshalHCL(); err == nil {
-			result["wait"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Wait.MarshalHCL(marshalled); err == nil {
+			properties["wait"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if len(me.Validate) > 0 {
-		if marshalled, err := me.Validate.MarshalHCL(); err == nil {
-			result["validate"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Validate.MarshalHCL(marshalled); err == nil {
+			properties["validate"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	result["url"] = me.URL
+	properties["url"] = me.URL
 	if me.Authentication != nil {
-		if marshalled, err := me.Authentication.MarshalHCL(); err == nil {
-			result["authentication"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Authentication.MarshalHCL(marshalled); err == nil {
+			properties["authentication"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Navigate) UnmarshalHCL(decoder hcl.Decoder) error {

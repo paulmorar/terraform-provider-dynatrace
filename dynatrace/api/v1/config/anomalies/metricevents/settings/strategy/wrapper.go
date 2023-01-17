@@ -56,33 +56,34 @@ func (me *Wrapper) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Wrapper) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *Wrapper) MarshalHCL(properties hcl.Properties) error {
 	if me.Strategy != nil {
 		switch strategy := me.Strategy.(type) {
 		case *Auto:
-			if marshalled, err := strategy.MarshalHCL(); err == nil {
-				result["auto"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+			if err := strategy.MarshalHCL(marshalled); err == nil {
+				properties["auto"] = []any{marshalled}
 			} else {
-				return nil, err
+				return err
 			}
 		case *Static:
-			if marshalled, err := strategy.MarshalHCL(); err == nil {
-				result["static"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+			if err := strategy.MarshalHCL(marshalled); err == nil {
+				properties["static"] = []any{marshalled}
 			} else {
-				return nil, err
+				return err
 			}
 		case *BaseMonitoringStrategy:
-			if marshalled, err := strategy.MarshalHCL(); err == nil {
-				result["generic"] = []any{marshalled}
+			marshalled := hcl.Properties{}
+			if err := strategy.MarshalHCL(marshalled); err == nil {
+				properties["generic"] = []any{marshalled}
 			} else {
-				return nil, err
+				return err
 			}
 		default:
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Wrapper) UnmarshalHCL(decoder hcl.Decoder) error {

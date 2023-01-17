@@ -49,9 +49,7 @@ func (me *TimeWindow) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TimeWindow) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *TimeWindow) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"start_time": me.StartTime,
 		"end_time":   me.EndTime,

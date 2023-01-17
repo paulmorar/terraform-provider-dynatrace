@@ -37,27 +37,24 @@ func (me *RuleConditions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me RuleConditions) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me RuleConditions) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["condition"] = entries
+		properties["condition"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *RuleConditions) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("condition", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("condition", me)
 }
 
 // RuleCondition The settings of conditions for user action naming
@@ -87,8 +84,8 @@ func (me *RuleCondition) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RuleCondition) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *RuleCondition) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"operand1": me.Operand1,
 		"operand2": me.Operand2,
 		"operator": me.Operator,

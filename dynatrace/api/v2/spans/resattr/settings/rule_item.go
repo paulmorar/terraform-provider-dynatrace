@@ -49,14 +49,12 @@ func (me *RuleItem) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *RuleItem) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *RuleItem) MarshalHCL(properties hcl.Properties) error {
+	properties["enabled"] = me.Enabled
+	properties["attribute_key"] = me.AttributeKey
+	properties["masking"] = string(me.Masking)
 
-	result["enabled"] = me.Enabled
-	result["attribute_key"] = me.AttributeKey
-	result["masking"] = string(me.Masking)
-
-	return result, nil
+	return nil
 }
 
 func (me *RuleItem) UnmarshalHCL(decoder hcl.Decoder) error {

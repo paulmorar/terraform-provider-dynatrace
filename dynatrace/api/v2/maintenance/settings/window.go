@@ -100,8 +100,7 @@ func (me *MaintenanceWindow) EnsurePredictableOrder() {
 	}
 }
 
-func (me *MaintenanceWindow) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *MaintenanceWindow) MarshalHCL(properties hcl.Properties) error {
 	me.EnsurePredictableOrder()
 
 	return properties.EncodeAll(map[string]any{

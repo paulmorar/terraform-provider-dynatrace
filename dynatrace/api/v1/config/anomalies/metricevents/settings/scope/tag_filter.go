@@ -56,24 +56,11 @@ func (me *TagFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TagFilter) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *TagFilter) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	if me.TagFilter != nil {
-		if marshalled, err := me.TagFilter.MarshalHCL(); err == nil {
-			result["filter"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	return result, nil
+	return properties.Encode("filter", me.TagFilter)
 }
 
 func (me *TagFilter) UnmarshalHCL(decoder hcl.Decoder) error {

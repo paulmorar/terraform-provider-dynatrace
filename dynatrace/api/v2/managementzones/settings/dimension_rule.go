@@ -47,9 +47,7 @@ func (me *DimensionRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DimensionRule) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *DimensionRule) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"applies_to":           me.AppliesTo,
 		"dimension_conditions": me.Conditions,

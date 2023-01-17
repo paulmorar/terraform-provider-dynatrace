@@ -117,29 +117,23 @@ func (me *JiraConfig) FillDemoValues() []string {
 	return []string{"The REST API didn't provide the credentials"}
 }
 
-func (me *JiraConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *JiraConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
-	result["issue_type"] = me.IssueType
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
+	properties["issue_type"] = me.IssueType
 	if me.Password != nil {
-		result["password"] = *me.Password
+		properties["password"] = *me.Password
 	}
-	result["project_key"] = me.ProjectKey
-	result["summary"] = me.Summary
-	result["url"] = me.URL
-	result["username"] = me.Username
-	result["description"] = me.Description
-	return result, nil
+	properties["project_key"] = me.ProjectKey
+	properties["summary"] = me.Summary
+	properties["url"] = me.URL
+	properties["username"] = me.Username
+	properties["description"] = me.Description
+	return nil
 }
 
 func (me *JiraConfig) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -59,10 +59,9 @@ func (me *Process) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Process) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *Process) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Encode("name", me.DisplayName); err != nil {
-		return nil, err
+		return err
 	}
 	tags := []string{}
 	if len(me.Tags) > 0 {
@@ -75,10 +74,10 @@ func (me *Process) MarshalHCL() (map[string]any, error) {
 		}
 	}
 	if err := properties.Encode("tags", tags); err != nil {
-		return nil, err
+		return err
 	}
 
-	return properties, nil
+	return nil
 }
 
 func (me *Process) UnmarshalHCL(decoder hcl.Decoder) error {

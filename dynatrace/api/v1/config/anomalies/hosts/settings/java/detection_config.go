@@ -60,24 +60,14 @@ func (me *DetectionConfig) IsConfigured() bool {
 	return false
 }
 
-func (me *DetectionConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if me.OutOfMemoryDetection != nil && me.OutOfMemoryDetection.Enabled {
-		if marshalled, err := me.OutOfMemoryDetection.MarshalHCL(); err == nil {
-			result["out_of_memory"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
+func (me *DetectionConfig) MarshalHCL(properties hcl.Properties) error {
+	if !me.IsConfigured() {
+		return nil
 	}
-	if me.OutOfThreadsDetection != nil && me.OutOfThreadsDetection.Enabled {
-		if marshalled, err := me.OutOfThreadsDetection.MarshalHCL(); err == nil {
-			result["out_of_threads"] = []any{marshalled}
-		} else {
-			return nil, err
-		}
-	}
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"out_of_memory":  me.OutOfMemoryDetection,
+		"out_of_threads": me.OutOfThreadsDetection,
+	})
 }
 
 func (me *DetectionConfig) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -29,7 +29,8 @@ type Settings struct {
 	Description *string `json:"description,omitempty"` // Description
 	Rules       Rules   `json:"rules,omitempty"`       // Rules
 	Name        string  `json:"name"`                  // **Be careful when renaming** - if there are policies that are referencing this Management zone, they will need to be adapted to the new name!
-	LegacyID    *string `json:"-"`
+
+	LegacyID *string `json:"-"`
 }
 
 func (me *Settings) Schema() map[string]*schema.Schema {
@@ -61,9 +62,7 @@ func (me *Settings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Settings) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *Settings) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"description": me.Description,
 		"rules":       me.Rules,

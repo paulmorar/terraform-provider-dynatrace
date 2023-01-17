@@ -37,9 +37,7 @@ func (me *LocalQueue) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *LocalQueue) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *LocalQueue) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"local_queue_name": me.LocalQueueName,
 	})

@@ -31,12 +31,12 @@ func (me *Policy) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Policy) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
+func (me *Policy) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"name":            me.Name,
 		"description":     me.Description,
 		"statement_query": me.StatementQuery,
-	}, nil
+	})
 }
 
 func (me *Policy) UnmarshalHCL(decoder hcl.Decoder) error {

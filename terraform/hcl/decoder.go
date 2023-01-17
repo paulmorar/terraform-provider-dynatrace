@@ -434,14 +434,6 @@ func (d *mindecoder) GetStringSet(key string) []string {
 	return result
 }
 
-func (d *mindecoder) MarshalAll(items map[string]any) (Properties, error) {
-	properties := Properties{}
-	if err := properties.MarshalAll(d, items); err != nil {
-		return nil, err
-	}
-	return properties, nil
-}
-
 func (d *mindecoder) GetOk(key string) (any, bool) {
 	return d.parent.GetOk(key)
 }

@@ -58,9 +58,8 @@ func (me UserActionAndSessionProperties) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me UserActionAndSessionProperties) MarshalHCL() (map[string]any, error) {
+func (me UserActionAndSessionProperties) MarshalHCL(properties hcl.Properties) error {
 	var err error
-	properties := hcl.Properties{}
 	api_values := []*APIValue{}
 	for _, property := range me {
 		if property.Origin == Origins.API {
@@ -83,8 +82,8 @@ func (me UserActionAndSessionProperties) MarshalHCL() (map[string]any, error) {
 	})
 
 	if len(api_values) > 0 {
-		if properties, err = properties.EncodeSlice("api_value", api_values); err != nil {
-			return nil, err
+		if err = properties.EncodeSlice("api_value", api_values); err != nil {
+			return err
 		}
 	}
 
@@ -110,12 +109,12 @@ func (me UserActionAndSessionProperties) MarshalHCL() (map[string]any, error) {
 		return request_attributes[i].Key < request_attributes[j].Key
 	})
 	if len(request_attributes) > 0 {
-		if properties, err = properties.EncodeSlice("request_attribute", request_attributes); err != nil {
-			return nil, err
+		if err = properties.EncodeSlice("request_attribute", request_attributes); err != nil {
+			return err
 		}
 	}
 
-	return properties, nil
+	return nil
 }
 
 func (me *UserActionAndSessionProperties) UnmarshalHCL(decoder hcl.Decoder) error {

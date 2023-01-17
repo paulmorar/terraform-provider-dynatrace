@@ -65,31 +65,26 @@ func (me *DimensionalRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *DimensionalRule) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *DimensionalRule) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["enabled"] = opt.Bool(me.Enabled)
-	result["applies_to"] = string(me.AppliesTo)
+	properties["enabled"] = opt.Bool(me.Enabled)
+	properties["applies_to"] = string(me.AppliesTo)
 	if len(me.Conditions) > 0 {
 		entries := []any{}
 		for _, entry := range me.Conditions {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["condition"] = entries
+		properties["condition"] = entries
 	}
 
-	return result, nil
+	return nil
 }
 
 func (me *DimensionalRule) UnmarshalHCL(decoder hcl.Decoder) error {

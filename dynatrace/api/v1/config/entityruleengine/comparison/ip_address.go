@@ -77,23 +77,21 @@ func (iac *IPAddress) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (iac *IPAddress) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (iac *IPAddress) MarshalHCL(properties hcl.Properties) error {
 	if len(iac.Unknowns) > 0 {
 		data, err := json.Marshal(iac.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = iac.Negate
-	result["operator"] = string(iac.Operator)
+	properties["negate"] = iac.Negate
+	properties["operator"] = string(iac.Operator)
 	if iac.Value != nil {
-		result["value"] = *iac.Value
+		properties["value"] = *iac.Value
 	}
-	result["case_sensitive"] = opt.Bool(iac.CaseSensitive)
-	return result, nil
+	properties["case_sensitive"] = opt.Bool(iac.CaseSensitive)
+	return nil
 }
 
 func (iac *IPAddress) UnmarshalHCL(decoder hcl.Decoder) error {

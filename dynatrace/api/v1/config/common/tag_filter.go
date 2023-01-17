@@ -52,15 +52,13 @@ func (me *TagFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TagFilter) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	result["context"] = string(me.Context)
-	result["key"] = me.Key
+func (me *TagFilter) MarshalHCL(properties hcl.Properties) error {
+	properties["context"] = string(me.Context)
+	properties["key"] = me.Key
 	if me.Value != nil {
-		result["value"] = *me.Value
+		properties["value"] = *me.Value
 	}
-	return result, nil
+	return nil
 }
 
 func (me *TagFilter) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -57,23 +57,21 @@ func (me *SpikeDetection) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpikeDetection) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me *SpikeDetection) MarshalHCL(properties hcl.Properties) error {
+	if !me.Enabled {
+		return nil
+	}
 	if len(me.Unknowns) > 0 {
 		data, err := json.Marshal(me.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	if me.LoadSpikePercent != nil {
-		result["percent"] = int(*me.LoadSpikePercent)
-	}
-	if me.AbnormalMinutes != nil {
-		result["minutes"] = int(*me.AbnormalMinutes)
-	}
-	return result, nil
+	return properties.EncodeAll(map[string]any{
+		"percent": me.LoadSpikePercent,
+		"minutes": me.AbnormalMinutes,
+	})
 }
 
 func (me *SpikeDetection) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -46,11 +46,11 @@ func (me *Thresholds) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Thresholds) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
-		"errors_percentage":  int(me.ErrorsPercentage),
-		"total_packets_rate": int(me.TotalPacketsRate),
-	}, nil
+func (me *Thresholds) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
+		"errors_percentage":  me.ErrorsPercentage,
+		"total_packets_rate": me.TotalPacketsRate,
+	})
 }
 
 func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -39,9 +39,7 @@ func (me TagFilters) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me TagFilters) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (me TagFilters) MarshalHCL(properties hcl.Properties) error {
 	tagFilters := TagFilters{}
 	tagFilters = append(tagFilters, me...)
 	sort.Slice(tagFilters, func(i int, j int) bool {
@@ -51,16 +49,17 @@ func (me TagFilters) MarshalHCL() (map[string]any, error) {
 	})
 	filters := []any{}
 	for _, filter := range tagFilters {
-		if marshalled, err := filter.MarshalHCL(); err == nil {
+		marshalled := hcl.Properties{}
+		if err := filter.MarshalHCL(marshalled); err == nil {
 			filters = append(filters, marshalled)
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if len(filters) > 0 {
-		result["filter"] = filters
+		properties["filter"] = filters
 	}
-	return result, nil
+	return nil
 }
 
 func (me *TagFilters) UnmarshalHCL(decoder hcl.Decoder) error {

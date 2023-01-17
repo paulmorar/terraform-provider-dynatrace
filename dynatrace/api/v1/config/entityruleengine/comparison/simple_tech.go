@@ -73,26 +73,25 @@ func (stc *SimpleTech) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (stc *SimpleTech) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (stc *SimpleTech) MarshalHCL(properties hcl.Properties) error {
 	if len(stc.Unknowns) > 0 {
 		data, err := json.Marshal(stc.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
-	result["negate"] = stc.Negate
-	result["operator"] = string(stc.Operator)
+	properties["negate"] = stc.Negate
+	properties["operator"] = string(stc.Operator)
 	if stc.Value != nil {
-		if marshalled, err := stc.Value.MarshalHCL(); err == nil {
-			result["value"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := stc.Value.MarshalHCL(marshalled); err == nil {
+			properties["value"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (stc *SimpleTech) UnmarshalHCL(decoder hcl.Decoder) error {

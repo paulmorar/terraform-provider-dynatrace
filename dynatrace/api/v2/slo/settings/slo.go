@@ -126,10 +126,9 @@ func empty2Nil(s *string) *string {
 	return s
 }
 
-func (me *SLO) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *SLO) MarshalHCL(properties hcl.Properties) error {
 
-	res, err := properties.EncodeAll(map[string]any{
+	err := properties.EncodeAll(map[string]any{
 		"name":              me.Name,
 		"description":       me.Description,
 		"disabled":          !me.Enabled,
@@ -144,17 +143,17 @@ func (me *SLO) MarshalHCL() (map[string]any, error) {
 		"timeframe":         me.Timeframe,
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if me.Enabled {
-		delete(res, "disabled")
+		delete(properties, "disabled")
 	}
 	if me.MetricRate != nil {
 		var mr = *me.MetricRate
 		if strings.HasSuffix(mr, ":splitBy():splitBy()") {
 			mr = mr[0 : len(mr)-len(":splitBy()")]
 			me.MetricRate = &mr
-			res["rate"] = mr
+			properties["rate"] = mr
 		}
 	}
 	if me.MetricNumerator != nil {
@@ -162,7 +161,7 @@ func (me *SLO) MarshalHCL() (map[string]any, error) {
 		if strings.HasSuffix(mr, ":splitBy():splitBy()") {
 			mr = mr[0 : len(mr)-len(":splitBy()")]
 			me.MetricNumerator = &mr
-			res["numerator"] = mr
+			properties["numerator"] = mr
 		}
 	}
 	if me.MetricDenominator != nil {
@@ -170,10 +169,10 @@ func (me *SLO) MarshalHCL() (map[string]any, error) {
 		if strings.HasSuffix(mr, ":splitBy():splitBy()") {
 			mr = mr[0 : len(mr)-len(":splitBy()")]
 			me.MetricDenominator = &mr
-			res["denominator"] = mr
+			properties["denominator"] = mr
 		}
 	}
-	return res, nil
+	return nil
 }
 
 func nonNil(s *string) *string {

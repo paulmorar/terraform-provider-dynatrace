@@ -114,64 +114,69 @@ func (me *ScriptConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ScriptConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["disable_web_security"] = me.DisableWebSecurity
-	result["bypass_csp"] = me.BypassCSP
+func (me *ScriptConfig) MarshalHCL(properties hcl.Properties) error {
+	properties["disable_web_security"] = me.DisableWebSecurity
+	properties["bypass_csp"] = me.BypassCSP
 	if me.MonitorFrames != nil && me.MonitorFrames.Enabled {
-		result["monitor_frames"] = me.MonitorFrames.Enabled
+		properties["monitor_frames"] = me.MonitorFrames.Enabled
 	} else {
-		result["monitor_frames"] = false
+		properties["monitor_frames"] = false
 	}
 	if me.UserAgent != nil {
-		result["user_agent"] = me.UserAgent
+		properties["user_agent"] = me.UserAgent
 	}
 	if me.IgnoredErrorCodes != nil {
-		if marshalled, err := me.IgnoredErrorCodes.MarshalHCL(); err == nil {
-			result["ignored_error_codes"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.IgnoredErrorCodes.MarshalHCL(marshalled); err == nil {
+			properties["ignored_error_codes"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.JavascriptSettings != nil {
-		if marshalled, err := me.JavascriptSettings.MarshalHCL(); err == nil {
-			result["javascript_setttings"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.JavascriptSettings.MarshalHCL(marshalled); err == nil {
+			properties["javascript_setttings"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Device != nil {
-		if marshalled, err := me.Device.MarshalHCL(); err == nil {
-			result["device"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Device.MarshalHCL(marshalled); err == nil {
+			properties["device"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.Bandwidth != nil {
-		if marshalled, err := me.Bandwidth.MarshalHCL(); err == nil {
-			result["bandwidth"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Bandwidth.MarshalHCL(marshalled); err == nil {
+			properties["bandwidth"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.RequestHeaders != nil {
-		if marshalled, err := me.RequestHeaders.MarshalHCL(); err == nil {
-			result["headers"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.RequestHeaders.MarshalHCL(marshalled); err == nil {
+			properties["headers"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if len(me.BlockRequests) > 0 {
-		result["block"] = me.BlockRequests
+		properties["block"] = me.BlockRequests
 	}
 	if len(me.Cookies) > 0 {
-		if marshalled, err := me.Cookies.MarshalHCL(); err == nil {
-			result["cookies"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.Cookies.MarshalHCL(marshalled); err == nil {
+			properties["cookies"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
-	return result, nil
+	return nil
 }
 
 func (me *ScriptConfig) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -241,13 +246,12 @@ func (me *IgnoredErrorCodes) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *IgnoredErrorCodes) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["status_codes"] = me.StatusCodes
+func (me *IgnoredErrorCodes) MarshalHCL(properties hcl.Properties) error {
+	properties["status_codes"] = me.StatusCodes
 	if me.MatchingDocumentRequests != nil {
-		result["matching_document_requests"] = *me.MatchingDocumentRequests
+		properties["matching_document_requests"] = *me.MatchingDocumentRequests
 	}
-	return result, nil
+	return nil
 }
 
 func (me *IgnoredErrorCodes) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -290,26 +294,27 @@ func (me *JavascriptSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *JavascriptSettings) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *JavascriptSettings) MarshalHCL(properties hcl.Properties) error {
 	if me.TimeoutSettings != nil {
-		if marshalled, err := me.TimeoutSettings.MarshalHCL(); err == nil {
-			result["timeout_settings"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.TimeoutSettings.MarshalHCL(marshalled); err == nil {
+			properties["timeout_settings"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.VisuallyCompleteOptions != nil {
-		if marshalled, err := me.VisuallyCompleteOptions.MarshalHCL(); err == nil {
-			result["visually_complete_options"] = []any{marshalled}
+		marshalled := hcl.Properties{}
+		if err := me.VisuallyCompleteOptions.MarshalHCL(marshalled); err == nil {
+			properties["visually_complete_options"] = []any{marshalled}
 		} else {
-			return nil, err
+			return err
 		}
 	}
 	if me.CustomProperties != nil && len(*me.CustomProperties) > 0 {
-		result["custom_properties"] = *me.CustomProperties
+		properties["custom_properties"] = *me.CustomProperties
 	}
-	return result, nil
+	return nil
 }
 
 func (me *JavascriptSettings) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -365,18 +370,17 @@ func (me *VisuallyCompleteOptions) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *VisuallyCompleteOptions) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["image_size_threshold"] = me.ImageSizeThreshold
-	result["inactivity_timeout"] = me.InactivityTimeout
-	result["mutation_timeout"] = me.MutationTimeout
+func (me *VisuallyCompleteOptions) MarshalHCL(properties hcl.Properties) error {
+	properties["image_size_threshold"] = me.ImageSizeThreshold
+	properties["inactivity_timeout"] = me.InactivityTimeout
+	properties["mutation_timeout"] = me.MutationTimeout
 	if len(me.ExcludedURLs) > 0 {
-		result["excluded_urls"] = me.ExcludedURLs
+		properties["excluded_urls"] = me.ExcludedURLs
 	}
 	if len(me.ExcludedElements) > 0 {
-		result["excluded_elements"] = me.ExcludedElements
+		properties["excluded_elements"] = me.ExcludedElements
 	}
-	return result, nil
+	return nil
 }
 
 func (me *VisuallyCompleteOptions) UnmarshalHCL(decoder hcl.Decoder) error {
@@ -424,11 +428,10 @@ func (me *TimeoutSettings) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TimeoutSettings) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-	result["action_limit"] = int(me.TemporaryActionLimit)
-	result["total_timeout"] = int(me.TemporaryActionTotalTimeout)
-	return result, nil
+func (me *TimeoutSettings) MarshalHCL(properties hcl.Properties) error {
+	properties["action_limit"] = int(me.TemporaryActionLimit)
+	properties["total_timeout"] = int(me.TemporaryActionTotalTimeout)
+	return nil
 }
 
 func (me *TimeoutSettings) UnmarshalHCL(decoder hcl.Decoder) error {

@@ -46,8 +46,8 @@ func (me *SessionReplayMaskingSetting) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SessionReplayMaskingSetting) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *SessionReplayMaskingSetting) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"preset": me.Preset,
 		"rules":  me.Rules,
 	})

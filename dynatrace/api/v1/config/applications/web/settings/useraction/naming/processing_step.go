@@ -37,27 +37,24 @@ func (me *ProcessingSteps) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me ProcessingSteps) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me ProcessingSteps) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["step"] = entries
+		properties["step"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *ProcessingSteps) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("step", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("step", me)
 }
 
 type ProcessingStep struct {
@@ -122,8 +119,8 @@ func (me *ProcessingStep) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *ProcessingStep) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *ProcessingStep) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"type":                       me.Type,
 		"pattern_before":             me.PatternBefore,
 		"pattern_before_search_type": me.PatternBeforeSearchType,

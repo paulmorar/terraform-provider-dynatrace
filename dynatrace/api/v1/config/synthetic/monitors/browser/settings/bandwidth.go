@@ -55,21 +55,20 @@ func (me *Bandwidth) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Bandwidth) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me *Bandwidth) MarshalHCL(properties hcl.Properties) error {
 	if me.NetworkType != nil {
-		result["network_type"] = string(*me.NetworkType)
+		properties["network_type"] = string(*me.NetworkType)
 	}
 	if me.Latency != nil {
-		result["latency"] = int(*me.Latency)
+		properties["latency"] = int(*me.Latency)
 	}
 	if me.Download != nil {
-		result["download"] = int(*me.Download)
+		properties["download"] = int(*me.Download)
 	}
 	if me.Upload != nil {
-		result["upload"] = int(*me.Upload)
+		properties["upload"] = int(*me.Upload)
 	}
-	return result, nil
+	return nil
 }
 
 func (me *Bandwidth) UnmarshalHCL(decoder hcl.Decoder) error {

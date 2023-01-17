@@ -54,23 +54,21 @@ func (st *Simple) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (st *Simple) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
+func (st *Simple) MarshalHCL(properties hcl.Properties) error {
 	if len(st.Unknowns) > 0 {
 		data, err := json.Marshal(st.Unknowns)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result["unknowns"] = string(data)
+		properties["unknowns"] = string(data)
 	}
 	if st.Type != nil {
-		result["type"] = st.Type.String()
+		properties["type"] = st.Type.String()
 	}
 	if st.VerbatimType != nil {
-		result["verbatim_type"] = *st.VerbatimType
+		properties["verbatim_type"] = *st.VerbatimType
 	}
-	return result, nil
+	return nil
 }
 
 func (st *Simple) UnmarshalHCL(decoder hcl.Decoder) error {

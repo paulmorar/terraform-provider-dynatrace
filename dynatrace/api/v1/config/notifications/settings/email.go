@@ -97,31 +97,25 @@ func (me *EmailConfig) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *EmailConfig) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
-
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return nil, err
-		}
-		result["unknowns"] = string(data)
+func (me *EmailConfig) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	result["name"] = me.Name
-	result["active"] = me.Active
-	result["alerting_profile"] = me.AlertingProfile
+	properties["name"] = me.Name
+	properties["active"] = me.Active
+	properties["alerting_profile"] = me.AlertingProfile
 	if len(me.BccReceivers) > 0 {
-		result["bcc_receivers"] = me.BccReceivers
+		properties["bcc_receivers"] = me.BccReceivers
 	}
 	if len(me.CcReceivers) > 0 {
-		result["cc_receivers"] = me.CcReceivers
+		properties["cc_receivers"] = me.CcReceivers
 	}
 	if len(me.Receivers) > 0 {
-		result["receivers"] = me.Receivers
+		properties["receivers"] = me.Receivers
 	}
-	result["body"] = me.Body
-	result["subject"] = me.Subject
-	return result, nil
+	properties["body"] = me.Body
+	properties["subject"] = me.Subject
+	return nil
 }
 
 func (me *EmailConfig) UnmarshalHCL(decoder hcl.Decoder) error {

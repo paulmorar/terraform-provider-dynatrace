@@ -55,9 +55,7 @@ func (me *SpanCaptureRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *SpanCaptureRule) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
-
+func (me *SpanCaptureRule) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"name":    me.Name,
 		"action":  me.Action,

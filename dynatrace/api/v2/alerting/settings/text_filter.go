@@ -61,14 +61,14 @@ func (me *TextFilter) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *TextFilter) MarshalHCL() (map[string]any, error) {
-	return map[string]any{
+func (me *TextFilter) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"enabled":        me.Enabled,
 		"negate":         me.Negate,
 		"operator":       string(me.Operator),
 		"value":          me.Value,
 		"case_sensitive": me.CaseSensitive,
-	}, nil
+	})
 }
 
 func (me *TextFilter) UnmarshalHCL(decoder hcl.Decoder) error {

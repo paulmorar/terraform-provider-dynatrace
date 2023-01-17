@@ -179,97 +179,96 @@ func (me *Wrapper) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Wrapper) MarshalHCL() (map[string]any, error) {
-	properties := hcl.Properties{}
+func (me *Wrapper) MarshalHCL(properties hcl.Properties) error {
 	properties.Encode("negate", me.Comparison.IsNegate())
 	switch cmp := me.Comparison.(type) {
 	case *Boolean:
 		if err := properties.Encode("boolean", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *ESBInputNodeType:
 		if err := properties.Encode("esb_input_node_type", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *FailedState:
 		if err := properties.Encode("failed_state", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *FailureReason:
 		if err := properties.Encode("failure_reason", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *FastString:
 		if err := properties.Encode("fast_string", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *FlawState:
 		if err := properties.Encode("flaw_state", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *HTTPMethod:
 		if err := properties.Encode("http_method", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *HTTPStatusClass:
 		if err := properties.Encode("http_status_class", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *IIBInputNodeType:
 		if err := properties.Encode("iib_input_node_type", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *NumberRequestAttribute:
 		if err := properties.Encode("number_request_attribute", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *Number:
 		if err := properties.Encode("number", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *ServiceType:
 		if err := properties.Encode("service_type", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *StringRequestAttribute:
 		if err := properties.Encode("string_request_attribute", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *String:
 		if err := properties.Encode("string", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *Tag:
 		if err := properties.Encode("tag", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *ZOSCallType:
 		if err := properties.Encode("zos_call_type", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	case *BaseComparisonInfo:
 		if err := properties.Encode("generic", cmp); err != nil {
-			return nil, err
+			return nil
 		}
-		return properties, nil
+		return nil
 	default:
-		return nil, fmt.Errorf("cannot HCL marshal objects (xxx) of type %T", cmp)
+		return fmt.Errorf("cannot HCL marshal objects (xxx) of type %T", cmp)
 	}
 }
 

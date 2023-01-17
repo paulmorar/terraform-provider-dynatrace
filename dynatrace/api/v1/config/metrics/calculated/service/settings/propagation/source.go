@@ -57,10 +57,9 @@ func (me *Source) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *Source) MarshalHCL() (map[string]any, error) {
-	properties, err := hcl.NewProperties(me, me.Unknowns)
-	if err != nil {
-		return nil, err
+func (me *Source) MarshalHCL(properties hcl.Properties) error {
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	return properties.EncodeAll(map[string]any{
 		"management_zone": me.ManagementZone,

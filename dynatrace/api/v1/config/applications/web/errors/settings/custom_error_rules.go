@@ -37,27 +37,24 @@ func (me *CustomErrorRules) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me CustomErrorRules) MarshalHCL() (map[string]any, error) {
-	result := map[string]any{}
+func (me CustomErrorRules) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
 		entries := []any{}
 		for _, entry := range me {
-			if marshalled, err := entry.MarshalHCL(); err == nil {
+			marshalled := hcl.Properties{}
+			if err := entry.MarshalHCL(marshalled); err == nil {
 				entries = append(entries, marshalled)
 			} else {
-				return nil, err
+				return err
 			}
 		}
-		result["rule"] = entries
+		properties["rule"] = entries
 	}
-	return result, nil
+	return nil
 }
 
 func (me *CustomErrorRules) UnmarshalHCL(decoder hcl.Decoder) error {
-	if err := decoder.DecodeSlice("rule", me); err != nil {
-		return err
-	}
-	return nil
+	return decoder.DecodeSlice("rule", me)
 }
 
 // CustomErrorRule represents configuration of the custom error in the web application
@@ -111,8 +108,8 @@ func (me *CustomErrorRule) Schema() map[string]*schema.Schema {
 	}
 }
 
-func (me *CustomErrorRule) MarshalHCL() (map[string]any, error) {
-	return hcl.Properties{}.EncodeAll(map[string]any{
+func (me *CustomErrorRule) MarshalHCL(properties hcl.Properties) error {
+	return properties.EncodeAll(map[string]any{
 		"key_pattern":     me.KeyPattern,
 		"key_matcher":     me.KeyMatcher,
 		"value_pattern":   me.ValuePattern,
