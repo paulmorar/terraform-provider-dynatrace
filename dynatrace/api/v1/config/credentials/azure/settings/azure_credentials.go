@@ -93,8 +93,9 @@ func (ac *AzureCredentials) Schema() map[string]*schema.Schema {
 		},
 		"key": {
 			Type:        schema.TypeString,
-			Description: " The secret key associated with the Application ID.  For security reasons, GET requests return this field as `null`.   Submit your key on creation or update of the configuration. If the field is omitted during an update, the old value remains unaffected.",
+			Description: "The secret key associated with the Application ID.  For security reasons, GET requests return this field as `null`. Submit your key on creation or update of the configuration. If the field is omitted during an update, the old value remains unaffected.",
 			Optional:    true,
+			Sensitive:   true,
 		},
 		"monitor_only_tagged_entities": {
 			Type:        schema.TypeBool,
@@ -318,7 +319,7 @@ func (ac *AzureCredentials) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Encode("app_id", ac.AppID); err != nil {
 		return err
 	}
-	if err := properties.Encode("key", ac.Key); err != nil {
+	if err := properties.Encode("key", "${state.secret_value}"); err != nil {
 		return err
 	}
 	if err := properties.Encode("monitor_only_tagged_entities", opt.Bool(ac.MonitorOnlyTaggedEntities)); err != nil {

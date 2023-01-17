@@ -121,11 +121,18 @@ func (me *Header) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Encode("name", me.Name); err != nil {
 		return err
 	}
-	if err := properties.Encode("value", me.Value); err != nil {
-		return err
-	}
 	if me.Secret {
 		if err := properties.Encode("secret_value", "${state.secret_value}"); err != nil {
+			return err
+		}
+		if err := properties.Encode("value", ""); err != nil {
+			return err
+		}
+	} else {
+		if err := properties.Encode("secret_value", nil); err != nil {
+			return err
+		}
+		if err := properties.Encode("value", me.Value); err != nil {
 			return err
 		}
 	}
@@ -144,6 +151,11 @@ func (me *Header) UnmarshalHCL(decoder hcl.Decoder) error {
 	if value, ok := decoder.GetOk("secret_value"); ok {
 		me.SecretValue = opt.NewString(value.(string))
 		me.Secret = true
+	}
+	if me.Secret {
+		me.Value = nil
+	} else {
+		me.SecretValue = nil
 	}
 	return nil
 }

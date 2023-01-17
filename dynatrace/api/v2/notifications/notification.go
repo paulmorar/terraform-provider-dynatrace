@@ -20,7 +20,6 @@ package notifications
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	ansible "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/ansible/settings"
 	email "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/notifications/email/settings"
@@ -194,7 +193,6 @@ func (me *Notification) UnmarshalHCL(decoder hcl.Decoder) error {
 }
 
 func (me *Notification) MarshalHCL(properties hcl.Properties) error {
-	log.Println("Notification", "MarshalHCL")
 	m := map[Type]hcl.Marshaler{
 		Types.AnsibleTower: me.AnsibleTower,
 		Types.Email:        me.Email,
@@ -233,7 +231,6 @@ func (me *Notification) MarshalHCL(properties hcl.Properties) error {
 		if err := properties.Encode("legacy_id", me.LegacyID); err != nil {
 			return err
 		}
-		log.Println("properties", properties)
 		return nil
 	}
 	return fmt.Errorf("notification type `%v` not supported", me.Type)

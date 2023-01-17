@@ -85,11 +85,11 @@ func (attributes Attributes) collect(addr address, v any) {
 			attributes.collect(addr.dot(idx), value[idx])
 		}
 	default:
-		data, err := json.Marshal(value)
-		if err != nil {
-			panic(err)
-		}
-		attributes[string(addr)] = string(data)
+		// data, err := json.Marshal(value)
+		// if err != nil {
+		// 	panic(err)
+		// }
+		// attributes[string(addr)] = string(data)
 	}
 }
 
@@ -224,6 +224,34 @@ func store(m map[string]any, key string, value string) {
 			store(tcont, remainder, value)
 		case hcl.Properties:
 			store(map[string]any(tcont), remainder, value)
+		}
+	}
+}
+
+func remove(m map[string]any, key string) {
+	idx := strings.Index(key, ".")
+	if idx < 0 {
+		delete(m, key)
+		return
+	}
+	prefix := key[:idx]
+	remainder := key[idx+1:]
+	stored := m[prefix]
+	switch container := stored.(type) {
+	case map[string]any:
+		remove(container, remainder)
+		return
+	case []any:
+		idx = strings.Index(remainder, ".")
+		prefix = remainder[:idx]
+		remainder = remainder[idx+1:]
+		cidx, _ := strconv.Atoi(prefix)
+		cont := container[cidx]
+		switch tcont := cont.(type) {
+		case map[string]any:
+			remove(tcont, remainder)
+		case hcl.Properties:
+			remove(map[string]any(tcont), remainder)
 		}
 	}
 }

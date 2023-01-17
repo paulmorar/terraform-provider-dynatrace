@@ -64,6 +64,9 @@ func (me *Detection) Schema() map[string]*schema.Schema {
 }
 
 func (me *Detection) MarshalHCL(properties hcl.Properties) error {
+	if me.IsEmpty() {
+		return nil
+	}
 	return properties.EncodeAll(map[string]any{
 		"drops":  me.Drops,
 		"spikes": me.Spikes,

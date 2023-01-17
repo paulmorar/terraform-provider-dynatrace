@@ -153,7 +153,7 @@ func (me *DashboardMetadata) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Encode("valid_filter_keys", me.ValidFilterKeys); err != nil {
 		return err
 	}
-	if err := properties.Encode("name", me.SharingDetails); err != nil {
+	if err := properties.Encode("sharing_details", me.SharingDetails); err != nil {
 		return err
 	}
 	if err := properties.Encode("filter", me.Filter); err != nil {

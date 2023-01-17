@@ -112,6 +112,7 @@ func (kc *KubernetesCredentials) Schema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Description: "The service account bearer token for the Kubernetes API server.  Submit your token on creation or update of the configuration. For security reasons, GET requests return this field as `null`.  If the field is omitted during an update, the old value remains unaffected.",
 			Optional:    true,
+			Sensitive:   true,
 		},
 		"certificate_check_enabled": {
 			Type:        schema.TypeBool,
@@ -169,7 +170,7 @@ func (kc *KubernetesCredentials) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Encode("label", kc.Label); err != nil {
 		return err
 	}
-	if err := properties.Encode("auth_token", kc.AuthToken); err != nil {
+	if err := properties.Encode("auth_token", "${state.secret_value}"); err != nil {
 		return err
 	}
 	if err := properties.Encode("endpoint_url", kc.EndpointURL); err != nil {

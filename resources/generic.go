@@ -190,18 +190,25 @@ func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag
 	}
 	marshalled := hcl.Properties{}
 	err = sttngs.MarshalHCL(marshalled)
-	attributes := Attributes{}
-	attributes.collect("", map[string]any(marshalled))
-	stateAttributes := NewAttributes(d.State().Attributes)
-	for key, value := range attributes {
-		if value == "${state.secret_value}" {
-			matches := stateAttributes.MatchingKeys(key)
-			siblings := attributes.Siblings(key)
-			for _, m := range matches {
-				sibs := stateAttributes.Siblings(m)
-				if sibs.Contains(siblings...) {
-					store(marshalled, key, stateAttributes[m])
-					break
+	if os.Getenv("DT_TERRAFORM_IMPORT") != "true" {
+		attributes := Attributes{}
+		attributes.collect("", map[string]any(marshalled))
+		stateAttributes := NewAttributes(d.State().Attributes)
+		for key, value := range attributes {
+			if value == "${state.secret_value}" {
+				stored := false
+				matches := stateAttributes.MatchingKeys(key)
+				siblings := attributes.Siblings(key)
+				for _, m := range matches {
+					sibs := stateAttributes.Siblings(m)
+					if sibs.Contains(siblings...) {
+						stored = true
+						store(marshalled, key, stateAttributes[m])
+						break
+					}
+				}
+				if !stored {
+					remove(marshalled, key)
 				}
 			}
 		}

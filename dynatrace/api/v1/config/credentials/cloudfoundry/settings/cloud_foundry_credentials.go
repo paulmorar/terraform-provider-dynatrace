@@ -88,7 +88,7 @@ func (me *CloudFoundryCredentials) MarshalHCL(properties hcl.Properties) error {
 	return properties.EncodeAll(map[string]any{
 		"login_url": me.LoginURL,
 		"api_url":   me.APIURL,
-		"password":  me.Password,
+		"password":  "${state.secret_value}",
 		"active":    me.Active,
 		"name":      me.Name,
 		"username":  me.Username,

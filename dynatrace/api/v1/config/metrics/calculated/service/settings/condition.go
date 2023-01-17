@@ -51,7 +51,11 @@ func (me *Condition) Schema() map[string]*schema.Schema {
 			Description: "Type-specific comparison for attributes",
 			Elem:        &schema.Resource{Schema: new(comparisoninfo.Wrapper).Schema()},
 		},
-	}
+		"unknowns": {
+			Type:        schema.TypeString,
+			Description: "allows for configuring properties that are not explicitly supported by the current version of this provider",
+			Optional:    true,
+		}}
 }
 
 func (me *Condition) MarshalHCL(properties hcl.Properties) error {

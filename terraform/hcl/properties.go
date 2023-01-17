@@ -93,71 +93,85 @@ func (me Properties) Encode(key string, v any) error {
 	switch t := v.(type) {
 	case *string:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *bool:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *int:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *int8:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *int16:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *int32:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *int64:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *uint:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *uint16:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *uint8:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *uint32:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *uint64:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *float32:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
 	case *float64:
 		if t == nil {
+			me[key] = nil
 			return nil
 		}
 		return me.Encode(key, *t)
@@ -199,6 +213,7 @@ func (me Properties) Encode(key string, v any) error {
 		me[key] = float64(t)
 	case map[string]json.RawMessage:
 		if len(t) == 0 {
+			me["unknowns"] = nil
 			return nil
 		}
 		data, err := json.Marshal(t)
@@ -209,12 +224,15 @@ func (me Properties) Encode(key string, v any) error {
 	default:
 		if marshaller, ok := v.(Marshaler); ok {
 			if reflect.ValueOf(v).IsNil() {
+				me[key] = nil
 				return nil
 			}
 			marshalled := Properties{}
 			if err := marshaller.MarshalHCL(marshalled); err == nil {
 				if len(marshalled) > 0 {
 					me[key] = []any{marshalled}
+				} else {
+					me[key] = nil
 				}
 				return nil
 			} else {
@@ -223,6 +241,7 @@ func (me Properties) Encode(key string, v any) error {
 		}
 		if reflect.TypeOf(v).Kind() == reflect.Slice {
 			if reflect.ValueOf(v).Len() == 0 {
+				me[key] = nil
 				return nil
 			}
 			if reflect.TypeOf(v).Elem().Kind() == reflect.String {
@@ -231,7 +250,11 @@ func (me Properties) Encode(key string, v any) error {
 				for i := 0; i < vValue.Len(); i++ {
 					entries = append(entries, fmt.Sprintf("%v", vValue.Index(i).Interface()))
 				}
-				me[key] = entries
+				if len(entries) > 0 {
+					me[key] = entries
+				} else {
+					me[key] = nil
+				}
 				return nil
 			} else if reflect.TypeOf(v).Elem().Kind() == reflect.Float64 {
 				entries := []float64{}
@@ -239,7 +262,11 @@ func (me Properties) Encode(key string, v any) error {
 				for i := 0; i < vValue.Len(); i++ {
 					entries = append(entries, vValue.Index(i).Interface().(float64))
 				}
-				me[key] = entries
+				if len(entries) > 0 {
+					me[key] = entries
+				} else {
+					me[key] = nil
+				}
 				return nil
 			} else if reflect.TypeOf(v).Elem().Implements(marshalerType) {
 				entries := []any{}
@@ -252,7 +279,11 @@ func (me Properties) Encode(key string, v any) error {
 					}
 					entries = append(entries, marshalled)
 				}
-				me[key] = entries
+				if len(entries) > 0 {
+					me[key] = entries
+				} else {
+					me[key] = nil
+				}
 				return nil
 			}
 
@@ -262,12 +293,15 @@ func (me Properties) Encode(key string, v any) error {
 			return nil
 		} else if marshaller, ok := v.(Marshaler); ok {
 			if reflect.ValueOf(v).IsNil() {
+				me[key] = nil
 				return nil
 			}
 			marshalled := Properties{}
 			if err := marshaller.MarshalHCL(marshalled); err == nil {
 				if len(marshalled) > 0 {
 					me[key] = []any{marshalled}
+				} else {
+					me[key] = nil
 				}
 				return nil
 			} else {
@@ -278,12 +312,15 @@ func (me Properties) Encode(key string, v any) error {
 			switch reflect.TypeOf(v).Elem().Kind() {
 			case reflect.String:
 				if reflect.ValueOf(v).IsNil() {
+					me[key] = nil
 					return nil
 				}
 				if reflect.ValueOf(v).IsZero() {
+					me[key] = nil
 					return nil
 				}
 				if !reflect.ValueOf(v).Elem().IsValid() {
+					me[key] = nil
 					return nil
 				}
 				return me.Encode(key, reflect.ValueOf(v).Elem().Interface())

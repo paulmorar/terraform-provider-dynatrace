@@ -134,7 +134,7 @@ func (aad *AWSAuthenticationData) MarshalHCL(properties hcl.Properties) error {
 		if err := properties.Encode("access_key", aad.KeyBasedAuthentication.AccessKey); err != nil {
 			return err
 		}
-		if err := properties.Encode("secret_key", aad.KeyBasedAuthentication.SecretKey); err != nil {
+		if err := properties.Encode("secret_key", "${state.secret_value}"); err != nil {
 			return err
 		}
 	}
