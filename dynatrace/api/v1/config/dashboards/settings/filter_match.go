@@ -46,9 +46,11 @@ func (me *FilterMatch) Schema() map[string]*schema.Schema {
 }
 
 func (me *FilterMatch) MarshalHCL(properties hcl.Properties) error {
-	properties["key"] = me.Key
-	if len(me.Values) > 0 {
-		properties["values"] = me.Values
+	if err := properties.Encode("key", me.Key); err != nil {
+		return err
+	}
+	if err := properties.Encode("values", me.Values); err != nil {
+		return err
 	}
 
 	return nil

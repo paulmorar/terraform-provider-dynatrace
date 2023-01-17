@@ -45,8 +45,12 @@ func (me *KeyPerformanceMetrics) Schema() map[string]*schema.Schema {
 }
 
 func (me *KeyPerformanceMetrics) MarshalHCL(properties hcl.Properties) error {
-	properties["load_action_kpm"] = string(me.LoadActionKPM)
-	properties["xhr_action_kpm"] = string(me.XHRActionKPM)
+	if err := properties.Encode("load_action_kpm", string(me.LoadActionKPM)); err != nil {
+		return err
+	}
+	if err := properties.Encode("xhr_action_kpm", string(me.XHRActionKPM)); err != nil {
+		return err
+	}
 	return nil
 }
 

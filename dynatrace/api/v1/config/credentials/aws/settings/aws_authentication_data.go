@@ -127,27 +127,27 @@ func (aad *AWSAuthenticationData) UnmarshalHCL(decoder hcl.Decoder) error {
 }
 
 func (aad *AWSAuthenticationData) MarshalHCL(properties hcl.Properties) error {
-	if len(aad.Unknowns) > 0 {
-		data, err := json.Marshal(aad.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(aad.Unknowns); err != nil {
+		return err
 	}
 	if aad.KeyBasedAuthentication != nil {
-		properties["access_key"] = aad.KeyBasedAuthentication.AccessKey
-		if aad.KeyBasedAuthentication.SecretKey != nil {
-			if len(*aad.KeyBasedAuthentication.SecretKey) > 0 {
-				properties["secret_key"] = *aad.KeyBasedAuthentication.SecretKey
-			}
+		if err := properties.Encode("access_key", aad.KeyBasedAuthentication.AccessKey); err != nil {
+			return err
+		}
+		if err := properties.Encode("secret_key", aad.KeyBasedAuthentication.SecretKey); err != nil {
+			return err
 		}
 	}
 	if aad.RoleBasedAuthentication != nil {
-		properties["account_id"] = aad.RoleBasedAuthentication.AccountID
-		if aad.RoleBasedAuthentication.ExternalID != nil {
-			properties["external_id"] = aad.RoleBasedAuthentication.ExternalID
+		if err := properties.Encode("account_id", aad.RoleBasedAuthentication.AccountID); err != nil {
+			return err
 		}
-		properties["iam_role"] = aad.RoleBasedAuthentication.IamRole
+		if err := properties.Encode("external_id", aad.RoleBasedAuthentication.ExternalID); err != nil {
+			return err
+		}
+		if err := properties.Encode("iam_role", aad.RoleBasedAuthentication.IamRole); err != nil {
+			return err
+		}
 
 	}
 	return nil

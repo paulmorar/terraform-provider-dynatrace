@@ -73,17 +73,17 @@ func (eic *EntityID) Schema() map[string]*schema.Schema {
 }
 
 func (eic *EntityID) MarshalHCL(properties hcl.Properties) error {
-	if len(eic.Unknowns) > 0 {
-		data, err := json.Marshal(eic.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(eic.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = eic.Negate
-	properties["operator"] = string(eic.Operator)
-	if eic.Value != nil {
-		properties["value"] = *eic.Value
+	if err := properties.Encode("negate", eic.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(eic.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", eic.Value); err != nil {
+		return err
 	}
 	return nil
 }

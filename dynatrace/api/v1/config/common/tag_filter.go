@@ -53,10 +53,14 @@ func (me *TagFilter) Schema() map[string]*schema.Schema {
 }
 
 func (me *TagFilter) MarshalHCL(properties hcl.Properties) error {
-	properties["context"] = string(me.Context)
-	properties["key"] = me.Key
-	if me.Value != nil {
-		properties["value"] = *me.Value
+	if err := properties.Encode("context", string(me.Context)); err != nil {
+		return err
+	}
+	if err := properties.Encode("key", me.Key); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
 	}
 	return nil
 }

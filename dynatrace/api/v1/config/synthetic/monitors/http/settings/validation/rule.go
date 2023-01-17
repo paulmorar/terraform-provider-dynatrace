@@ -53,9 +53,15 @@ func (me *Rule) Schema() map[string]*schema.Schema {
 }
 
 func (me *Rule) MarshalHCL(properties hcl.Properties) error {
-	properties["type"] = string(me.Type)
-	properties["pass_if_found"] = me.PassIfFound
-	properties["value"] = me.Value
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
+	}
+	if err := properties.Encode("pass_if_found", me.PassIfFound); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -54,18 +54,24 @@ func (me *CustomTextFilter) Schema() map[string]*schema.Schema {
 }
 
 func (me *CustomTextFilter) MarshalHCL(properties hcl.Properties) error {
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
-	properties["enabled"] = me.Enabled
-	properties["negate"] = me.Negate
-	properties["operator"] = string(me.Operator)
-	properties["value"] = me.Value
-	properties["case_insensitive"] = me.CaseInsensitive
+	if err := properties.Encode("enabled", me.Enabled); err != nil {
+		return err
+	}
+	if err := properties.Encode("negate", me.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(me.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
+	}
+	if err := properties.Encode("case_insensitive", me.CaseInsensitive); err != nil {
+		return err
+	}
 
 	return nil
 }

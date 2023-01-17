@@ -118,46 +118,46 @@ func (me *Config) Schema() map[string]*schema.Schema {
 }
 
 func (me *Config) MarshalHCL(properties hcl.Properties) error {
-	if me.TenantID != nil {
-		properties["tenantid"] = me.TenantID
+	if err := properties.Encode("tenantid", me.TenantID); err != nil {
+		return err
 	}
-	if me.ClientID != nil {
-		properties["clientid"] = me.ClientID
+	if err := properties.Encode("clientid", me.ClientID); err != nil {
+		return err
 	}
-	if me.ClientSecret != nil {
-		properties["client_secret"] = me.ClientSecret
-	}
-
-	if me.PathtoCredentials != nil {
-		properties["path_to_credentials"] = me.PathtoCredentials
-	}
-	if me.RoleID != nil {
-		properties["roleid"] = me.RoleID
-	}
-	if me.SecretID != nil {
-		properties["secretid"] = me.SecretID
-	}
-	if me.VaultNameSpace != nil {
-		properties["vault_namespace"] = me.VaultNameSpace
-	}
-	if me.Certificate != nil {
-		properties["certificate"] = me.Certificate
+	if err := properties.Encode("client_secret", me.ClientSecret); err != nil {
+		return err
 	}
 
-	if me.VaultURL != nil {
-		properties["vault_url"] = me.VaultURL
+	if err := properties.Encode("path_to_credentials", me.PathtoCredentials); err != nil {
+		return err
 	}
-	if me.UsernameSecretName != nil {
-		properties["username_secret_name"] = me.UsernameSecretName
+	if err := properties.Encode("roleid", me.RoleID); err != nil {
+		return err
 	}
-	if me.PasswordSecretName != nil {
-		properties["password_secret_name"] = me.PasswordSecretName
+	if err := properties.Encode("secretid", me.SecretID); err != nil {
+		return err
 	}
-	if me.TokenSecretName != nil {
-		properties["token_secret_name"] = me.TokenSecretName
+	if err := properties.Encode("vault_namespace", me.VaultNameSpace); err != nil {
+		return err
 	}
-	if len(me.CredentialsUsedForExternalSynchronization) > 0 {
-		properties["credentials_used_for_external_synchronization"] = me.CredentialsUsedForExternalSynchronization
+	if err := properties.Encode("certificate", me.Certificate); err != nil {
+		return err
+	}
+
+	if err := properties.Encode("vault_url", me.VaultURL); err != nil {
+		return err
+	}
+	if err := properties.Encode("username_secret_name", me.UsernameSecretName); err != nil {
+		return err
+	}
+	if err := properties.Encode("password_secret_name", me.PasswordSecretName); err != nil {
+		return err
+	}
+	if err := properties.Encode("token_secret_name", me.TokenSecretName); err != nil {
+		return err
+	}
+	if err := properties.Encode("credentials_used_for_external_synchronization", me.CredentialsUsedForExternalSynchronization); err != nil {
+		return err
 	}
 
 	return nil

@@ -85,12 +85,8 @@ func (me *Profile) EnsurePredictableOrder() {
 }
 
 func (me *Profile) MarshalHCL(properties hcl.Properties) error {
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 
 	me.EnsurePredictableOrder()
@@ -295,13 +291,15 @@ func (me *ConfigMetadata) Schema() map[string]*schema.Schema {
 
 func (me *ConfigMetadata) MarshalHCL(properties hcl.Properties) error {
 	if me.ClusterVersion != nil && len(*me.ClusterVersion) > 0 {
-		properties["cluster_version"] = *me.ClusterVersion
+		if err := properties.Encode("cluster_version", me.ClusterVersion); err != nil {
+			return err
+		}
 	}
-	if len(me.ConfigurationVersions) > 0 {
-		properties["configuration_versions"] = me.ConfigurationVersions
+	if err := properties.Encode("configuration_versions", me.ConfigurationVersions); err != nil {
+		return err
 	}
-	if len(me.CurrentConfigurationVersions) > 0 {
-		properties["current_configuration_versions"] = me.CurrentConfigurationVersions
+	if err := properties.Encode("current_configuration_versions", me.CurrentConfigurationVersions); err != nil {
+		return err
 	}
 	return nil
 }

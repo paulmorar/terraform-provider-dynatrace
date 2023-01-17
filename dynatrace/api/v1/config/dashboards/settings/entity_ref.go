@@ -64,12 +64,14 @@ func (me *EntityRef) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["id"] = me.ID
-	if me.Name != nil {
-		properties["name"] = opt.String(me.Name)
+	if err := properties.Encode("id", me.ID); err != nil {
+		return err
 	}
-	if me.Description != nil {
-		properties["description"] = opt.String(me.Description)
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("description", me.Description); err != nil {
+		return err
 	}
 	return nil
 }

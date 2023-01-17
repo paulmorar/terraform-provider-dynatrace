@@ -70,17 +70,17 @@ func (ddc *DCRumDecoder) Schema() map[string]*schema.Schema {
 }
 
 func (ddc *DCRumDecoder) MarshalHCL(properties hcl.Properties) error {
-	if len(ddc.Unknowns) > 0 {
-		data, err := json.Marshal(ddc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(ddc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = ddc.Negate
-	properties["operator"] = string(ddc.Operator)
-	if ddc.Value != nil {
-		properties["value"] = ddc.Value.String()
+	if err := properties.Encode("negate", ddc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(ddc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", ddc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

@@ -19,7 +19,6 @@ package maintenance
 
 import (
 	"encoding/json"
-	"sort"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
@@ -57,7 +56,7 @@ func (me *Filter) Schema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"tags": {
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Optional:    true,
 			MinItems:    1,
 			Description: "The tag you want to use for matching.  You can use custom tags from the UI, AWS tags, Cloud Foundry tags, OpenShift/Kubernetes, and tags based on environment variables",
@@ -81,56 +80,21 @@ func (me *Filter) MarshalHCL(properties hcl.Properties) error {
 			json.Unmarshal(dmgmzid, &me.MzID)
 		}
 		delete(me.Unknowns, "managementZoneId")
-		properties["unknowns"] = string(data)
-	}
-	if me.Type != nil {
-		properties["type"] = string(*me.Type)
-	}
-	if me.MzID != nil {
-		properties["mz_id"] = *me.MzID
-	}
-	if me.TagCombination != nil {
-		properties["tag_combination"] = string(*me.TagCombination)
-	}
-	if len(me.Tags) > 0 {
-		entries := []any{}
-		for _, entry := range sortTags(me.Tags) {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
+		if err := properties.Encode("unknowns", string(data)); err != nil {
+			return err
 		}
-		properties["tags"] = entries
 	}
-	return nil
-}
-
-func sortTags(tags []*TagInfo) []*TagInfo {
-	if tags == nil {
-		return nil
+	if err := properties.Encode("type", me.Type); err != nil {
+		return err
 	}
-	if len(tags) == 0 {
-		return tags
+	if err := properties.Encode("mz_id", me.MzID); err != nil {
+		return err
 	}
-	result := []*TagInfo{}
-	keys := []string{}
-	for _, tag := range tags {
-		keys = append(keys, tag.Key)
+	if err := properties.Encode("tag_combination", me.TagCombination); err != nil {
+		return err
 	}
-	sort.Strings(keys)
-	for _, key := range keys {
-		result = append(result, getTag(key, tags))
-	}
-	return result
-}
-
-func getTag(key string, tags []*TagInfo) *TagInfo {
-	for _, tag := range tags {
-		if tag.Key == key {
-			return tag
-		}
+	if err := properties.Encode("tags", me.Tags); err != nil {
+		return err
 	}
 	return nil
 }
@@ -160,15 +124,8 @@ func (me *Filter) UnmarshalHCL(decoder hcl.Decoder) error {
 	if value, ok := decoder.GetOk("tag_combination"); ok {
 		me.TagCombination = TagCombination(value.(string)).Ref()
 	}
-	if result, ok := decoder.GetOk("tags.#"); ok {
-		me.Tags = []*TagInfo{}
-		for idx := 0; idx < result.(int); idx++ {
-			entry := new(TagInfo)
-			if err := entry.UnmarshalHCL(hcl.NewDecoder(decoder, "tags", idx)); err != nil {
-				return err
-			}
-			me.Tags = append(me.Tags, entry)
-		}
+	if err := decoder.Decode("tags", &me.Tags); err != nil {
+		return err
 	}
 	return nil
 }

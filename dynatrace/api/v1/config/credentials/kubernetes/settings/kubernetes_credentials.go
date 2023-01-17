@@ -137,40 +137,46 @@ func (kc *KubernetesCredentials) MarshalHCL(properties hcl.Properties) error {
 		}
 		delete(kc.Unknowns, "id")
 		delete(kc.Unknowns, "metadata")
-		if len(kc.Unknowns) > 0 {
-			data, err := json.Marshal(kc.Unknowns)
-			if err != nil {
-				return err
-			}
-			properties["unknowns"] = string(data)
+		if err := properties.Unknowns(kc.Unknowns); err != nil {
+			return err
 		}
 	}
-	properties["active"] = kc.Active
-	properties["hostname_verification"] = opt.Bool(kc.HostnameVerificationEnabled)
-	properties["prometheus_exporters"] = opt.Bool(kc.PrometheusExportersIntegrationEnabled)
-	properties["workload_integration_enabled"] = opt.Bool(kc.WorkloadIntegrationEnabled)
-	properties["certificate_check_enabled"] = opt.Bool(kc.CertificateCheckEnabled)
-	properties["events_integration_enabled"] = opt.Bool(kc.EventsIntegrationEnabled)
-	properties["davis_events_integration_enabled"] = opt.Bool(kc.DavisEventsIntegrationEnabled)
-	properties["event_analysis_and_alerting_enabled"] = opt.Bool(kc.EventAnalysisAndAlertingEnabled)
-
-	properties["label"] = kc.Label
-	if kc.AuthToken != nil {
-		properties["auth_token"] = *kc.AuthToken
+	if err := properties.Encode("active", kc.Active); err != nil {
+		return err
 	}
-	properties["endpoint_url"] = kc.EndpointURL
-	if kc.EventsFieldSelectors != nil {
-		entries := []any{}
-		for _, eventPattern := range kc.EventsFieldSelectors {
-			marshalled := hcl.Properties{}
+	if err := properties.Encode("hostname_verification", opt.Bool(kc.HostnameVerificationEnabled)); err != nil {
+		return err
+	}
+	if err := properties.Encode("prometheus_exporters", opt.Bool(kc.PrometheusExportersIntegrationEnabled)); err != nil {
+		return err
+	}
+	if err := properties.Encode("workload_integration_enabled", opt.Bool(kc.WorkloadIntegrationEnabled)); err != nil {
+		return err
+	}
+	if err := properties.Encode("certificate_check_enabled", opt.Bool(kc.CertificateCheckEnabled)); err != nil {
+		return err
+	}
+	if err := properties.Encode("events_integration_enabled", opt.Bool(kc.EventsIntegrationEnabled)); err != nil {
+		return err
+	}
+	if err := properties.Encode("davis_events_integration_enabled", opt.Bool(kc.DavisEventsIntegrationEnabled)); err != nil {
+		return err
+	}
+	if err := properties.Encode("event_analysis_and_alerting_enabled", opt.Bool(kc.EventAnalysisAndAlertingEnabled)); err != nil {
+		return err
+	}
 
-			if err := eventPattern.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["events_field_selectors"] = entries
+	if err := properties.Encode("label", kc.Label); err != nil {
+		return err
+	}
+	if err := properties.Encode("auth_token", kc.AuthToken); err != nil {
+		return err
+	}
+	if err := properties.Encode("endpoint_url", kc.EndpointURL); err != nil {
+		return err
+	}
+	if err := properties.Encode("events_field_selectors", kc.EventsFieldSelectors); err != nil {
+		return err
 	}
 	return nil
 }

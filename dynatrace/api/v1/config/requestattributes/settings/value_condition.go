@@ -80,9 +80,15 @@ func (me *ValueCondition) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["negate"] = me.Negate
-	properties["operator"] = string(me.Operator)
-	properties["value"] = me.Value
+	if err := properties.Encode("negate", me.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(me.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
+	}
 	return nil
 }
 

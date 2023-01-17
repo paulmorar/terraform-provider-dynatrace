@@ -75,22 +75,17 @@ func (itc *IndexedTag) Schema() map[string]*schema.Schema {
 }
 
 func (itc *IndexedTag) MarshalHCL(properties hcl.Properties) error {
-	if len(itc.Unknowns) > 0 {
-		data, err := json.Marshal(itc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(itc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = itc.Negate
-	properties["operator"] = string(itc.Operator)
-	if itc.Value != nil {
-		marshalled := hcl.Properties{}
-		if err := itc.Value.MarshalHCL(marshalled); err == nil {
-			properties["value"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("negate", itc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(itc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", itc.Value); err != nil {
+		return err
 	}
 	return nil
 }

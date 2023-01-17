@@ -70,13 +70,17 @@ func (me *EntitySelectorBasedRule) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["selector"] = me.Selector
-	properties["enabled"] = opt.Bool(me.Enabled)
-	if me.ValueFormat != nil {
-		properties["value_format"] = *me.ValueFormat
+	if err := properties.Encode("selector", me.Selector); err != nil {
+		return err
 	}
-	if me.Normalization != nil {
-		properties["normalization"] = *me.Normalization
+	if err := properties.Encode("enabled", opt.Bool(me.Enabled)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value_format", me.ValueFormat); err != nil {
+		return err
+	}
+	if err := properties.Encode("normalization", me.Normalization); err != nil {
+		return err
 	}
 	return nil
 }

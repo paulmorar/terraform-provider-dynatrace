@@ -106,8 +106,8 @@ func (me *Header) Schema() map[string]*schema.Schema {
 		"secret_value": {
 			Type:        schema.TypeString,
 			Description: "The value of the HTTP header as a sensitive property. May contain an empty value. `secret_value` and `value` are mutually exclusive. Only one of those two is allowed to be specified.",
-			// Sensitive:   true,
-			Optional: true,
+			Sensitive:   true,
+			Optional:    true,
 		},
 		"value": {
 			Type:        schema.TypeString,
@@ -118,13 +118,15 @@ func (me *Header) Schema() map[string]*schema.Schema {
 }
 
 func (me *Header) MarshalHCL(properties hcl.Properties) error {
-	properties["name"] = me.Name
-	if me.Value != nil {
-		properties["value"] = me.Value
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
 	}
 	if me.Secret {
-		if me.SecretValue != nil {
-			properties["secret_value"] = "${state.secret_value}"
+		if err := properties.Encode("secret_value", "${state.secret_value}"); err != nil {
+			return err
 		}
 	}
 

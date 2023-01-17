@@ -46,16 +46,11 @@ func (me *Target) Schema() map[string]*schema.Schema {
 }
 
 func (me *Target) MarshalHCL(properties hcl.Properties) error {
-	if me.Window != nil {
-		properties["window"] = string(*me.Window)
+	if err := properties.Encode("window", me.Window); err != nil {
+		return err
 	}
-	if len(me.Locators) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Locators.MarshalHCL(marshalled); err == nil {
-			properties["locators"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("locators", me.Locators); err != nil {
+		return err
 	}
 	return nil
 }

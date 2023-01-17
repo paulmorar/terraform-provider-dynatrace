@@ -596,240 +596,140 @@ func (erec *Condition) Schema() map[string]*schema.Schema {
 }
 
 func (erec *Condition) MarshalHCL(properties hcl.Properties) error {
-	if len(erec.Unknowns) > 0 {
-		data, err := json.Marshal(erec.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(erec.Unknowns); err != nil {
+		return err
 	}
 
 	switch comparison := erec.ComparisonInfo.(type) {
 	case *comparison.CustomApplicationType:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["custom_application_type"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("custom_application_type", comparison); err != nil {
 			return err
 		}
 	case *comparison.MobilePlatform:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["mobile_platform"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("mobile_platform", comparison); err != nil {
 			return err
 		}
 	case *comparison.ApplicationType:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["application_type"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("application_type", comparison); err != nil {
 			return err
 		}
 	case *comparison.Bitness:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["bitness"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("bitness", comparison); err != nil {
 			return err
 		}
 	case *comparison.PaasType:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["paas_type"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("paas_type", comparison); err != nil {
 			return err
 		}
 	case *comparison.OSArchitecture:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["os_arch"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("os_arch", comparison); err != nil {
 			return err
 		}
 	case *comparison.ServiceTopology:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["service_topology"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("service_topology", comparison); err != nil {
 			return err
 		}
 	case *comparison.String:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["string"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("string", comparison); err != nil {
 			return err
 		}
 	case *comparison.DatabaseTopology:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["database_topology"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("database_topology", comparison); err != nil {
 			return err
 		}
 	case *comparison.DCRumDecoder:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["dcrum_decoder"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("dcrum_decoder", comparison); err != nil {
 			return err
 		}
 	case *comparison.IndexedTag:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["indexed_tag"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("indexed_tag", comparison); err != nil {
 			return err
 		}
 	case *comparison.Tag:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["tag"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("tag", comparison); err != nil {
 			return err
 		}
 	case *comparison.HypervisorType:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["hypervisor"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("hypervisor", comparison); err != nil {
 			return err
 		}
 	case *comparison.CloudType:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["cloud_type"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("cloud_type", comparison); err != nil {
 			return err
 		}
 	case *comparison.IndexedName:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["indexed_name"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("indexed_name", comparison); err != nil {
 			return err
 		}
 	case *comparison.IndexedString:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["indexed_string"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("indexed_string", comparison); err != nil {
 			return err
 		}
 	case *comparison.SimpleTech:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["tech"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("tech", comparison); err != nil {
 			return err
 		}
 	case *comparison.AzureSku:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["azure_sku"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("azure_sku", comparison); err != nil {
 			return err
 		}
 	case *comparison.EntityID:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["entity"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("entity", comparison); err != nil {
 			return err
 		}
 	case *comparison.SimpleHostTech:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["host_tech"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("host_tech", comparison); err != nil {
 			return err
 		}
 	case *comparison.Integer:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["integer"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("integer", comparison); err != nil {
 			return err
 		}
 	case *comparison.ServiceType:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["service_type"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("service_type", comparison); err != nil {
 			return err
 		}
 	case *comparison.OSType:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["os_type"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("os_type", comparison); err != nil {
 			return err
 		}
 	case *comparison.SyntheticEngineType:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["synthetic_engine"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("synthetic_engine", comparison); err != nil {
 			return err
 		}
 	case *comparison.IPAddress:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["ipaddress"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("ipaddress", comparison); err != nil {
 			return err
 		}
 	case *comparison.AzureComputeMode:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["azure_compute_mode"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("azure_compute_mode", comparison); err != nil {
 			return err
 		}
 	default:
-		marshalled := hcl.Properties{}
-		if err := comparison.MarshalHCL(marshalled); err == nil {
-			properties["comparison"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("comparison", comparison); err != nil {
 			return err
 		}
 	}
 
 	switch key := erec.Key.(type) {
 	case *condition.CustomHostMetadata:
-		marshalled := hcl.Properties{}
-		if err := key.MarshalHCL(marshalled); err == nil {
-			properties["custom_host_metadata"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("custom_host_metadata", key); err != nil {
 			return err
 		}
 	case *condition.String:
-		marshalled := hcl.Properties{}
-		if err := key.MarshalHCL(marshalled); err == nil {
-			properties["string_key"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("string_key", key); err != nil {
 			return err
 		}
 	case *condition.CustomProcessMetadata:
-		marshalled := hcl.Properties{}
-		if err := key.MarshalHCL(marshalled); err == nil {
-			properties["custom_process_metadata"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("custom_process_metadata", key); err != nil {
 			return err
 		}
 	case *condition.ProcessMetadata:
-		marshalled := hcl.Properties{}
-		if err := key.MarshalHCL(marshalled); err == nil {
-			properties["process_metadata"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("process_metadata", key); err != nil {
 			return err
 		}
 	default:
-		marshalled := hcl.Properties{}
-		if err := key.MarshalHCL(marshalled); err == nil {
-			properties["key"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("key", key); err != nil {
 			return err
 		}
 	}

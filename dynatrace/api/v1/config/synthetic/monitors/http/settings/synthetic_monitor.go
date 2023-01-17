@@ -123,38 +123,29 @@ func (me *SyntheticMonitor) Schema() map[string]*schema.Schema {
 }
 
 func (me *SyntheticMonitor) MarshalHCL(properties hcl.Properties) error {
-	properties["name"] = me.Name
-	properties["frequency"] = me.FrequencyMin
-	if len(me.Locations) > 0 {
-		properties["locations"] = me.Locations
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	properties["enabled"] = me.Enabled
-	if len(me.ManuallyAssignedApps) > 0 {
-		properties["manually_assigned_apps"] = me.ManuallyAssignedApps
+	if err := properties.Encode("frequency", me.FrequencyMin); err != nil {
+		return err
 	}
-	if len(me.Tags) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Tags.MarshalHCL(marshalled); err == nil {
-			properties["tags"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("locations", me.Locations); err != nil {
+		return err
 	}
-	if me.AnomalyDetection != nil {
-		marshalled := hcl.Properties{}
-		if err := me.AnomalyDetection.MarshalHCL(marshalled); err == nil {
-			properties["anomaly_detection"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("enabled", me.Enabled); err != nil {
+		return err
 	}
-	if me.Script != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Script.MarshalHCL(marshalled); err == nil {
-			properties["script"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("manually_assigned_apps", me.ManuallyAssignedApps); err != nil {
+		return err
+	}
+	if err := properties.Encode("tags", me.Tags); err != nil {
+		return err
+	}
+	if err := properties.Encode("anomaly_detection", me.AnomalyDetection); err != nil {
+		return err
+	}
+	if err := properties.Encode("script", me.Script); err != nil {
+		return err
 	}
 	return nil
 }

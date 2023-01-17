@@ -177,35 +177,35 @@ func (me AlertingScopes) MarshalHCL(properties hcl.Properties) error {
 			}
 		default:
 		}
-		if len(customDeviceGroupNames) > 0 {
-			properties["custom_device_group_name"] = customDeviceGroupNames
+		if err := properties.Encode("custom_device_group_name", customDeviceGroupNames); err != nil {
+			return err
 		}
-		if len(entityIDs) > 0 {
-			properties["entity"] = entityIDs
+		if err := properties.Encode("entity", entityIDs); err != nil {
+			return err
 		}
-		if len(hostGroupNames) > 0 {
-			properties["host_group_name"] = hostGroupNames
+		if err := properties.Encode("host_group_name", hostGroupNames); err != nil {
+			return err
 		}
-		if len(hostNames) > 0 {
-			properties["host_name"] = hostNames
+		if err := properties.Encode("host_name", hostNames); err != nil {
+			return err
 		}
-		if len(managementZones) > 0 {
-			properties["management_zone"] = managementZones
+		if err := properties.Encode("management_zone", managementZones); err != nil {
+			return err
 		}
-		if len(names) > 0 {
-			properties["name"] = names
+		if err := properties.Encode("name", names); err != nil {
+			return err
 		}
-		if len(processGroupIDs) > 0 {
-			properties["process_group_id"] = processGroupIDs
+		if err := properties.Encode("process_group_id", processGroupIDs); err != nil {
+			return err
 		}
-		if len(processGroupNames) > 0 {
-			properties["process_group_name"] = processGroupNames
+		if err := properties.Encode("process_group_name", processGroupNames); err != nil {
+			return err
 		}
-		if len(tags) > 0 {
-			properties["tag"] = tags
+		if err := properties.Encode("tag", tags); err != nil {
+			return err
 		}
-		if len(scopes) > 0 {
-			properties["scope"] = scopes
+		if err := properties.Encode("scope", scopes); err != nil {
+			return err
 		}
 	}
 	return nil

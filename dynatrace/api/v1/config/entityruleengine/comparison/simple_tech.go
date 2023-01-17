@@ -74,22 +74,17 @@ func (stc *SimpleTech) Schema() map[string]*schema.Schema {
 }
 
 func (stc *SimpleTech) MarshalHCL(properties hcl.Properties) error {
-	if len(stc.Unknowns) > 0 {
-		data, err := json.Marshal(stc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(stc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = stc.Negate
-	properties["operator"] = string(stc.Operator)
-	if stc.Value != nil {
-		marshalled := hcl.Properties{}
-		if err := stc.Value.MarshalHCL(marshalled); err == nil {
-			properties["value"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("negate", stc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(stc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", stc.Value); err != nil {
+		return err
 	}
 	return nil
 }

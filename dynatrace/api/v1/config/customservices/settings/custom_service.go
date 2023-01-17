@@ -100,32 +100,29 @@ func (me *CustomService) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
 	// if me.Order != nil {
-	// 	properties["order"] = *me.Order
+	// 	if err := properties.Encode("order", me.Order); err != nil { return err }
 	// }
-	properties["technology"] = string(me.Technology)
-	properties["enabled"] = me.Enabled
-	if len(me.Rules) > 0 {
-		entries := []any{}
-		for _, entry := range me.Rules {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["rule"] = entries
+	if err := properties.Encode("technology", string(me.Technology)); err != nil {
+		return err
 	}
-	if me.QueueEntryPoint != nil {
-		properties["queue_entry_point"] = opt.Bool(me.QueueEntryPoint)
+	if err := properties.Encode("enabled", me.Enabled); err != nil {
+		return err
 	}
-	if me.QueueEntryPointType != nil {
-		properties["queue_entry_point_type"] = string(*me.QueueEntryPointType)
+	if err := properties.Encode("rule", me.Rules); err != nil {
+		return err
 	}
-	if me.ProcessGroups != nil {
-		properties["process_groups"] = me.ProcessGroups
+	if err := properties.Encode("queue_entry_point", opt.Bool(me.QueueEntryPoint)); err != nil {
+		return err
+	}
+	if err := properties.Encode("queue_entry_point_type", me.QueueEntryPointType); err != nil {
+		return err
+	}
+	if err := properties.Encode("process_groups", me.ProcessGroups); err != nil {
+		return err
 	}
 	return nil
 }

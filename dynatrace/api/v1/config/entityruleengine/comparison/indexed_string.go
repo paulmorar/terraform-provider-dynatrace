@@ -72,17 +72,17 @@ func (isc *IndexedString) Schema() map[string]*schema.Schema {
 }
 
 func (isc *IndexedString) MarshalHCL(properties hcl.Properties) error {
-	if len(isc.Unknowns) > 0 {
-		data, err := json.Marshal(isc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(isc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = isc.Negate
-	properties["operator"] = string(isc.Operator)
-	if isc.Value != nil {
-		properties["value"] = *isc.Value
+	if err := properties.Encode("negate", isc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(isc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", isc.Value); err != nil {
+		return err
 	}
 	return nil
 }

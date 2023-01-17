@@ -92,34 +92,21 @@ func (mzr *Rule) SortConditions() {
 }
 
 func (mzr *Rule) MarshalHCL(properties hcl.Properties) error {
-	if len(mzr.Unknowns) > 0 {
-		data, err := json.Marshal(mzr.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(mzr.Unknowns); err != nil {
+		return err
 	}
-	properties["enabled"] = mzr.Enabled
-	properties["type"] = string(mzr.Type)
-	if len(mzr.PropagationTypes) > 0 {
-		entries := []any{}
-		for _, entry := range mzr.PropagationTypes {
-			entries = append(entries, string(entry))
-		}
-		properties["propagation_types"] = entries
+	mzr.SortConditions()
+	if err := properties.Encode("enabled", mzr.Enabled); err != nil {
+		return err
 	}
-	if len(mzr.Conditions) > 0 {
-		mzr.SortConditions()
-		entries := []any{}
-		for _, entry := range mzr.Conditions {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["conditions"] = entries
+	if err := properties.Encode("type", string(mzr.Type)); err != nil {
+		return err
+	}
+	if err := properties.Encode("propagation_types", mzr.PropagationTypes); err != nil {
+		return err
+	}
+	if err := properties.Encode("conditions", mzr.Conditions); err != nil {
+		return err
 	}
 	return nil
 }

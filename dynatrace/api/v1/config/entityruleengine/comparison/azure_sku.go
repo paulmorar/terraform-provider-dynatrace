@@ -70,17 +70,17 @@ func (asc *AzureSku) Schema() map[string]*schema.Schema {
 }
 
 func (asc *AzureSku) MarshalHCL(properties hcl.Properties) error {
-	if len(asc.Unknowns) > 0 {
-		data, err := json.Marshal(asc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(asc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = asc.Negate
-	properties["operator"] = string(asc.Operator)
-	if asc.Value != nil {
-		properties["value"] = asc.Value.String()
+	if err := properties.Encode("negate", asc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(asc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", asc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

@@ -103,19 +103,15 @@ func (ct *CloudTag) UnmarshalJSON(data []byte) error {
 }
 
 func (ct *CloudTag) MarshalHCL(properties hcl.Properties) error {
-	if len(ct.Unknowns) > 0 {
-		data, err := json.Marshal(ct.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(ct.Unknowns); err != nil {
+		return err
 	}
 
-	if ct.Value != nil {
-		properties["value"] = *ct.Value
+	if err := properties.Encode("value", ct.Value); err != nil {
+		return err
 	}
-	if ct.Name != nil {
-		properties["name"] = *ct.Name
+	if err := properties.Encode("name", ct.Name); err != nil {
+		return err
 	}
 	return nil
 }

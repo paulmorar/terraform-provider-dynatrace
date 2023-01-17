@@ -100,12 +100,14 @@ func (me *Profile) EnsurePredictableOrder() {
 
 // MarshalHCL produces HCL structures for Terraform
 func (me *Profile) MarshalHCL(properties hcl.Properties) error {
-	properties["name"] = me.Name
-	if me.ManagementZone != nil {
-		properties["management_zone"] = me.ManagementZone
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if me.LegacyID != nil {
-		properties["legacy_id"] = *me.LegacyID
+	if err := properties.Encode("management_zone", me.ManagementZone); err != nil {
+		return err
+	}
+	if err := properties.Encode("legacy_id", me.LegacyID); err != nil {
+		return err
 	}
 	if len(me.SeverityRules) > 0 {
 		me.EnsurePredictableOrder()

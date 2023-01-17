@@ -104,29 +104,32 @@ func (me *CustomFilterChartSeriesConfig) MarshalHCL(properties hcl.Properties) e
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["metric"] = me.Metric
-	properties["aggregation"] = string(me.Aggregation)
-	if me.Percentile != nil {
-		properties["percentile"] = int(opt.Int64(me.Percentile))
+	if err := properties.Encode("metric", me.Metric); err != nil {
+		return err
 	}
-	properties["type"] = string(me.Type)
-	properties["entity_type"] = me.EntityType
-	properties["sort_ascending"] = me.SortAscending
-	properties["sort_column"] = me.SortColumn
-	if me.AggregationRate != nil {
-		properties["aggregation_rate"] = string(*me.AggregationRate)
+	if err := properties.Encode("aggregation", string(me.Aggregation)); err != nil {
+		return err
 	}
-	if len(me.Dimensions) > 0 {
-		entries := []any{}
-		for _, entry := range me.Dimensions {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["dimension"] = entries
+	if err := properties.Encode("percentile", int(opt.Int64(me.Percentile))); err != nil {
+		return err
+	}
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
+	}
+	if err := properties.Encode("entity_type", me.EntityType); err != nil {
+		return err
+	}
+	if err := properties.Encode("sort_ascending", me.SortAscending); err != nil {
+		return err
+	}
+	if err := properties.Encode("sort_column", me.SortColumn); err != nil {
+		return err
+	}
+	if err := properties.Encode("aggregation_rate", me.AggregationRate); err != nil {
+		return err
+	}
+	if err := properties.Encode("dimension", me.Dimensions); err != nil {
+		return err
 	}
 	return nil
 }

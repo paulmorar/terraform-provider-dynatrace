@@ -97,21 +97,14 @@ func (me *CustomFilterChartConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.LegendShown != nil {
-		properties["legend"] = opt.Bool(me.LegendShown)
+	if err := properties.Encode("legend", opt.Bool(me.LegendShown)); err != nil {
+		return err
 	}
-	properties["type"] = string(me.Type)
-	if len(me.Series) > 0 {
-		entries := []any{}
-		for _, entry := range me.Series {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["series"] = entries
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
+	}
+	if err := properties.Encode("series", me.Series); err != nil {
+		return err
 	}
 	if len(me.ResultMetadata) > 0 {
 		resultMetadata := &ResultMetadata{Entries: []*ResultMetadataEntry{}}
@@ -122,10 +115,7 @@ func (me *CustomFilterChartConfig) MarshalHCL(properties hcl.Properties) error {
 			}
 			resultMetadata.Entries = append(resultMetadata.Entries, entry)
 		}
-		marshalled := hcl.Properties{}
-		if err := resultMetadata.MarshalHCL(marshalled); err == nil {
-			properties["result_metadata"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("result_metadata", resultMetadata); err != nil {
 			return err
 		}
 	}
@@ -134,13 +124,15 @@ func (me *CustomFilterChartConfig) MarshalHCL(properties hcl.Properties) error {
 		if err != nil {
 			return err
 		}
-		properties["axis_limits"] = string(data)
+		if err := properties.Encode("axis_limits", string(data)); err != nil {
+			return err
+		}
 	}
-	if me.LeftAxisCustomUnit != nil {
-		properties["left_axis_custom_unit"] = string(*me.LeftAxisCustomUnit)
+	if err := properties.Encode("left_axis_custom_unit", me.LeftAxisCustomUnit); err != nil {
+		return err
 	}
-	if me.RightAxisCustomUnit != nil {
-		properties["right_axis_custom_unit"] = string(*me.RightAxisCustomUnit)
+	if err := properties.Encode("right_axis_custom_unit", me.RightAxisCustomUnit); err != nil {
+		return err
 	}
 	return nil
 }

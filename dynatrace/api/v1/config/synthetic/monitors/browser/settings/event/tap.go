@@ -67,30 +67,17 @@ func (me *Tap) Schema() map[string]*schema.Schema {
 }
 
 func (me *Tap) MarshalHCL(properties hcl.Properties) error {
-	properties["button"] = me.Button
-	if me.Wait != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Wait.MarshalHCL(marshalled); err == nil {
-			properties["wait"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("button", me.Button); err != nil {
+		return err
 	}
-	if len(me.Validate) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Validate.MarshalHCL(marshalled); err == nil {
-			properties["validate"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("wait", me.Wait); err != nil {
+		return err
 	}
-	if me.Target != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Target.MarshalHCL(marshalled); err == nil {
-			properties["target"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("validate", me.Validate); err != nil {
+		return err
+	}
+	if err := properties.Encode("target", me.Target); err != nil {
+		return err
 	}
 	return nil
 }

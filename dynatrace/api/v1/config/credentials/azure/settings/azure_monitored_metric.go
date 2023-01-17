@@ -105,20 +105,20 @@ func (amm *AzureMonitoredMetric) MarshalJSON() ([]byte, error) {
 }
 
 func (amm *AzureMonitoredMetric) MarshalHCL(properties hcl.Properties) error {
-	if len(amm.Unknowns) > 0 {
-		data, err := json.Marshal(amm.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(amm.Unknowns); err != nil {
+		return err
 	}
-	properties["name"] = *amm.Name
+	if err := properties.Encode("name", amm.Name); err != nil {
+		return err
+	}
 	if amm.Dimensions != nil {
 		entries := []any{}
 		for _, dimension := range amm.Dimensions {
 			entries = append(entries, dimension)
 		}
-		properties["dimensions"] = entries
+		if err := properties.Encode("dimensions", entries); err != nil {
+			return err
+		}
 	}
 	return nil
 }

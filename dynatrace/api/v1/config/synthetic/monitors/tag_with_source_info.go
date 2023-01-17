@@ -18,8 +18,6 @@
 package monitors
 
 import (
-	"sort"
-
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -30,46 +28,20 @@ type TagsWithSourceInfo []*TagWithSourceInfo
 func (me *TagsWithSourceInfo) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"tag": {
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Description: "Tag with source of a Dynatrace entity.",
 			Optional:    true,
-			Elem: &schema.Resource{
-				Schema: new(TagWithSourceInfo).Schema(),
-			},
+			Elem:        &schema.Resource{Schema: new(TagWithSourceInfo).Schema()},
 		},
 	}
 }
 
 func (me TagsWithSourceInfo) MarshalHCL(properties hcl.Properties) error {
-	entries := []any{}
-	sorted := TagsWithSourceInfo{}
-	sorted = append(sorted, me...)
-	sort.Slice(sorted, func(i, j int) bool {
-		return sorted[i].Key < sorted[j].Key
-	})
-	for _, tag := range sorted {
-		marshalled := hcl.Properties{}
-		if err := tag.MarshalHCL(marshalled); err == nil {
-			entries = append(entries, marshalled)
-		} else {
-			return err
-		}
-	}
-	properties["tag"] = entries
-	return nil
+	return properties.EncodeSlice("tag", me)
 }
 
 func (me *TagsWithSourceInfo) UnmarshalHCL(decoder hcl.Decoder) error {
-	if result, ok := decoder.GetOk("tag.#"); ok {
-		for idx := 0; idx < result.(int); idx++ {
-			entry := new(TagWithSourceInfo)
-			if err := entry.UnmarshalHCL(hcl.NewDecoder(decoder, "tag", idx)); err != nil {
-				return err
-			}
-			*me = append(*me, entry)
-		}
-	}
-	return nil
+	return decoder.DecodeSlice("tag", me)
 }
 
 // Tag with source of a Dynatrace entity
@@ -106,13 +78,17 @@ func (me *TagWithSourceInfo) Schema() map[string]*schema.Schema {
 }
 
 func (me TagWithSourceInfo) MarshalHCL(properties hcl.Properties) error {
-	if me.Source != nil {
-		properties["source"] = string(*me.Source)
+	if err := properties.Encode("source", me.Source); err != nil {
+		return err
 	}
-	properties["context"] = string(me.Context)
-	properties["key"] = me.Key
-	if me.Value != nil {
-		properties["value"] = *me.Value
+	if err := properties.Encode("context", string(me.Context)); err != nil {
+		return err
+	}
+	if err := properties.Encode("key", me.Key); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
 	}
 	return nil
 }

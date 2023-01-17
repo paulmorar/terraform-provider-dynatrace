@@ -150,74 +150,46 @@ func (me *DataSource) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.CapturingAndStorageLocation != nil {
-		properties["capturing_and_storage_location"] = string(*me.CapturingAndStorageLocation)
+	if err := properties.Encode("capturing_and_storage_location", me.CapturingAndStorageLocation); err != nil {
+		return err
 	}
-	if me.Scope != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Scope.MarshalHCL(marshalled); err == nil {
-			properties["scope"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("scope", me.Scope); err != nil {
+		return err
 	}
-	if me.ParameterName != nil {
-		properties["parameter_name"] = string(*me.ParameterName)
+	if err := properties.Encode("parameter_name", me.ParameterName); err != nil {
+		return err
 	}
-	if me.IIBMethodNodeCondition != nil {
-		marshalled := hcl.Properties{}
-		if err := me.IIBMethodNodeCondition.MarshalHCL(marshalled); err == nil {
-			properties["iib_method_node_condition"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("iib_method_node_condition", me.IIBMethodNodeCondition); err != nil {
+		return err
 	}
-	if len(me.Methods) > 0 {
-		entries := []any{}
-		for _, entry := range me.Methods {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["methods"] = entries
+	if err := properties.Encode("methods", me.Methods); err != nil {
+		return err
 	}
-	if me.SessionAttributeTechnology != nil {
-		properties["session_attribute_technology"] = string(*me.SessionAttributeTechnology)
+	if err := properties.Encode("session_attribute_technology", me.SessionAttributeTechnology); err != nil {
+		return err
 	}
-	if me.Technology != nil {
-		properties["technology"] = string(*me.Technology)
+	if err := properties.Encode("technology", me.Technology); err != nil {
+		return err
 	}
 	if me.ValueProcessing != nil && !me.ValueProcessing.IsZero() {
-		marshalled := hcl.Properties{}
-		if err := me.ValueProcessing.MarshalHCL(marshalled); err == nil {
-			properties["value_processing"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("value_processing", me.ValueProcessing); err != nil {
 			return err
 		}
 	}
-	if me.CICSSDKMethodNodeCondition != nil {
-		marshalled := hcl.Properties{}
-		if err := me.CICSSDKMethodNodeCondition.MarshalHCL(marshalled); err == nil {
-			properties["cics_sdk_method_node_condition"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("cics_sdk_method_node_condition", me.CICSSDKMethodNodeCondition); err != nil {
+		return err
 	}
-	properties["enabled"] = me.Enabled
-	properties["source"] = string(me.Source)
-	if me.IIBLabelMethodNodeCondition != nil {
-		marshalled := hcl.Properties{}
-		if err := me.IIBLabelMethodNodeCondition.MarshalHCL(marshalled); err == nil {
-			properties["iib_label_method_node_condition"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("enabled", me.Enabled); err != nil {
+		return err
 	}
-	if me.IIBNodeType != nil {
-		properties["iib_node_type"] = string(*me.IIBNodeType)
+	if err := properties.Encode("source", string(me.Source)); err != nil {
+		return err
+	}
+	if err := properties.Encode("iib_label_method_node_condition", me.IIBLabelMethodNodeCondition); err != nil {
+		return err
+	}
+	if err := properties.Encode("iib_node_type", me.IIBNodeType); err != nil {
+		return err
 	}
 	return nil
 }

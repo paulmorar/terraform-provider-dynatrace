@@ -179,78 +179,62 @@ func (me *Tile) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["tile_type"] = string(me.TileType)
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("tile_type", string(me.TileType)); err != nil {
+		return err
+	}
 	if me.NameSize != nil && len(string(*me.NameSize)) > 0 {
-		properties["name_size"] = string(*me.NameSize)
-	}
-	if me.Configured != nil {
-		properties["configured"] = opt.Bool(me.Configured)
-	}
-	if me.Bounds != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Bounds.MarshalHCL(marshalled); err == nil {
-			properties["bounds"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("name_size", me.NameSize); err != nil {
 			return err
 		}
 	}
-	if me.Filter != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Filter.MarshalHCL(marshalled); err == nil {
-			properties["filter"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("configured", opt.Bool(me.Configured)); err != nil {
+		return err
 	}
-	if len(me.AssignedEntities) > 0 {
-		properties["assigned_entities"] = me.AssignedEntities
-	} else {
-		properties["assigned_entities"] = nil
+	if err := properties.Encode("bounds", me.Bounds); err != nil {
+		return err
 	}
-	if me.Metric != nil {
-		properties["metric"] = opt.String(me.Metric)
+	if err := properties.Encode("filter", me.Filter); err != nil {
+		return err
 	}
-	if me.CustomName != nil {
-		properties["custom_name"] = opt.String(me.CustomName)
+	if err := properties.Encode("assigned_entities", me.AssignedEntities); err != nil {
+		return err
 	}
-	if me.Query != nil {
-		properties["query"] = opt.String(me.Query)
+	if err := properties.Encode("metric", me.Metric); err != nil {
+		return err
 	}
-	if me.Visualization != nil {
-		properties["visualization"] = string(*me.Visualization)
+	if err := properties.Encode("custom_name", me.CustomName); err != nil {
+		return err
 	}
-	if me.TimeFrameShift != nil {
-		properties["time_frame_shift"] = string(*me.TimeFrameShift)
+	if err := properties.Encode("query", me.Query); err != nil {
+		return err
 	}
-	if me.VisualizationConfig != nil {
-		marshalled := hcl.Properties{}
-		if err := me.VisualizationConfig.MarshalHCL(marshalled); err == nil {
-			properties["visualization_config"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("visualization", me.Visualization); err != nil {
+		return err
 	}
-	if me.Limit != nil {
-		properties["limit"] = int(opt.Int32(me.Limit))
+	if err := properties.Encode("time_frame_shift", me.TimeFrameShift); err != nil {
+		return err
+	}
+	if err := properties.Encode("visualization_config", me.VisualizationConfig); err != nil {
+		return err
+	}
+	if err := properties.Encode("limit", int(opt.Int32(me.Limit))); err != nil {
+		return err
 	}
 
-	if me.FilterConfig != nil {
-		marshalled := hcl.Properties{}
-		if err := me.FilterConfig.MarshalHCL(marshalled); err == nil {
-			properties["filter_config"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("filter_config", me.FilterConfig); err != nil {
+		return err
 	}
-	if me.Markdown != nil {
-		properties["markdown"] = string(*me.Markdown)
+	if err := properties.Encode("markdown", me.Markdown); err != nil {
+		return err
 	}
-	if me.ExcludeMaintenanceWindows != nil {
-		properties["exclude_maintenance_windows"] = opt.Bool(me.ExcludeMaintenanceWindows)
+	if err := properties.Encode("exclude_maintenance_windows", opt.Bool(me.ExcludeMaintenanceWindows)); err != nil {
+		return err
 	}
-	if me.ChartVisible != nil {
-		properties["chart_visible"] = opt.Bool(me.ChartVisible)
+	if err := properties.Encode("chart_visible", opt.Bool(me.ChartVisible)); err != nil {
+		return err
 	}
 	return nil
 }

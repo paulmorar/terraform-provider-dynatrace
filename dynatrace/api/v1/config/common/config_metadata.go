@@ -56,13 +56,15 @@ func (me *ConfigMetadata) Schema() map[string]*schema.Schema {
 
 func (me *ConfigMetadata) MarshalHCL(properties hcl.Properties) error {
 	if me.ClusterVersion != nil && len(*me.ClusterVersion) > 0 {
-		properties["cluster_version"] = *me.ClusterVersion
+		if err := properties.Encode("cluster_version", me.ClusterVersion); err != nil {
+			return err
+		}
 	}
-	if len(me.ConfigurationVersions) > 0 {
-		properties["configuration_versions"] = me.ConfigurationVersions
+	if err := properties.Encode("configuration_versions", me.ConfigurationVersions); err != nil {
+		return err
 	}
-	if len(me.CurrentConfigurationVersions) > 0 {
-		properties["current_configuration_versions"] = me.CurrentConfigurationVersions
+	if err := properties.Encode("current_configuration_versions", me.CurrentConfigurationVersions); err != nil {
+		return err
 	}
 	return nil
 }

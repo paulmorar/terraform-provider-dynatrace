@@ -132,46 +132,35 @@ func (me *DashboardMetadata) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	if me.Shared != nil {
-		properties["shared"] = opt.Bool(me.Shared)
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	properties["preset"] = me.Preset
-	if me.HasConsistentColors != nil {
-		properties["consistent_colors"] = opt.Bool(me.HasConsistentColors)
+	if err := properties.Encode("shared", opt.Bool(me.Shared)); err != nil {
+		return err
 	}
-	if me.Owner != nil {
-		properties["owner"] = opt.String(me.Owner)
+	if err := properties.Encode("preset", me.Preset); err != nil {
+		return err
 	}
-	if len(me.Tags) > 0 {
-		properties["tags"] = me.Tags
+	if err := properties.Encode("consistent_colors", opt.Bool(me.HasConsistentColors)); err != nil {
+		return err
 	}
-	if len(me.ValidFilterKeys) > 0 {
-		properties["valid_filter_keys"] = me.ValidFilterKeys
+	if err := properties.Encode("owner", me.Owner); err != nil {
+		return err
 	}
-	if me.SharingDetails != nil {
-		marshalled := hcl.Properties{}
-		if err := me.SharingDetails.MarshalHCL(marshalled); err == nil {
-			properties["name"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("tags", me.Tags); err != nil {
+		return err
 	}
-	if me.Filter != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Filter.MarshalHCL(marshalled); err == nil {
-			properties["filter"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("valid_filter_keys", me.ValidFilterKeys); err != nil {
+		return err
 	}
-	if me.DynamicFilters != nil {
-		marshalled := hcl.Properties{}
-		if err := me.DynamicFilters.MarshalHCL(marshalled); err == nil {
-			properties["dynamic_filters"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("name", me.SharingDetails); err != nil {
+		return err
+	}
+	if err := properties.Encode("filter", me.Filter); err != nil {
+		return err
+	}
+	if err := properties.Encode("dynamic_filters", me.DynamicFilters); err != nil {
+		return err
 	}
 	return nil
 }

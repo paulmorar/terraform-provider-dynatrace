@@ -79,12 +79,18 @@ func (me *SeverityRule) Schema() map[string]*schema.Schema {
 }
 
 func (me *SeverityRule) MarshalHCL(properties hcl.Properties) error {
-	properties["delay_in_minutes"] = int(me.DelayInMinutes)
-	properties["severity_level"] = string(me.SeverityLevel)
-	properties["include_mode"] = string(me.TagFilterIncludeMode)
+	if err := properties.Encode("delay_in_minutes", int(me.DelayInMinutes)); err != nil {
+		return err
+	}
+	if err := properties.Encode("severity_level", string(me.SeverityLevel)); err != nil {
+		return err
+	}
+	if err := properties.Encode("include_mode", string(me.TagFilterIncludeMode)); err != nil {
+		return err
+	}
 
-	if len(me.Tags) > 0 {
-		properties["tags"] = me.Tags
+	if err := properties.Encode("tags", me.Tags); err != nil {
+		return err
 	}
 	return nil
 }

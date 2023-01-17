@@ -80,14 +80,14 @@ func (me Dimensions) MarshalHCL(properties hcl.Properties) error {
 		default:
 		}
 	}
-	if len(Entitys) > 0 {
-		properties["entity"] = Entitys
+	if err := properties.Encode("entity", Entitys); err != nil {
+		return err
 	}
-	if len(Strings) > 0 {
-		properties["string"] = Strings
+	if err := properties.Encode("string", Strings); err != nil {
+		return err
 	}
-	if len(baseDimensions) > 0 {
-		properties["dimension"] = baseDimensions
+	if err := properties.Encode("dimension", baseDimensions); err != nil {
+		return err
 	}
 	return nil
 }

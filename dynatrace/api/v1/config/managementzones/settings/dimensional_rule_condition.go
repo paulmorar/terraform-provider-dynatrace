@@ -69,11 +69,19 @@ func (me *DimensionalRuleCondition) MarshalHCL(properties hcl.Properties) error 
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["type"] = string(me.Type)
-	properties["key"] = string(me.Key)
-	properties["match"] = string(me.Match)
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
+	}
+	if err := properties.Encode("key", string(me.Key)); err != nil {
+		return err
+	}
+	if err := properties.Encode("match", string(me.Match)); err != nil {
+		return err
+	}
 	if me.Value != nil && len(*me.Value) > 0 {
-		properties["value"] = string(*me.Value)
+		if err := properties.Encode("value", me.Value); err != nil {
+			return err
+		}
 	}
 
 	return nil

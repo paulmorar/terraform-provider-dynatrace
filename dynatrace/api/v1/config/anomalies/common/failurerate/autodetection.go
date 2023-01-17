@@ -59,12 +59,8 @@ func (me *Autodetection) Schema() map[string]*schema.Schema {
 }
 
 func (me *Autodetection) MarshalHCL(properties hcl.Properties) error {
-	if len(me.Unknowns) > 0 {
-		data, err := json.Marshal(me.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(me.Unknowns); err != nil {
+		return err
 	}
 	return properties.EncodeAll(map[string]any{
 		"absolute": me.PercentAbsolute,

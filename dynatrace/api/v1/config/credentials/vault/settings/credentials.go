@@ -143,28 +143,46 @@ func (me *Credentials) EnsurePredictableOrder() {
 }
 
 func (me *Credentials) MarshalHCL(properties hcl.Properties) error {
-	properties["name"] = me.Name
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
 	if me.Description != nil && len(*me.Description) > 0 {
-		properties["description"] = *me.Description
+		if err := properties.Encode("description", me.Description); err != nil {
+			return err
+		}
 	}
 	if me.OwnerAccessOnly {
-		properties["owner_access_only"] = me.OwnerAccessOnly
+		if err := properties.Encode("owner_access_only", me.OwnerAccessOnly); err != nil {
+			return err
+		}
 	}
-	properties["scope"] = string(me.Scope)
+	if err := properties.Encode("scope", string(me.Scope)); err != nil {
+		return err
+	}
 	if me.Token != nil && len(*me.Token) > 0 {
-		properties["token"] = *me.Token
+		if err := properties.Encode("token", me.Token); err != nil {
+			return err
+		}
 	}
 	if me.Password != nil && len(*me.Password) > 0 {
-		properties["password"] = *me.Password
+		if err := properties.Encode("password", me.Password); err != nil {
+			return err
+		}
 	}
 	if me.Username != nil && len(*me.Username) > 0 {
-		properties["username"] = *me.Username
+		if err := properties.Encode("username", me.Username); err != nil {
+			return err
+		}
 	}
 	if me.Certificate != nil && len(*me.Certificate) > 0 {
-		properties["certificate"] = *me.Certificate
+		if err := properties.Encode("certificate", me.Certificate); err != nil {
+			return err
+		}
 	}
 	if me.CertificateFormat != nil && len(*me.CertificateFormat) > 0 {
-		properties["format"] = *me.CertificateFormat
+		if err := properties.Encode("format", me.CertificateFormat); err != nil {
+			return err
+		}
 	}
 	if me.ExternalVault != nil {
 		marshalled := hcl.Properties{}
@@ -174,22 +192,15 @@ func (me *Credentials) MarshalHCL(properties hcl.Properties) error {
 		}
 		properties["external"] = []any{marshalled}
 	}
-	if me.CredentialUsageSummary != nil {
-		entries := []any{}
-		for _, entry := range me.CredentialUsageSummary {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["credential_usage_summary"] = entries
+	if err := properties.Encode("credential_usage_summary", me.CredentialUsageSummary); err != nil {
+		return err
 	}
 
 	switch me.Type {
 	case CredentialsTypes.PublicCertificate:
-		properties["public"] = true
+		if err := properties.Encode("public", true); err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -126,49 +126,39 @@ func (me *KeyStrokes) Schema() map[string]*schema.Schema {
 }
 
 func (me *KeyStrokes) MarshalHCL(properties hcl.Properties) error {
-	if me.Target != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Target.MarshalHCL(marshalled); err == nil {
-			properties["target"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("target", me.Target); err != nil {
+		return err
 	}
-	if me.Credential != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Credential.MarshalHCL(marshalled); err == nil {
-			properties["credential"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("credential", me.Credential); err != nil {
+		return err
 	}
-	if me.Wait != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Wait.MarshalHCL(marshalled); err == nil {
-			properties["wait"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("wait", me.Wait); err != nil {
+		return err
 	}
-	if len(me.Validate) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Validate.MarshalHCL(marshalled); err == nil {
-			properties["validate"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("validate", me.Validate); err != nil {
+		return err
 	}
 	if me.Credential == nil {
 		if me.Masked != nil && *me.Masked {
-			properties["masked"] = me.Masked
+			if err := properties.Encode("masked", me.Masked); err != nil {
+				return err
+			}
 		} else {
-			properties["masked"] = false
+			if err := properties.Encode("masked", false); err != nil {
+				return err
+			}
 		}
 	} else {
-		properties["masked"] = false
+		if err := properties.Encode("masked", false); err != nil {
+			return err
+		}
 	}
-	properties["text"] = me.TextValue
-	properties["simulate_blur_event"] = me.SimulateBlurEvent
+	if err := properties.Encode("text", me.TextValue); err != nil {
+		return err
+	}
+	if err := properties.Encode("simulate_blur_event", me.SimulateBlurEvent); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -32,15 +32,11 @@ func (me *DavisDataUnits) Schema() map[string]*schema.Schema {
 }
 
 func (me *DavisDataUnits) MarshalHCL(properties hcl.Properties) error {
-	if me.MonthlyLimit != nil {
-		if err := properties.Encode("monthly", me.MonthlyLimit); err != nil {
-			return err
-		}
+	if err := properties.Encode("monthly", me.MonthlyLimit); err != nil {
+		return err
 	}
-	if me.AnnualLimit != nil {
-		if err := properties.Encode("annual", me.AnnualLimit); err != nil {
-			return err
-		}
+	if err := properties.Encode("annual", me.AnnualLimit); err != nil {
+		return err
 	}
 	return nil
 }

@@ -105,26 +105,14 @@ func (assc *AWSSupportingServiceConfig) MarshalJSON() ([]byte, error) {
 }
 
 func (assc *AWSSupportingServiceConfig) MarshalHCL(properties hcl.Properties) error {
-	if len(assc.Unknowns) > 0 {
-		data, err := json.Marshal(assc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(assc.Unknowns); err != nil {
+		return err
 	}
-	properties["name"] = assc.Name
-	if assc.MonitoredMetrics != nil {
-		entries := []any{}
-		for _, monitoredMetric := range assc.MonitoredMetrics {
-			marshalled := hcl.Properties{}
-
-			if err := monitoredMetric.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["monitored_metrics"] = entries
+	if err := properties.Encode("name", assc.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("monitored_metrics", assc.MonitoredMetrics); err != nil {
+		return err
 	}
 	return nil
 }

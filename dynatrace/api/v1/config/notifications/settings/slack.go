@@ -97,17 +97,27 @@ func (me *SlackConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["active"] = me.Active
-	properties["alerting_profile"] = me.AlertingProfile
-	properties["title"] = me.Title
-	if me.URL != nil {
-		properties["url"] = *me.URL
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if me.URL != nil {
-		properties["url"] = *me.URL
+	if err := properties.Encode("active", me.Active); err != nil {
+		return err
 	}
-	properties["channel"] = me.Channel
+	if err := properties.Encode("alerting_profile", me.AlertingProfile); err != nil {
+		return err
+	}
+	if err := properties.Encode("title", me.Title); err != nil {
+		return err
+	}
+	if err := properties.Encode("url", me.URL); err != nil {
+		return err
+	}
+	if err := properties.Encode("url", me.URL); err != nil {
+		return err
+	}
+	if err := properties.Encode("channel", me.Channel); err != nil {
+		return err
+	}
 	return nil
 }
 

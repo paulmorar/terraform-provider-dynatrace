@@ -62,16 +62,14 @@ func (pmck *ProcessMetadata) Schema() map[string]*schema.Schema {
 }
 
 func (pmck *ProcessMetadata) MarshalHCL(properties hcl.Properties) error {
-	if len(pmck.Unknowns) > 0 {
-		data, err := json.Marshal(pmck.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(pmck.Unknowns); err != nil {
+		return err
 	}
-	properties["attribute"] = string(pmck.Attribute)
-	if pmck.DynamicKey != nil {
-		properties["dynamic_key"] = string(*pmck.DynamicKey)
+	if err := properties.Encode("attribute", string(pmck.Attribute)); err != nil {
+		return err
+	}
+	if err := properties.Encode("dynamic_key", pmck.DynamicKey); err != nil {
+		return err
 	}
 	return nil
 }

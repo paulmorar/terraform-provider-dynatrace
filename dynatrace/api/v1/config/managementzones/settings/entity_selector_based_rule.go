@@ -58,8 +58,12 @@ func (me *EntitySelectorBasedRule) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["selector"] = me.Selector
-	properties["enabled"] = opt.Bool(me.Enabled)
+	if err := properties.Encode("selector", me.Selector); err != nil {
+		return err
+	}
+	if err := properties.Encode("enabled", opt.Bool(me.Enabled)); err != nil {
+		return err
+	}
 	return nil
 }
 

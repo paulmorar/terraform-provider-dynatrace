@@ -39,7 +39,12 @@ func (me *GlobalOutagePolicy) Schema() map[string]*schema.Schema {
 }
 
 func (me *GlobalOutagePolicy) MarshalHCL(properties hcl.Properties) error {
-	properties["consecutive_runs"] = *me.ConsecutiveRuns
+	if me.ConsecutiveRuns == nil {
+		return nil
+	}
+	if err := properties.Encode("consecutive_runs", me.ConsecutiveRuns); err != nil {
+		return err
+	}
 	return nil
 }
 

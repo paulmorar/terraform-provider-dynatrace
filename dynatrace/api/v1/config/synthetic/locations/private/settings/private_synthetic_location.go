@@ -116,35 +116,45 @@ func (me *PrivateSyntheticLocation) Schema() map[string]*schema.Schema {
 }
 
 func (me *PrivateSyntheticLocation) MarshalHCL(properties hcl.Properties) error {
-	properties["name"] = me.Name
-	if me.CountryCode != nil {
-		properties["country_code"] = me.CountryCode
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if me.RegionCode != nil {
-		properties["region_code"] = me.RegionCode
+	if err := properties.Encode("country_code", me.CountryCode); err != nil {
+		return err
 	}
-	if me.City != nil {
-		properties["city"] = me.City
+	if err := properties.Encode("region_code", me.RegionCode); err != nil {
+		return err
 	}
-	properties["latitude"] = me.Latitude
-	properties["longitude"] = me.Longitude
-	if len(me.Nodes) > 0 {
-		properties["nodes"] = me.Nodes
+	if err := properties.Encode("city", me.City); err != nil {
+		return err
 	}
-	properties["availability_location_outage"] = me.AvailabilityLocationOutage
-	properties["availability_node_outage"] = me.AvailabilityNodeOutage
-	if me.LocationNodeOutageDelayInMinutes != nil {
-		properties["location_node_outage_delay_in_minutes"] = *me.LocationNodeOutageDelayInMinutes
-	} else {
-		properties["location_node_outage_delay_in_minutes"] = nil
+	if err := properties.Encode("latitude", me.Latitude); err != nil {
+		return err
 	}
-	properties["availability_notifications_enabled"] = me.AvailabilityNotificationsEnabled
-	if me.DeploymentType != nil {
-		properties["deployment_type"] = string(*me.DeploymentType)
-	} else {
-		properties["deployment_type"] = nil
+	if err := properties.Encode("longitude", me.Longitude); err != nil {
+		return err
 	}
-	properties["auto_update_chromium"] = me.AutoUpdateChromium
+	if err := properties.Encode("nodes", me.Nodes); err != nil {
+		return err
+	}
+	if err := properties.Encode("availability_location_outage", me.AvailabilityLocationOutage); err != nil {
+		return err
+	}
+	if err := properties.Encode("availability_node_outage", me.AvailabilityNodeOutage); err != nil {
+		return err
+	}
+	if err := properties.Encode("location_node_outage_delay_in_minutes", me.LocationNodeOutageDelayInMinutes); err != nil {
+		return err
+	}
+	if err := properties.Encode("availability_notifications_enabled", me.AvailabilityNotificationsEnabled); err != nil {
+		return err
+	}
+	if err := properties.Encode("deployment_type", me.DeploymentType); err != nil {
+		return err
+	}
+	if err := properties.Encode("auto_update_chromium", me.AutoUpdateChromium); err != nil {
+		return err
+	}
 
 	return nil
 }

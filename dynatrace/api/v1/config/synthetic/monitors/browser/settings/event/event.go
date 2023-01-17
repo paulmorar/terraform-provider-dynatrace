@@ -98,7 +98,9 @@ func (me *EventWrapper) Schema() map[string]*schema.Schema {
 }
 
 func (me *EventWrapper) MarshalHCL(properties hcl.Properties) error {
-	properties["description"] = me.Event.GetDescription()
+	if err := properties.Encode("description", me.Event.GetDescription()); err != nil {
+		return err
+	}
 	marshalled := hcl.Properties{}
 	if err := me.Event.MarshalHCL(marshalled); err == nil {
 		if me.Event.GetType() == Types.Click {
@@ -222,9 +224,7 @@ func (me Events) MarshalHCL(properties hcl.Properties) error {
 			return err
 		}
 	}
-	if len(entries) > 0 {
-		properties["event"] = entries
-	}
+	properties["event"] = entries
 	return nil
 }
 

@@ -70,17 +70,17 @@ func (acmc *AzureComputeMode) Schema() map[string]*schema.Schema {
 }
 
 func (acmc *AzureComputeMode) MarshalHCL(properties hcl.Properties) error {
-	if len(acmc.Unknowns) > 0 {
-		data, err := json.Marshal(acmc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(acmc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = acmc.Negate
-	properties["operator"] = string(acmc.Operator)
-	if acmc.Value != nil {
-		properties["value"] = acmc.Value.String()
+	if err := properties.Encode("negate", acmc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(acmc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", acmc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

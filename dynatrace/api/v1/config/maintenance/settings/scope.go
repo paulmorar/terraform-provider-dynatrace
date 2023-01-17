@@ -70,20 +70,11 @@ func (me *Scope) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if len(me.Entities) > 0 {
-		properties["entities"] = me.Entities
+	if err := properties.Encode("entities", me.Entities); err != nil {
+		return err
 	}
-	if len(me.Matches) > 0 {
-		entries := []any{}
-		for _, entry := range me.Matches {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["matches"] = entries
+	if err := properties.Encode("matches", me.Matches); err != nil {
+		return err
 	}
 	return nil
 }

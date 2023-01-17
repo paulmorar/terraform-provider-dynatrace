@@ -106,28 +106,15 @@ func (ass *AzureSupportingService) UnmarshalJSON(data []byte) error {
 }
 
 func (ass *AzureSupportingService) MarshalHCL(properties hcl.Properties) error {
-	if len(ass.Unknowns) > 0 {
-		data, err := json.Marshal(ass.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(ass.Unknowns); err != nil {
+		return err
 	}
 
-	if ass.Name != nil {
-		properties["name"] = ass.Name
+	if err := properties.Encode("name", ass.Name); err != nil {
+		return err
 	}
-	if ass.MonitoredMetrics != nil {
-		entries := []any{}
-		for _, entry := range ass.MonitoredMetrics {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["monitored_metrics"] = entries
+	if err := properties.Encode("monitored_metrics", ass.MonitoredMetrics); err != nil {
+		return err
 	}
 	return nil
 }

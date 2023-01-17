@@ -86,24 +86,22 @@ func (me *MethodRule) MarshalHCL(properties hcl.Properties) error {
 		return err
 	}
 	// if me.ID != nil {
-	// 	properties["id"] = opt.String(me.ID)
+	// 	if err := properties.Encode("id", me.ID); err != nil { return err }
 	// }
-	properties["name"] = me.MethodName
-	if me.ReturnType != nil {
-		properties["returns"] = *me.ReturnType
+	if err := properties.Encode("name", me.MethodName); err != nil {
+		return err
 	}
-	if len(me.ArgumentTypes) > 0 {
-		properties["arguments"] = me.ArgumentTypes
+	if err := properties.Encode("returns", me.ReturnType); err != nil {
+		return err
 	}
-	if len(me.Modifiers) > 0 {
-		arr := []string{}
-		for _, mod := range me.Modifiers {
-			arr = append(arr, string(mod))
-		}
-		properties["modifiers"] = arr
+	if err := properties.Encode("arguments", me.ArgumentTypes); err != nil {
+		return err
 	}
-	if me.Visibility != nil {
-		properties["visibility"] = string(*me.Visibility)
+	if err := properties.Encode("modifiers", me.Modifiers); err != nil {
+		return err
+	}
+	if err := properties.Encode("visibility", me.Visibility); err != nil {
+		return err
 	}
 	return nil
 }

@@ -38,16 +38,9 @@ func (me *Validations) Schema() map[string]*schema.Schema {
 }
 
 func (me Validations) MarshalHCL(properties hcl.Properties) error {
-	entries := []any{}
-	for _, entry := range me {
-		marshalled := hcl.Properties{}
-		if err := entry.MarshalHCL(marshalled); err == nil {
-			entries = append(entries, marshalled)
-		} else {
-			return err
-		}
+	if err := properties.EncodeSlice("validation", me); err != nil {
+		return err
 	}
-	properties["validation"] = entries
 	return nil
 }
 
@@ -97,19 +90,20 @@ func (me *Validation) Schema() map[string]*schema.Schema {
 }
 
 func (me *Validation) MarshalHCL(properties hcl.Properties) error {
-	properties["type"] = string(me.Type)
-	if len(me.Match) > 0 {
-		properties["match"] = me.Match
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
 	}
-	properties["regex"] = me.IsRegex
-	properties["fail_if_found"] = me.FailIfFound
-	if me.Target != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Target.MarshalHCL(marshalled); err == nil {
-			properties["target"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("match", me.Match); err != nil {
+		return err
+	}
+	if err := properties.Encode("regex", me.IsRegex); err != nil {
+		return err
+	}
+	if err := properties.Encode("fail_if_found", me.FailIfFound); err != nil {
+		return err
+	}
+	if err := properties.Encode("target", me.Target); err != nil {
+		return err
 	}
 	return nil
 }

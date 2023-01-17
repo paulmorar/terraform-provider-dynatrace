@@ -45,8 +45,12 @@ func (me *Credentials) Schema() map[string]*schema.Schema {
 }
 
 func (me *Credentials) MarshalHCL(properties hcl.Properties) error {
-	properties["type"] = me.Type
-	properties["creds"] = me.Credential.ID
+	if err := properties.Encode("type", me.Type); err != nil {
+		return err
+	}
+	if err := properties.Encode("creds", me.Credential.ID); err != nil {
+		return err
+	}
 	return nil
 }
 

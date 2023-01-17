@@ -169,42 +169,39 @@ func (me *Request) Schema() map[string]*schema.Schema {
 
 func (me *Request) MarshalHCL(properties hcl.Properties) error {
 	if me.Description != nil && len(*me.Description) > 0 {
-		properties["description"] = *me.Description
+		if err := properties.Encode("description", me.Description); err != nil {
+			return err
+		}
 	}
-	properties["url"] = me.URL
-	properties["method"] = me.Method
+	if err := properties.Encode("url", me.URL); err != nil {
+		return err
+	}
+	if err := properties.Encode("method", me.Method); err != nil {
+		return err
+	}
 	if me.RequestBody != nil && len(*me.RequestBody) > 0 {
-		properties["body"] = *me.RequestBody
+		if err := properties.Encode("body", me.RequestBody); err != nil {
+			return err
+		}
 	}
 	if me.PreProcessing != nil && len(*me.PreProcessing) > 0 {
-		properties["pre_processing"] = *me.PreProcessing
+		if err := properties.Encode("pre_processing", me.PreProcessing); err != nil {
+			return err
+		}
 	}
 	if me.PostProcessing != nil && len(*me.PostProcessing) > 0 {
-		properties["post_processing"] = *me.PostProcessing
-	}
-	if me.Validation != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Validation.MarshalHCL(marshalled); err == nil {
-			properties["validation"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("post_processing", me.PostProcessing); err != nil {
 			return err
 		}
 	}
-	if me.Authentication != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Authentication.MarshalHCL(marshalled); err == nil {
-			properties["authentication"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("validation", me.Validation); err != nil {
+		return err
 	}
-	if me.Configuration != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Configuration.MarshalHCL(marshalled); err == nil {
-			properties["configuration"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("authentication", me.Authentication); err != nil {
+		return err
+	}
+	if err := properties.Encode("configuration", me.Configuration); err != nil {
+		return err
 	}
 	return nil
 }

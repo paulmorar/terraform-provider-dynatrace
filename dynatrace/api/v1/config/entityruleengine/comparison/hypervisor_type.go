@@ -70,17 +70,17 @@ func (htc *HypervisorType) Schema() map[string]*schema.Schema {
 }
 
 func (htc *HypervisorType) MarshalHCL(properties hcl.Properties) error {
-	if len(htc.Unknowns) > 0 {
-		data, err := json.Marshal(htc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(htc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = htc.Negate
-	properties["operator"] = string(htc.Operator)
-	if htc.Value != nil {
-		properties["value"] = htc.Value.String()
+	if err := properties.Encode("negate", htc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(htc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", htc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

@@ -55,18 +55,14 @@ func (st *Simple) Schema() map[string]*schema.Schema {
 }
 
 func (st *Simple) MarshalHCL(properties hcl.Properties) error {
-	if len(st.Unknowns) > 0 {
-		data, err := json.Marshal(st.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(st.Unknowns); err != nil {
+		return err
 	}
-	if st.Type != nil {
-		properties["type"] = st.Type.String()
+	if err := properties.Encode("type", st.Type.String()); err != nil {
+		return err
 	}
-	if st.VerbatimType != nil {
-		properties["verbatim_type"] = *st.VerbatimType
+	if err := properties.Encode("verbatim_type", st.VerbatimType); err != nil {
+		return err
 	}
 	return nil
 }

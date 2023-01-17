@@ -40,16 +40,9 @@ func (me *SyntheticLocations) Schema() map[string]*schema.Schema {
 }
 
 func (me *SyntheticLocations) MarshalHCL(properties hcl.Properties) error {
-	entries := []any{}
-	for _, entry := range me.Locations {
-		marshalled := hcl.Properties{}
-		if err := entry.MarshalHCL(marshalled); err == nil {
-			entries = append(entries, marshalled)
-		} else {
-			return err
-		}
+	if err := properties.Encode("location", me.Locations); err != nil {
+		return err
 	}
-	properties["location"] = entries
 	return nil
 }
 
@@ -109,20 +102,26 @@ func (me *SyntheticLocation) Schema() map[string]*schema.Schema {
 }
 
 func (me *SyntheticLocation) MarshalHCL(properties hcl.Properties) error {
-	properties["entity_id"] = me.ID
-	properties["name"] = me.Name
-	properties["type"] = string(me.Type)
-	if me.Stage != nil {
-		properties["stage"] = string(*me.Stage)
+	if err := properties.Encode("entity_id", me.ID); err != nil {
+		return err
 	}
-	if me.Status != nil {
-		properties["status"] = string(*me.Status)
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if me.CloudPlatform != nil {
-		properties["cloud_platform"] = string(*me.CloudPlatform)
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
 	}
-	if me.IPs != nil {
-		properties["ips"] = append([]string{}, me.IPs...)
+	if err := properties.Encode("stage", me.Stage); err != nil {
+		return err
+	}
+	if err := properties.Encode("status", me.Status); err != nil {
+		return err
+	}
+	if err := properties.Encode("cloud_platform", me.CloudPlatform); err != nil {
+		return err
+	}
+	if err := properties.Encode("ips", append([]string{}, me.IPs...)); err != nil {
+		return err
 	}
 	return nil
 }

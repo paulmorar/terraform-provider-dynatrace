@@ -48,8 +48,8 @@ func (me Locators) MarshalHCL(properties hcl.Properties) error {
 		} else {
 			return err
 		}
-		properties["locator"] = entries
 	}
+	properties["locator"] = entries
 	return nil
 }
 
@@ -78,8 +78,12 @@ func (me *Locator) Schema() map[string]*schema.Schema {
 }
 
 func (me *Locator) MarshalHCL(properties hcl.Properties) error {
-	properties["type"] = string(me.Type)
-	properties["value"] = me.Value
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
+	}
 	return nil
 }
 

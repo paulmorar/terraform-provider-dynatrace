@@ -61,25 +61,17 @@ func (me *limits) Schema() map[string]*schema.Schema {
 }
 
 func (me *limits) MarshalHCL(properties hcl.Properties) error {
-	if me.Transactions != nil {
-		if err := properties.Encode("transactions", me.Transactions); err != nil {
-			return err
-		}
+	if err := properties.Encode("transactions", me.Transactions); err != nil {
+		return err
 	}
-	if me.SessionReplay != nil {
-		if err := properties.Encode("session_replay", me.SessionReplay); err != nil {
-			return err
-		}
+	if err := properties.Encode("session_replay", me.SessionReplay); err != nil {
+		return err
 	}
-	if me.SymbolFiles != nil {
-		if err := properties.Encode("symbol_files", me.SymbolFiles); err != nil {
-			return err
-		}
+	if err := properties.Encode("symbol_files", me.SymbolFiles); err != nil {
+		return err
 	}
-	if me.Logs != nil {
-		if err := properties.Encode("logs", me.Logs); err != nil {
-			return err
-		}
+	if err := properties.Encode("logs", me.Logs); err != nil {
+		return err
 	}
 	return nil
 }

@@ -91,32 +91,23 @@ func (me *Rule) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["enabled"] = me.Enabled
-	properties["type"] = me.Type
-	if len(me.PropagationTypes) > 0 {
-		entries := []any{}
-		for _, entry := range me.PropagationTypes {
-			entries = append(entries, string(entry))
-		}
-		properties["propagation_types"] = entries
+	if err := properties.Encode("enabled", me.Enabled); err != nil {
+		return err
 	}
-	if len(me.Conditions) > 0 {
-		entries := []any{}
-		for _, entry := range me.Conditions {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["conditions"] = entries
+	if err := properties.Encode("type", me.Type); err != nil {
+		return err
 	}
-	if me.ValueFormat != nil {
-		properties["value_format"] = *me.ValueFormat
+	if err := properties.Encode("propagation_types", me.PropagationTypes); err != nil {
+		return err
 	}
-	if me.Normalization != nil {
-		properties["normalization"] = *me.Normalization
+	if err := properties.Encode("conditions", me.Conditions); err != nil {
+		return err
+	}
+	if err := properties.Encode("value_format", me.ValueFormat); err != nil {
+		return err
+	}
+	if err := properties.Encode("normalization", me.Normalization); err != nil {
+		return err
 	}
 	return nil
 }

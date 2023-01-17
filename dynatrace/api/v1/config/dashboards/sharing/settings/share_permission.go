@@ -54,11 +54,15 @@ func (me *SharePermission) Schema() map[string]*schema.Schema {
 
 // MarshalHCL has no documentation
 func (me *SharePermission) MarshalHCL(properties hcl.Properties) error {
-	if me.ID != nil {
-		properties["id"] = *me.ID
+	if err := properties.Encode("id", me.ID); err != nil {
+		return err
 	}
-	properties["type"] = string(me.Type)
-	properties["level"] = string(me.Permission)
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
+	}
+	if err := properties.Encode("level", string(me.Permission)); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -219,13 +219,19 @@ func (me *Notification) MarshalHCL(properties hcl.Properties) error {
 			return err
 		}
 		// if me.Enabled {
-		// 	properties["enabled"] = me.Enabled
+		// 	if err := properties.Encode("enabled", me.Enabled); err != nil { return err }
 		// }
-		properties["name"] = me.Name
-		properties["profile"] = me.ProfileID
-		properties["active"] = me.Enabled
-		if me.LegacyID != nil {
-			properties["legacy_id"] = *me.LegacyID
+		if err := properties.Encode("name", me.Name); err != nil {
+			return err
+		}
+		if err := properties.Encode("profile", me.ProfileID); err != nil {
+			return err
+		}
+		if err := properties.Encode("active", me.Enabled); err != nil {
+			return err
+		}
+		if err := properties.Encode("legacy_id", me.LegacyID); err != nil {
+			return err
 		}
 		log.Println("properties", properties)
 		return nil

@@ -108,30 +108,20 @@ func (me *ValueProcessing) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.ExtractSubstring != nil {
-		marshalled := hcl.Properties{}
-		if err := me.ExtractSubstring.MarshalHCL(marshalled); err == nil {
-			properties["extract_substring"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("extract_substring", me.ExtractSubstring); err != nil {
+		return err
 	}
-	if me.SplitAt != nil {
-		properties["split_at"] = *me.SplitAt
+	if err := properties.Encode("split_at", me.SplitAt); err != nil {
+		return err
 	}
-	if me.Trim != nil {
-		properties["trim"] = opt.Bool(me.Trim)
+	if err := properties.Encode("trim", opt.Bool(me.Trim)); err != nil {
+		return err
 	}
-	if me.ValueCondition != nil {
-		marshalled := hcl.Properties{}
-		if err := me.ValueCondition.MarshalHCL(marshalled); err == nil {
-			properties["value_condition"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("value_condition", me.ValueCondition); err != nil {
+		return err
 	}
-	if me.ValueExtractorRegex != nil {
-		properties["value_extractor_regex"] = *me.ValueExtractorRegex
+	if err := properties.Encode("value_extractor_regex", me.ValueExtractorRegex); err != nil {
+		return err
 	}
 	return nil
 }

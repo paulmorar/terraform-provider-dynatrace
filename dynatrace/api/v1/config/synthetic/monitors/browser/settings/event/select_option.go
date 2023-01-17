@@ -69,38 +69,17 @@ func (me *SelectOption) Schema() map[string]*schema.Schema {
 }
 
 func (me *SelectOption) MarshalHCL(properties hcl.Properties) error {
-	if me.Target != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Target.MarshalHCL(marshalled); err == nil {
-			properties["target"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("target", me.Target); err != nil {
+		return err
 	}
-	if me.Wait != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Wait.MarshalHCL(marshalled); err == nil {
-			properties["wait"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("wait", me.Wait); err != nil {
+		return err
 	}
-	if len(me.Validate) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Validate.MarshalHCL(marshalled); err == nil {
-			properties["validate"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("validate", me.Validate); err != nil {
+		return err
 	}
-	if len(me.Selections) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Selections.MarshalHCL(marshalled); err == nil {
-			properties["selections"] = []any{marshalled}
-		} else {
-			return err
-		}
-
+	if err := properties.Encode("selections", me.Selections); err != nil {
+		return err
 	}
 
 	return nil

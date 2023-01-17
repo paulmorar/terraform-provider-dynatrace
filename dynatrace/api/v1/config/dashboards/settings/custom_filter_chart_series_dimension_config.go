@@ -74,15 +74,17 @@ func (me *CustomFilterChartSeriesDimensionConfig) MarshalHCL(properties hcl.Prop
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["id"] = me.ID
-	if me.Name != nil {
-		properties["name"] = opt.String(me.Name)
+	if err := properties.Encode("id", me.ID); err != nil {
+		return err
 	}
-	if len(me.Values) > 0 {
-		properties["values"] = me.Values
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if me.EntityDimension != nil {
-		properties["entity_dimension"] = opt.Bool(me.EntityDimension)
+	if err := properties.Encode("values", me.Values); err != nil {
+		return err
+	}
+	if err := properties.Encode("entity_dimension", opt.Bool(me.EntityDimension)); err != nil {
+		return err
 	}
 	return nil
 }

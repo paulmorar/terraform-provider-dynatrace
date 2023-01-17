@@ -67,18 +67,13 @@ func (cpmck *CustomProcessMetadata) Schema() map[string]*schema.Schema {
 }
 
 func (cpmck *CustomProcessMetadata) MarshalHCL(properties hcl.Properties) error {
-	if len(cpmck.Unknowns) > 0 {
-		data, err := json.Marshal(cpmck.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(cpmck.Unknowns); err != nil {
+		return err
 	}
-	properties["attribute"] = string(cpmck.Attribute)
-	marshalled := hcl.Properties{}
-	if err := cpmck.DynamicKey.MarshalHCL(marshalled); err == nil {
-		properties["dynamic_key"] = []any{marshalled}
-	} else {
+	if err := properties.Encode("attribute", string(cpmck.Attribute)); err != nil {
+		return err
+	}
+	if err := properties.Encode("dynamic_key", cpmck.DynamicKey); err != nil {
 		return err
 	}
 	return nil

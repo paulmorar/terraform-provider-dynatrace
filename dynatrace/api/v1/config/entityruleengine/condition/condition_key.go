@@ -68,16 +68,14 @@ func (bck *BaseConditionKey) Schema() map[string]*schema.Schema {
 }
 
 func (bck *BaseConditionKey) MarshalHCL(properties hcl.Properties) error {
-	if len(bck.Unknowns) > 0 {
-		data, err := json.Marshal(bck.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(bck.Unknowns); err != nil {
+		return err
 	}
-	properties["attribute"] = string(bck.Attribute)
-	if bck.Type != nil {
-		properties["type"] = bck.Type.String()
+	if err := properties.Encode("attribute", string(bck.Attribute)); err != nil {
+		return err
+	}
+	if err := properties.Encode("type", bck.Type.String()); err != nil {
+		return err
 	}
 	return nil
 }

@@ -116,22 +116,14 @@ func SuppressEquivalent(k, old, new string, d *schema.ResourceData) bool {
 }
 
 func (me *Javascript) MarshalHCL(properties hcl.Properties) error {
-	properties["code"] = me.Javascript
-	if me.Wait != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Wait.MarshalHCL(marshalled); err == nil {
-			properties["wait"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("code", me.Javascript); err != nil {
+		return err
 	}
-	if me.Target != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Target.MarshalHCL(marshalled); err == nil {
-			properties["target"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("wait", me.Wait); err != nil {
+		return err
+	}
+	if err := properties.Encode("target", me.Target); err != nil {
+		return err
 	}
 	return nil
 }

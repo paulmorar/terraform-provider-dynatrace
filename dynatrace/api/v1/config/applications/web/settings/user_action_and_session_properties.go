@@ -39,16 +39,9 @@ func (me *UserActionAndSessionProperties) Schema() map[string]*schema.Schema {
 
 func (me UserActionAndSessionProperties) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
-		entries := []any{}
-		for _, entry := range me {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
+		if err := properties.EncodeSlice("property", me); err != nil {
+			return err
 		}
-		properties["property"] = entries
 	}
 	return nil
 }

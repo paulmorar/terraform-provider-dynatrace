@@ -80,18 +80,21 @@ func (me *Schedule) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["start"] = me.Start
-	properties["end"] = me.End
-	properties["zone_id"] = me.ZoneID
-	if me.Recurrence != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Recurrence.MarshalHCL(marshalled); err == nil {
-			properties["recurrence"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("start", me.Start); err != nil {
+		return err
 	}
-	properties["recurrence_type"] = string(me.RecurrenceType)
+	if err := properties.Encode("end", me.End); err != nil {
+		return err
+	}
+	if err := properties.Encode("zone_id", me.ZoneID); err != nil {
+		return err
+	}
+	if err := properties.Encode("recurrence", me.Recurrence); err != nil {
+		return err
+	}
+	if err := properties.Encode("recurrence_type", string(me.RecurrenceType)); err != nil {
+		return err
+	}
 	return nil
 }
 

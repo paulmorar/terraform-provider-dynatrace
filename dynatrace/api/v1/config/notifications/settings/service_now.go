@@ -121,21 +121,35 @@ func (me *ServiceNowConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["active"] = me.Active
-	properties["alerting_profile"] = me.AlertingProfile
-	properties["send_events"] = me.SendEvents
-	properties["send_incidents"] = me.SendIncidents
-	if me.URL != nil {
-		properties["url"] = *me.URL
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	properties["username"] = me.Username
-	if me.InstanceName != nil {
-		properties["instance_name"] = *me.InstanceName
+	if err := properties.Encode("active", me.Active); err != nil {
+		return err
 	}
-	properties["message"] = me.Message
-	if me.Password != nil {
-		properties["password"] = *me.Password
+	if err := properties.Encode("alerting_profile", me.AlertingProfile); err != nil {
+		return err
+	}
+	if err := properties.Encode("send_events", me.SendEvents); err != nil {
+		return err
+	}
+	if err := properties.Encode("send_incidents", me.SendIncidents); err != nil {
+		return err
+	}
+	if err := properties.Encode("url", me.URL); err != nil {
+		return err
+	}
+	if err := properties.Encode("username", me.Username); err != nil {
+		return err
+	}
+	if err := properties.Encode("instance_name", me.InstanceName); err != nil {
+		return err
+	}
+	if err := properties.Encode("message", me.Message); err != nil {
+		return err
+	}
+	if err := properties.Encode("password", me.Password); err != nil {
+		return err
 	}
 
 	return nil

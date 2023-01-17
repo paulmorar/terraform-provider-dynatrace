@@ -63,22 +63,14 @@ func (me *Script) Schema() map[string]*schema.Schema {
 }
 
 func (me *Script) MarshalHCL(properties hcl.Properties) error {
-	properties["type"] = string(me.Type)
-	if me.Configuration != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Configuration.MarshalHCL(marshalled); err == nil {
-			properties["configuration"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
 	}
-	if len(me.Events) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Events.MarshalHCL(marshalled); err == nil {
-			properties["events"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("configuration", me.Configuration); err != nil {
+		return err
+	}
+	if err := properties.Encode("events", me.Events); err != nil {
+		return err
 	}
 	return nil
 }

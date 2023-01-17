@@ -122,21 +122,23 @@ func (assm *AWSSupportingServiceMetric) MarshalJSON() ([]byte, error) {
 }
 
 func (assm *AWSSupportingServiceMetric) MarshalHCL(properties hcl.Properties) error {
-	if len(assm.Unknowns) > 0 {
-		data, err := json.Marshal(assm.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(assm.Unknowns); err != nil {
+		return err
 	}
-	properties["name"] = assm.Name
-	properties["statistic"] = assm.Statistic
+	if err := properties.Encode("name", assm.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("statistic", assm.Statistic); err != nil {
+		return err
+	}
 	if assm.Dimensions != nil {
 		entries := []any{}
 		for _, dimension := range assm.Dimensions {
 			entries = append(entries, dimension)
 		}
-		properties["dimensions"] = entries
+		if err := properties.Encode("dimensions", entries); err != nil {
+			return err
+		}
 	}
 	return nil
 }

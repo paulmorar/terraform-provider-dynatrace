@@ -78,18 +78,20 @@ func (sc *String) Schema() map[string]*schema.Schema {
 }
 
 func (sc *String) MarshalHCL(properties hcl.Properties) error {
-	if len(sc.Unknowns) > 0 {
-		data, err := json.Marshal(sc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(sc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = sc.Negate
-	properties["operator"] = string(sc.Operator)
-	properties["case_sensitive"] = sc.CaseSensitive
-	if sc.Value != nil {
-		properties["value"] = *sc.Value
+	if err := properties.Encode("negate", sc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(sc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("case_sensitive", sc.CaseSensitive); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", sc.Value); err != nil {
+		return err
 	}
 	return nil
 }

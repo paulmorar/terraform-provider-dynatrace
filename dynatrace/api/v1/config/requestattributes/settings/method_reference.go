@@ -100,27 +100,35 @@ func (me *MethodReference) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["return_type"] = me.ReturnType
-	properties["visibility"] = Visibility(me.Visibility)
-	if len(me.ArgumentTypes) > 0 {
-		properties["argument_types"] = me.ArgumentTypes
+	if err := properties.Encode("return_type", me.ReturnType); err != nil {
+		return err
 	}
-	if me.ClassName != nil {
-		properties["class_name"] = *me.ClassName
+	if err := properties.Encode("visibility", Visibility(me.Visibility)); err != nil {
+		return err
 	}
-	if me.FileName != nil {
-		properties["file_name"] = *me.FileName
+	if err := properties.Encode("argument_types", me.ArgumentTypes); err != nil {
+		return err
 	}
-	if me.FileNameMatcher != nil {
-		properties["file_name_matcher"] = string(*me.FileNameMatcher)
+	if err := properties.Encode("class_name", me.ClassName); err != nil {
+		return err
 	}
-	properties["method_name"] = me.MethodName
+	if err := properties.Encode("file_name", me.FileName); err != nil {
+		return err
+	}
+	if err := properties.Encode("file_name_matcher", me.FileNameMatcher); err != nil {
+		return err
+	}
+	if err := properties.Encode("method_name", me.MethodName); err != nil {
+		return err
+	}
 	if len(me.Modifiers) > 0 {
 		mods := []string{}
 		for _, mod := range me.Modifiers {
 			mods = append(mods, string(mod))
 		}
-		properties["modifiers"] = mods
+		if err := properties.Encode("modifiers", mods); err != nil {
+			return err
+		}
 	}
 	return nil
 }

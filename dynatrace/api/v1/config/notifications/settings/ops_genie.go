@@ -97,15 +97,25 @@ func (me *OpsGenieConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["active"] = me.Active
-	properties["alerting_profile"] = me.AlertingProfile
-	if me.APIKey != nil {
-		properties["api_key"] = *me.APIKey
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("active", me.Active); err != nil {
+		return err
+	}
+	if err := properties.Encode("alerting_profile", me.AlertingProfile); err != nil {
+		return err
+	}
+	if err := properties.Encode("api_key", me.APIKey); err != nil {
+		return err
 	}
 
-	properties["domain"] = me.Domain
-	properties["message"] = me.Message
+	if err := properties.Encode("domain", me.Domain); err != nil {
+		return err
+	}
+	if err := properties.Encode("message", me.Message); err != nil {
+		return err
+	}
 	return nil
 }
 

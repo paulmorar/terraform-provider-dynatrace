@@ -82,11 +82,15 @@ func (me *ExtractSubstring) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.EndDelimiter != nil {
-		properties["end_delimiter"] = *me.EndDelimiter
+	if err := properties.Encode("end_delimiter", me.EndDelimiter); err != nil {
+		return err
 	}
-	properties["position"] = string(me.Position)
-	properties["delimiter"] = me.Delimiter
+	if err := properties.Encode("position", string(me.Position)); err != nil {
+		return err
+	}
+	if err := properties.Encode("delimiter", me.Delimiter); err != nil {
+		return err
+	}
 	return nil
 }
 

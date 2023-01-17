@@ -97,15 +97,25 @@ func (me *PagerDutyConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["active"] = me.Active
-	properties["alerting_profile"] = me.AlertingProfile
-	properties["account"] = me.Account
-	if me.ServiceAPIKey != nil {
-		properties["service_api_key"] = *me.ServiceAPIKey
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("active", me.Active); err != nil {
+		return err
+	}
+	if err := properties.Encode("alerting_profile", me.AlertingProfile); err != nil {
+		return err
+	}
+	if err := properties.Encode("account", me.Account); err != nil {
+		return err
+	}
+	if err := properties.Encode("service_api_key", me.ServiceAPIKey); err != nil {
+		return err
 	}
 
-	properties["service_name"] = me.ServiceName
+	if err := properties.Encode("service_name", me.ServiceName); err != nil {
+		return err
+	}
 
 	return nil
 }

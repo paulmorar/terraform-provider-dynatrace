@@ -42,16 +42,9 @@ func (me *ConversionGoals) Schema() map[string]*schema.Schema {
 
 func (me ConversionGoals) MarshalHCL(properties hcl.Properties) error {
 	if len(me) > 0 {
-		entries := []any{}
-		for _, entry := range me {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
+		if err := properties.EncodeSlice("goal", me); err != nil {
+			return err
 		}
-		properties["goal"] = entries
 	}
 	return nil
 }

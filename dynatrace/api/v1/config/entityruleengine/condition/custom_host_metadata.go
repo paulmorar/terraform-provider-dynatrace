@@ -66,18 +66,13 @@ func (chmck *CustomHostMetadata) Schema() map[string]*schema.Schema {
 }
 
 func (chmck *CustomHostMetadata) MarshalHCL(properties hcl.Properties) error {
-	if len(chmck.Unknowns) > 0 {
-		data, err := json.Marshal(chmck.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(chmck.Unknowns); err != nil {
+		return err
 	}
-	properties["attribute"] = string(chmck.Attribute)
-	marshalled := hcl.Properties{}
-	if err := chmck.DynamicKey.MarshalHCL(marshalled); err == nil {
-		properties["dynamic_key"] = []any{marshalled}
-	} else {
+	if err := properties.Encode("attribute", string(chmck.Attribute)); err != nil {
+		return err
+	}
+	if err := properties.Encode("dynamic_key", chmck.DynamicKey); err != nil {
 		return err
 	}
 	return nil

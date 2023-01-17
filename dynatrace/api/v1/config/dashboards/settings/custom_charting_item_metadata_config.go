@@ -58,10 +58,12 @@ func (me *CustomChartingItemMetadataConfig) MarshalHCL(properties hcl.Properties
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.LastModified != nil {
-		properties["last_modified"] = int(opt.Int64(me.LastModified))
+	if err := properties.Encode("last_modified", int(opt.Int64(me.LastModified))); err != nil {
+		return err
 	}
-	properties["custom_color"] = me.CustomColor
+	if err := properties.Encode("custom_color", me.CustomColor); err != nil {
+		return err
+	}
 	return nil
 }
 

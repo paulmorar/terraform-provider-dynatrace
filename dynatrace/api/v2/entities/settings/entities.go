@@ -36,16 +36,9 @@ func (me Entities) Schema() map[string]*schema.Schema {
 }
 
 func (me *Entities) MarshalHCL(properties hcl.Properties) error {
-	entries := []any{}
-	for _, entry := range *me {
-		marshalled := hcl.Properties{}
-		if err := entry.MarshalHCL(marshalled); err == nil {
-			entries = append(entries, marshalled)
-		} else {
-			return err
-		}
+	if err := properties.Encode("entity", me); err != nil {
+		return err
 	}
-	properties["entity"] = entries
 	return nil
 }
 

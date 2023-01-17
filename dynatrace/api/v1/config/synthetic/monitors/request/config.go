@@ -60,23 +60,26 @@ func (me *Config) Schema() map[string]*schema.Schema {
 
 func (me *Config) MarshalHCL(properties hcl.Properties) error {
 	if me.UserAgent != nil && len(*me.UserAgent) > 0 {
-		properties["user_agent"] = *me.UserAgent
-	}
-	if me.AcceptAnyCertificate != nil && *me.AcceptAnyCertificate {
-		properties["accept_any_certificate"] = *me.AcceptAnyCertificate
-	}
-	if me.FollowRedirects != nil && *me.FollowRedirects {
-		properties["follow_redirects"] = *me.FollowRedirects
-	} else {
-		properties["follow_redirects"] = false
-	}
-	if len(me.RequestHeaders) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.RequestHeaders.MarshalHCL(marshalled); err == nil {
-			properties["headers"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("user_agent", me.UserAgent); err != nil {
 			return err
 		}
+	}
+	if me.AcceptAnyCertificate != nil && *me.AcceptAnyCertificate {
+		if err := properties.Encode("accept_any_certificate", me.AcceptAnyCertificate); err != nil {
+			return err
+		}
+	}
+	if me.FollowRedirects != nil && *me.FollowRedirects {
+		if err := properties.Encode("follow_redirects", me.FollowRedirects); err != nil {
+			return err
+		}
+	} else {
+		if err := properties.Encode("follow_redirects", false); err != nil {
+			return err
+		}
+	}
+	if err := properties.Encode("headers", me.RequestHeaders); err != nil {
+		return err
 	}
 	return nil
 }

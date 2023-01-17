@@ -70,17 +70,17 @@ func (otc *OSType) Schema() map[string]*schema.Schema {
 }
 
 func (otc *OSType) MarshalHCL(properties hcl.Properties) error {
-	if len(otc.Unknowns) > 0 {
-		data, err := json.Marshal(otc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(otc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = otc.Negate
-	properties["operator"] = string(otc.Operator)
-	if otc.Value != nil {
-		properties["value"] = otc.Value.String()
+	if err := properties.Encode("negate", otc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(otc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", otc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

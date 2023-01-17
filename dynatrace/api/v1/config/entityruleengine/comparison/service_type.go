@@ -70,17 +70,17 @@ func (stc *ServiceType) Schema() map[string]*schema.Schema {
 }
 
 func (stc *ServiceType) MarshalHCL(properties hcl.Properties) error {
-	if len(stc.Unknowns) > 0 {
-		data, err := json.Marshal(stc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(stc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = stc.Negate
-	properties["operator"] = string(stc.Operator)
-	if stc.Value != nil {
-		properties["value"] = stc.Value.String()
+	if err := properties.Encode("negate", stc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(stc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", stc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

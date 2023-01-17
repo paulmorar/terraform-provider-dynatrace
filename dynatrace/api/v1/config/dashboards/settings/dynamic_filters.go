@@ -85,11 +85,11 @@ func (me *DynamicFilters) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if len(me.Filters) > 0 {
-		properties["filters"] = me.Filters
+	if err := properties.Encode("filters", me.Filters); err != nil {
+		return err
 	}
-	if len(me.TagSuggestionTypes) > 0 {
-		properties["tag_suggestion_types"] = me.TagSuggestionTypes
+	if err := properties.Encode("tag_suggestion_types", me.TagSuggestionTypes); err != nil {
+		return err
 	}
 	return nil
 }

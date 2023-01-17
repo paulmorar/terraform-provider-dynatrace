@@ -77,25 +77,27 @@ func (me *Device) Schema() map[string]*schema.Schema {
 
 func (me *Device) MarshalHCL(properties hcl.Properties) error {
 	if me.Name != nil && len(*me.Name) > 0 {
-		properties["name"] = *me.Name
+		if err := properties.Encode("name", me.Name); err != nil {
+			return err
+		}
 	}
-	if me.Orientation != nil {
-		properties["orientation"] = string(*me.Orientation)
+	if err := properties.Encode("orientation", me.Orientation); err != nil {
+		return err
 	}
-	if me.Mobile != nil {
-		properties["mobile"] = *me.Mobile
+	if err := properties.Encode("mobile", me.Mobile); err != nil {
+		return err
 	}
-	if me.TouchEnabled != nil {
-		properties["touch_enabled"] = *me.TouchEnabled
+	if err := properties.Encode("touch_enabled", me.TouchEnabled); err != nil {
+		return err
 	}
-	if me.Width != nil {
-		properties["width"] = *me.Width
+	if err := properties.Encode("width", me.Width); err != nil {
+		return err
 	}
-	if me.Height != nil {
-		properties["height"] = *me.Height
+	if err := properties.Encode("height", me.Height); err != nil {
+		return err
 	}
-	if me.ScaleFactor != nil {
-		properties["scale_factor"] = *me.ScaleFactor
+	if err := properties.Encode("scale_factor", me.ScaleFactor); err != nil {
+		return err
 	}
 	return nil
 }

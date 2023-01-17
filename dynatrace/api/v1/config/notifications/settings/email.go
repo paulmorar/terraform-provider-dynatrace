@@ -101,20 +101,30 @@ func (me *EmailConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["active"] = me.Active
-	properties["alerting_profile"] = me.AlertingProfile
-	if len(me.BccReceivers) > 0 {
-		properties["bcc_receivers"] = me.BccReceivers
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if len(me.CcReceivers) > 0 {
-		properties["cc_receivers"] = me.CcReceivers
+	if err := properties.Encode("active", me.Active); err != nil {
+		return err
 	}
-	if len(me.Receivers) > 0 {
-		properties["receivers"] = me.Receivers
+	if err := properties.Encode("alerting_profile", me.AlertingProfile); err != nil {
+		return err
 	}
-	properties["body"] = me.Body
-	properties["subject"] = me.Subject
+	if err := properties.Encode("bcc_receivers", me.BccReceivers); err != nil {
+		return err
+	}
+	if err := properties.Encode("cc_receivers", me.CcReceivers); err != nil {
+		return err
+	}
+	if err := properties.Encode("receivers", me.Receivers); err != nil {
+		return err
+	}
+	if err := properties.Encode("body", me.Body); err != nil {
+		return err
+	}
+	if err := properties.Encode("subject", me.Subject); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -60,11 +60,11 @@ func (me *SharingInfo) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.LinkShared != nil {
-		properties["link_shared"] = opt.Bool(me.LinkShared)
+	if err := properties.Encode("link_shared", opt.Bool(me.LinkShared)); err != nil {
+		return err
 	}
-	if me.Published != nil {
-		properties["published"] = opt.Bool(me.Published)
+	if err := properties.Encode("published", opt.Bool(me.Published)); err != nil {
+		return err
 	}
 	return nil
 }

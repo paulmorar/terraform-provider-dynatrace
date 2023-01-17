@@ -70,17 +70,17 @@ func (ctc *CloudType) Schema() map[string]*schema.Schema {
 }
 
 func (ctc *CloudType) MarshalHCL(properties hcl.Properties) error {
-	if len(ctc.Unknowns) > 0 {
-		data, err := json.Marshal(ctc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(ctc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = ctc.Negate
-	properties["operator"] = string(ctc.Operator)
-	if ctc.Value != nil {
-		properties["value"] = ctc.Value.String()
+	if err := properties.Encode("negate", ctc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(ctc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", ctc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

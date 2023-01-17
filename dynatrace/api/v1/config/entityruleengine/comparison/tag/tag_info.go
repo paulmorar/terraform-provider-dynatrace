@@ -61,17 +61,17 @@ func (ti *Info) Schema() map[string]*schema.Schema {
 }
 
 func (ti *Info) MarshalHCL(properties hcl.Properties) error {
-	if len(ti.Unknowns) > 0 {
-		data, err := json.Marshal(ti.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(ti.Unknowns); err != nil {
+		return err
 	}
-	properties["context"] = string(ti.Context)
-	properties["key"] = ti.Key
-	if ti.Value != nil {
-		properties["value"] = opt.String(ti.Value)
+	if err := properties.Encode("context", string(ti.Context)); err != nil {
+		return err
+	}
+	if err := properties.Encode("key", ti.Key); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", ti.Value); err != nil {
+		return err
 	}
 	return nil
 }

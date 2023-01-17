@@ -115,66 +115,44 @@ func (me *ScriptConfig) Schema() map[string]*schema.Schema {
 }
 
 func (me *ScriptConfig) MarshalHCL(properties hcl.Properties) error {
-	properties["disable_web_security"] = me.DisableWebSecurity
-	properties["bypass_csp"] = me.BypassCSP
+	if err := properties.Encode("disable_web_security", me.DisableWebSecurity); err != nil {
+		return err
+	}
+	if err := properties.Encode("bypass_csp", me.BypassCSP); err != nil {
+		return err
+	}
 	if me.MonitorFrames != nil && me.MonitorFrames.Enabled {
-		properties["monitor_frames"] = me.MonitorFrames.Enabled
+		if err := properties.Encode("monitor_frames", me.MonitorFrames.Enabled); err != nil {
+			return err
+		}
 	} else {
-		properties["monitor_frames"] = false
-	}
-	if me.UserAgent != nil {
-		properties["user_agent"] = me.UserAgent
-	}
-	if me.IgnoredErrorCodes != nil {
-		marshalled := hcl.Properties{}
-		if err := me.IgnoredErrorCodes.MarshalHCL(marshalled); err == nil {
-			properties["ignored_error_codes"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("monitor_frames", false); err != nil {
 			return err
 		}
 	}
-	if me.JavascriptSettings != nil {
-		marshalled := hcl.Properties{}
-		if err := me.JavascriptSettings.MarshalHCL(marshalled); err == nil {
-			properties["javascript_setttings"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("user_agent", me.UserAgent); err != nil {
+		return err
 	}
-	if me.Device != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Device.MarshalHCL(marshalled); err == nil {
-			properties["device"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("ignored_error_codes", me.IgnoredErrorCodes); err != nil {
+		return err
 	}
-	if me.Bandwidth != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Bandwidth.MarshalHCL(marshalled); err == nil {
-			properties["bandwidth"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("javascript_setttings", me.JavascriptSettings); err != nil {
+		return err
 	}
-	if me.RequestHeaders != nil {
-		marshalled := hcl.Properties{}
-		if err := me.RequestHeaders.MarshalHCL(marshalled); err == nil {
-			properties["headers"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("device", me.Device); err != nil {
+		return err
 	}
-	if len(me.BlockRequests) > 0 {
-		properties["block"] = me.BlockRequests
+	if err := properties.Encode("bandwidth", me.Bandwidth); err != nil {
+		return err
 	}
-	if len(me.Cookies) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Cookies.MarshalHCL(marshalled); err == nil {
-			properties["cookies"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("headers", me.RequestHeaders); err != nil {
+		return err
+	}
+	if err := properties.Encode("block", me.BlockRequests); err != nil {
+		return err
+	}
+	if err := properties.Encode("cookies", me.Cookies); err != nil {
+		return err
 	}
 	return nil
 }
@@ -247,9 +225,11 @@ func (me *IgnoredErrorCodes) Schema() map[string]*schema.Schema {
 }
 
 func (me *IgnoredErrorCodes) MarshalHCL(properties hcl.Properties) error {
-	properties["status_codes"] = me.StatusCodes
-	if me.MatchingDocumentRequests != nil {
-		properties["matching_document_requests"] = *me.MatchingDocumentRequests
+	if err := properties.Encode("status_codes", me.StatusCodes); err != nil {
+		return err
+	}
+	if err := properties.Encode("matching_document_requests", me.MatchingDocumentRequests); err != nil {
+		return err
 	}
 	return nil
 }
@@ -295,24 +275,16 @@ func (me *JavascriptSettings) Schema() map[string]*schema.Schema {
 }
 
 func (me *JavascriptSettings) MarshalHCL(properties hcl.Properties) error {
-	if me.TimeoutSettings != nil {
-		marshalled := hcl.Properties{}
-		if err := me.TimeoutSettings.MarshalHCL(marshalled); err == nil {
-			properties["timeout_settings"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("timeout_settings", me.TimeoutSettings); err != nil {
+		return err
 	}
-	if me.VisuallyCompleteOptions != nil {
-		marshalled := hcl.Properties{}
-		if err := me.VisuallyCompleteOptions.MarshalHCL(marshalled); err == nil {
-			properties["visually_complete_options"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("visually_complete_options", me.VisuallyCompleteOptions); err != nil {
+		return err
 	}
 	if me.CustomProperties != nil && len(*me.CustomProperties) > 0 {
-		properties["custom_properties"] = *me.CustomProperties
+		if err := properties.Encode("custom_properties", me.CustomProperties); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -371,14 +343,20 @@ func (me *VisuallyCompleteOptions) Schema() map[string]*schema.Schema {
 }
 
 func (me *VisuallyCompleteOptions) MarshalHCL(properties hcl.Properties) error {
-	properties["image_size_threshold"] = me.ImageSizeThreshold
-	properties["inactivity_timeout"] = me.InactivityTimeout
-	properties["mutation_timeout"] = me.MutationTimeout
-	if len(me.ExcludedURLs) > 0 {
-		properties["excluded_urls"] = me.ExcludedURLs
+	if err := properties.Encode("image_size_threshold", me.ImageSizeThreshold); err != nil {
+		return err
 	}
-	if len(me.ExcludedElements) > 0 {
-		properties["excluded_elements"] = me.ExcludedElements
+	if err := properties.Encode("inactivity_timeout", me.InactivityTimeout); err != nil {
+		return err
+	}
+	if err := properties.Encode("mutation_timeout", me.MutationTimeout); err != nil {
+		return err
+	}
+	if err := properties.Encode("excluded_urls", me.ExcludedURLs); err != nil {
+		return err
+	}
+	if err := properties.Encode("excluded_elements", me.ExcludedElements); err != nil {
+		return err
 	}
 	return nil
 }
@@ -429,8 +407,12 @@ func (me *TimeoutSettings) Schema() map[string]*schema.Schema {
 }
 
 func (me *TimeoutSettings) MarshalHCL(properties hcl.Properties) error {
-	properties["action_limit"] = int(me.TemporaryActionLimit)
-	properties["total_timeout"] = int(me.TemporaryActionTotalTimeout)
+	if err := properties.Encode("action_limit", int(me.TemporaryActionLimit)); err != nil {
+		return err
+	}
+	if err := properties.Encode("total_timeout", int(me.TemporaryActionTotalTimeout)); err != nil {
+		return err
+	}
 	return nil
 }
 

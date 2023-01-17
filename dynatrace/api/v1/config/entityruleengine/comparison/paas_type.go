@@ -70,17 +70,17 @@ func (ptc *PaasType) Schema() map[string]*schema.Schema {
 }
 
 func (ptc *PaasType) MarshalHCL(properties hcl.Properties) error {
-	if len(ptc.Unknowns) > 0 {
-		data, err := json.Marshal(ptc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(ptc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = ptc.Negate
-	properties["operator"] = string(ptc.Operator)
-	if ptc.Value != nil {
-		properties["value"] = ptc.Value.String()
+	if err := properties.Encode("negate", ptc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(ptc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", ptc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

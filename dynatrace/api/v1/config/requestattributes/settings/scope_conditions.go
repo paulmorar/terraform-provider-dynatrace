@@ -72,17 +72,17 @@ func (me *ScopeConditions) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.HostGroup != nil {
-		properties["host_group"] = *me.HostGroup
+	if err := properties.Encode("host_group", me.HostGroup); err != nil {
+		return err
 	}
-	if me.ProcessGroup != nil {
-		properties["process_group"] = *me.ProcessGroup
+	if err := properties.Encode("process_group", me.ProcessGroup); err != nil {
+		return err
 	}
-	if me.ServiceTechnology != nil {
-		properties["service_technology"] = string(*me.ServiceTechnology)
+	if err := properties.Encode("service_technology", me.ServiceTechnology); err != nil {
+		return err
 	}
-	if me.TagOfProcessGroup != nil {
-		properties["tag_of_process_group"] = *me.TagOfProcessGroup
+	if err := properties.Encode("tag_of_process_group", me.TagOfProcessGroup); err != nil {
+		return err
 	}
 	return nil
 }

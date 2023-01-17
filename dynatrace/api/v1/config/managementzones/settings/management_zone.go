@@ -105,53 +105,28 @@ func (mz *ManagementZone) SortRules() {
 }
 
 func (mz *ManagementZone) MarshalHCL(properties hcl.Properties) error {
-	if len(mz.Unknowns) > 0 {
-		data, err := json.Marshal(mz.Unknowns)
-		if err != nil {
+	if err := properties.Unknowns(mz.Unknowns); err != nil {
+		return err
+	}
+	if err := properties.Encode("name", mz.Name); err != nil {
+		return err
+	}
+	if mz.Description != nil && len(*mz.Description) > 0 {
+		if err := properties.Encode("description", mz.Description); err != nil {
 			return err
 		}
-		properties["unknowns"] = string(data)
-	}
-	properties["name"] = mz.Name
-	if mz.Description != nil && len(*mz.Description) > 0 {
-		properties["description"] = *mz.Description
 	}
 	if mz.Rules != nil {
 		mz.SortRules()
-		entries := []any{}
-		for _, entry := range mz.Rules {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
+		if err := properties.Encode("rules", mz.Rules); err != nil {
+			return err
 		}
-		properties["rules"] = entries
 	}
-	if len(mz.DimensionalRules) > 0 {
-		entries := []any{}
-		for _, entry := range mz.DimensionalRules {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["dimensional_rule"] = entries
+	if err := properties.Encode("dimensional_rule", mz.DimensionalRules); err != nil {
+		return err
 	}
-	if len(mz.EntitySelectorBasedRules) > 0 {
-		entries := []any{}
-		for _, entry := range mz.EntitySelectorBasedRules {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["entity_selector_based_rule"] = entries
+	if err := properties.Encode("entity_selector_based_rule", mz.EntitySelectorBasedRules); err != nil {
+		return err
 	}
 	return nil
 }

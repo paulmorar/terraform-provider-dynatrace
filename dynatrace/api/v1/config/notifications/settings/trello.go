@@ -121,18 +121,36 @@ func (me *TrelloConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["active"] = me.Active
-	properties["alerting_profile"] = me.AlertingProfile
-	properties["resolved_list_id"] = me.ResolvedListID
-	properties["text"] = me.Text
-	properties["application_key"] = me.ApplicationKey
-	if me.AuthorizationToken != nil {
-		properties["authorization_token"] = *me.AuthorizationToken
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	properties["board_id"] = me.BoardID
-	properties["description"] = me.Description
-	properties["list_id"] = me.ListID
+	if err := properties.Encode("active", me.Active); err != nil {
+		return err
+	}
+	if err := properties.Encode("alerting_profile", me.AlertingProfile); err != nil {
+		return err
+	}
+	if err := properties.Encode("resolved_list_id", me.ResolvedListID); err != nil {
+		return err
+	}
+	if err := properties.Encode("text", me.Text); err != nil {
+		return err
+	}
+	if err := properties.Encode("application_key", me.ApplicationKey); err != nil {
+		return err
+	}
+	if err := properties.Encode("authorization_token", me.AuthorizationToken); err != nil {
+		return err
+	}
+	if err := properties.Encode("board_id", me.BoardID); err != nil {
+		return err
+	}
+	if err := properties.Encode("description", me.Description); err != nil {
+		return err
+	}
+	if err := properties.Encode("list_id", me.ListID); err != nil {
+		return err
+	}
 	return nil
 }
 

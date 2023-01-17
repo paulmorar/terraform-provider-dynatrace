@@ -48,13 +48,8 @@ func (me *Cookie) Schema() map[string]*schema.Schema {
 }
 
 func (me *Cookie) MarshalHCL(properties hcl.Properties) error {
-	if len(me.Cookies) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Cookies.MarshalHCL(marshalled); err == nil {
-			properties["cookies"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("cookies", me.Cookies); err != nil {
+		return err
 	}
 	return nil
 }

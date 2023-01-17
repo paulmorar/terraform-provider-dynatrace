@@ -64,16 +64,11 @@ func (me *DashboardFilter) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.Timeframe != nil {
-		properties["timeframe"] = opt.String(me.Timeframe)
+	if err := properties.Encode("timeframe", me.Timeframe); err != nil {
+		return err
 	}
-	if me.ManagementZone != nil {
-		marshalled := hcl.Properties{}
-		if err := me.ManagementZone.MarshalHCL(marshalled); err == nil {
-			properties["management_zone"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("management_zone", me.ManagementZone); err != nil {
+		return err
 	}
 	return nil
 }

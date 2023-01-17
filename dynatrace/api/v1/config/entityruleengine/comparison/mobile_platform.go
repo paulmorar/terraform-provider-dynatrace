@@ -70,17 +70,17 @@ func (mpc *MobilePlatform) Schema() map[string]*schema.Schema {
 }
 
 func (mpc *MobilePlatform) MarshalHCL(properties hcl.Properties) error {
-	if len(mpc.Unknowns) > 0 {
-		data, err := json.Marshal(mpc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(mpc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = mpc.Negate
-	properties["operator"] = string(mpc.Operator)
-	if mpc.Value != nil {
-		properties["value"] = mpc.Value.String()
+	if err := properties.Encode("negate", mpc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(mpc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", mpc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

@@ -292,54 +292,40 @@ func (ac *AzureCredentials) MarshalHCL(properties hcl.Properties) error {
 		if err != nil {
 			return err
 		}
-		properties["unknowns"] = string(data)
+		if err := properties.Encode("unknowns", string(data)); err != nil {
+			return err
+		}
 	}
 
-	properties["label"] = ac.Label
-	properties["directory_id"] = ac.DirectoryID
-	properties["auto_tagging"] = opt.Bool(ac.AutoTagging)
-	if ac.MonitorOnlyTagPairs != nil {
-		entries := []any{}
-		for _, entry := range ac.MonitorOnlyTagPairs {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["monitor_only_tag_pairs"] = entries
+	if err := properties.Encode("label", ac.Label); err != nil {
+		return err
 	}
-	if ac.MonitorOnlyExcludingTagPairs != nil {
-		entries := []any{}
-		for _, entry := range ac.MonitorOnlyExcludingTagPairs {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["monitor_only_excluding_tag_pairs"] = entries
+	if err := properties.Encode("directory_id", ac.DirectoryID); err != nil {
+		return err
 	}
-	properties["active"] = opt.Bool(ac.Active)
-	properties["app_id"] = ac.AppID
-	if ac.Key != nil {
-		properties["key"] = *ac.Key
+	if err := properties.Encode("auto_tagging", opt.Bool(ac.AutoTagging)); err != nil {
+		return err
 	}
-	properties["monitor_only_tagged_entities"] = opt.Bool(ac.MonitorOnlyTaggedEntities)
-	if ac.SupportingServices != nil {
-		entries := []any{}
-		for _, entry := range ac.SupportingServices {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-
-		properties["supporting_services"] = entries
+	if err := properties.Encode("monitor_only_tag_pairs", ac.MonitorOnlyTagPairs); err != nil {
+		return err
+	}
+	if err := properties.Encode("monitor_only_excluding_tag_pairs", ac.MonitorOnlyExcludingTagPairs); err != nil {
+		return err
+	}
+	if err := properties.Encode("active", opt.Bool(ac.Active)); err != nil {
+		return err
+	}
+	if err := properties.Encode("app_id", ac.AppID); err != nil {
+		return err
+	}
+	if err := properties.Encode("key", ac.Key); err != nil {
+		return err
+	}
+	if err := properties.Encode("monitor_only_tagged_entities", opt.Bool(ac.MonitorOnlyTaggedEntities)); err != nil {
+		return err
+	}
+	if err := properties.Encode("supporting_services", ac.SupportingServices); err != nil {
+		return err
 	}
 	return nil
 }

@@ -74,15 +74,15 @@ func (bcb *BaseComparison) Schema() map[string]*schema.Schema {
 }
 
 func (bcb *BaseComparison) MarshalHCL(properties hcl.Properties) error {
-	if len(bcb.Unknowns) > 0 {
-		data, err := json.Marshal(bcb.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(bcb.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = bcb.Negate
-	properties["type"] = string(bcb.Type)
+	if err := properties.Encode("negate", bcb.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("type", string(bcb.Type)); err != nil {
+		return err
+	}
 	return nil
 }
 

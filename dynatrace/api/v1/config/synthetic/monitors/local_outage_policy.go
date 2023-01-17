@@ -45,8 +45,15 @@ func (me *LocalOutagePolicy) Schema() map[string]*schema.Schema {
 }
 
 func (me *LocalOutagePolicy) MarshalHCL(properties hcl.Properties) error {
-	properties["affected_locations"] = *me.AffectedLocations
-	properties["consecutive_runs"] = *me.ConsecutiveRuns
+	if me.AffectedLocations == nil && me.ConsecutiveRuns == nil {
+		return nil
+	}
+	if err := properties.Encode("affected_locations", me.AffectedLocations); err != nil {
+		return err
+	}
+	if err := properties.Encode("consecutive_runs", me.ConsecutiveRuns); err != nil {
+		return err
+	}
 	return nil
 }
 

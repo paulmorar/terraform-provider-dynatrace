@@ -70,10 +70,18 @@ func (me *TileBounds) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["left"] = int(me.Left)
-	properties["top"] = int(me.Top)
-	properties["width"] = int(me.Width)
-	properties["height"] = int(me.Height)
+	if err := properties.Encode("left", int(me.Left)); err != nil {
+		return err
+	}
+	if err := properties.Encode("top", int(me.Top)); err != nil {
+		return err
+	}
+	if err := properties.Encode("width", int(me.Width)); err != nil {
+		return err
+	}
+	if err := properties.Encode("height", int(me.Height)); err != nil {
+		return err
+	}
 	return nil
 }
 

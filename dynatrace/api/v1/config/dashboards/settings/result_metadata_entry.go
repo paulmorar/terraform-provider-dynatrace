@@ -62,11 +62,15 @@ func (me *ResultMetadataEntry) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.Config.LastModified != nil {
-		properties["last_modified"] = int(opt.Int64(me.Config.LastModified))
+	if err := properties.Encode("last_modified", int(opt.Int64(me.Config.LastModified))); err != nil {
+		return err
 	}
-	properties["custom_color"] = me.Config.CustomColor
-	properties["key"] = me.Key
+	if err := properties.Encode("custom_color", me.Config.CustomColor); err != nil {
+		return err
+	}
+	if err := properties.Encode("key", me.Key); err != nil {
+		return err
+	}
 	return nil
 }
 

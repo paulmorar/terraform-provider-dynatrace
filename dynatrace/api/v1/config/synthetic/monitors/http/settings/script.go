@@ -45,18 +45,8 @@ func (me *Script) Schema() map[string]*schema.Schema {
 }
 
 func (me *Script) MarshalHCL(properties hcl.Properties) error {
-	if len(me.Requests) > 0 {
-		entries := []any{}
-		for _, request := range me.Requests {
-			marshalled := hcl.Properties{}
-
-			if err := request.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["request"] = entries
+	if err := properties.Encode("request", me.Requests); err != nil {
+		return err
 	}
 	return nil
 }

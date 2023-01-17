@@ -222,43 +222,28 @@ func (awscc *AWSCredentialsConfig) MarshalHCL(properties hcl.Properties) error {
 		if err != nil {
 			return err
 		}
-		properties["unknowns"] = string(data)
-	}
-	if awscc.SupportingServicesToMonitor != nil {
-		entries := []any{}
-		for _, entry := range awscc.SupportingServicesToMonitor {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["supporting_services_to_monitor"] = entries
-	}
-	properties["label"] = awscc.Label
-	properties["tagged_only"] = opt.Bool(awscc.TaggedOnly)
-
-	if awscc.AuthenticationData != nil {
-		marshalled := hcl.Properties{}
-		if err := awscc.AuthenticationData.MarshalHCL(marshalled); err == nil {
-			properties["authentication_data"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("unknowns", string(data)); err != nil {
 			return err
 		}
 	}
-	properties["partition_type"] = awscc.PartitionType
-	if awscc.TagsToMonitor != nil {
-		entries := []any{}
-		for _, entry := range awscc.TagsToMonitor {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["tags_to_monitor"] = entries
+	if err := properties.Encode("supporting_services_to_monitor", awscc.SupportingServicesToMonitor); err != nil {
+		return err
+	}
+	if err := properties.Encode("label", awscc.Label); err != nil {
+		return err
+	}
+	if err := properties.Encode("tagged_only", opt.Bool(awscc.TaggedOnly)); err != nil {
+		return err
+	}
+
+	if err := properties.Encode("authentication_data", awscc.AuthenticationData); err != nil {
+		return err
+	}
+	if err := properties.Encode("partition_type", awscc.PartitionType); err != nil {
+		return err
+	}
+	if err := properties.Encode("tags_to_monitor", awscc.TagsToMonitor); err != nil {
+		return err
 	}
 	return nil
 }

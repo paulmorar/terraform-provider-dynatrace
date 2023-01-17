@@ -72,14 +72,18 @@ func (me *Recurrence) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.DayOfMonth != nil {
-		properties["day_of_month"] = int(opt.Int32(me.DayOfMonth))
+	if err := properties.Encode("day_of_month", int(opt.Int32(me.DayOfMonth))); err != nil {
+		return err
 	}
-	if me.DayOfWeek != nil {
-		properties["day_of_week"] = string(*me.DayOfWeek)
+	if err := properties.Encode("day_of_week", me.DayOfWeek); err != nil {
+		return err
 	}
-	properties["duration_minutes"] = int(me.DurationMinutes)
-	properties["start_time"] = me.StartTime
+	if err := properties.Encode("duration_minutes", int(me.DurationMinutes)); err != nil {
+		return err
+	}
+	if err := properties.Encode("start_time", me.StartTime); err != nil {
+		return err
+	}
 	return nil
 }
 

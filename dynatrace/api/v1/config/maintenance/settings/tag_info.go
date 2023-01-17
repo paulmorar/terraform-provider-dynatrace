@@ -116,10 +116,14 @@ func (me *TagInfo) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["context"] = string(me.Context)
-	properties["key"] = string(me.Key)
-	if me.Value != nil {
-		properties["value"] = *me.Value
+	if err := properties.Encode("context", string(me.Context)); err != nil {
+		return err
+	}
+	if err := properties.Encode("key", string(me.Key)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
 	}
 
 	return nil

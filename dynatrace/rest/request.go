@@ -144,11 +144,11 @@ func (me *request) Raw() ([]byte, error) {
 		}
 		body = bytes.NewBuffer(data)
 	}
-	if os.Getenv("DT_REST_DEBUG_REQUEST_PAYLOAD") == "true" && me.payload != nil {
-		logger.Println(me.method, url+"\n    "+string(data))
-	} else {
-		logger.Println(me.method, url)
-	}
+	// if os.Getenv("DT_REST_DEBUG_REQUEST_PAYLOAD") == "true" && me.payload != nil {
+	logger.Println(me.method, url+"\n    "+string(data))
+	// } else {
+	// logger.Println(me.method, url)
+	// }
 
 	var req *http.Request
 	if req, err = http.NewRequest(me.method, url, body); err != nil {
@@ -190,6 +190,7 @@ func (me *request) Raw() ([]byte, error) {
 	if data, err = io.ReadAll(res.Body); err != nil {
 		return nil, err
 	}
+	logger.Println("  ", res.StatusCode, string(data))
 	if len(me.expect) > 0 && !me.expect.contains(res.StatusCode) {
 		var env errorEnvelope
 		if err = json.Unmarshal(data, &env); err == nil && env.Error != nil {

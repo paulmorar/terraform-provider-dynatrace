@@ -50,9 +50,15 @@ func (me *RuleItem) Schema() map[string]*schema.Schema {
 }
 
 func (me *RuleItem) MarshalHCL(properties hcl.Properties) error {
-	properties["enabled"] = me.Enabled
-	properties["attribute_key"] = me.AttributeKey
-	properties["masking"] = string(me.Masking)
+	if err := properties.Encode("enabled", me.Enabled); err != nil {
+		return err
+	}
+	if err := properties.Encode("attribute_key", me.AttributeKey); err != nil {
+		return err
+	}
+	if err := properties.Encode("masking", string(me.Masking)); err != nil {
+		return err
+	}
 
 	return nil
 }

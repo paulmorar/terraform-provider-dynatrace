@@ -91,13 +91,17 @@ func (me *LoadingTimeThreshold) Schema() map[string]*schema.Schema {
 }
 
 func (me *LoadingTimeThreshold) MarshalHCL(properties hcl.Properties) error {
-	properties["type"] = string(me.Type)
-	properties["value_ms"] = int(me.ValueMs)
-	if me.RequestIndex != nil {
-		properties["request_index"] = int(*me.RequestIndex)
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
 	}
-	if me.EventIndex != nil {
-		properties["event_index"] = int(*me.EventIndex)
+	if err := properties.Encode("value_ms", int(me.ValueMs)); err != nil {
+		return err
+	}
+	if err := properties.Encode("request_index", me.RequestIndex); err != nil {
+		return err
+	}
+	if err := properties.Encode("event_index", me.EventIndex); err != nil {
+		return err
 	}
 	return nil
 }

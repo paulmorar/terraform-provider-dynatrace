@@ -48,18 +48,11 @@ func (me *FilterForEntityType) Schema() map[string]*schema.Schema {
 }
 
 func (me *FilterForEntityType) MarshalHCL(properties hcl.Properties) error {
-	properties["entity_type"] = me.EntityType
-	if len(me.Filters) > 0 {
-		entries := []any{}
-		for _, entry := range me.Filters {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["match"] = entries
+	if err := properties.Encode("entity_type", me.EntityType); err != nil {
+		return err
+	}
+	if err := properties.Encode("match", me.Filters); err != nil {
+		return err
 	}
 	return nil
 }

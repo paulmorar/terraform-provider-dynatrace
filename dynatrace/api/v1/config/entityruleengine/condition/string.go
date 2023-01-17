@@ -62,15 +62,15 @@ func (sck *String) Schema() map[string]*schema.Schema {
 }
 
 func (sck *String) MarshalHCL(properties hcl.Properties) error {
-	if len(sck.Unknowns) > 0 {
-		data, err := json.Marshal(sck.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(sck.Unknowns); err != nil {
+		return err
 	}
-	properties["attribute"] = string(sck.Attribute)
-	properties["dynamic_key"] = sck.DynamicKey
+	if err := properties.Encode("attribute", string(sck.Attribute)); err != nil {
+		return err
+	}
+	if err := properties.Encode("dynamic_key", sck.DynamicKey); err != nil {
+		return err
+	}
 	return nil
 }
 

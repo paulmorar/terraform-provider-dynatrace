@@ -78,6 +78,14 @@ func (me Properties) EncodeAll(items map[string]any) error {
 
 type StringSet []string
 
+func (me Properties) setPrimitiveSlice(key string, v any) {
+	if reflect.ValueOf(v).Len() == 0 {
+		me[key] = nil
+	} else {
+		me[key] = v
+	}
+}
+
 func (me Properties) Encode(key string, v any) error {
 	if v == nil {
 		return nil
@@ -159,12 +167,8 @@ func (me Properties) Encode(key string, v any) error {
 		} else {
 			me[key] = nil
 		}
-	case []string:
-		if len(t) > 0 {
-			me[key] = t
-		} else {
-			me[key] = nil
-		}
+	case []string, []int, []int8, []int16, []int32, []int64, []uint, []uint8, []uint16, []uint32, []uint64, []float32, []float64, []bool:
+		me.setPrimitiveSlice(key, t)
 	case string:
 		me[key] = t
 	case int:

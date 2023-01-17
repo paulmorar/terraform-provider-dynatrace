@@ -70,17 +70,17 @@ func (setc *SyntheticEngineType) Schema() map[string]*schema.Schema {
 }
 
 func (setc *SyntheticEngineType) MarshalHCL(properties hcl.Properties) error {
-	if len(setc.Unknowns) > 0 {
-		data, err := json.Marshal(setc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(setc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = setc.Negate
-	properties["operator"] = string(setc.Operator)
-	if setc.Value != nil {
-		properties["value"] = setc.Value.String()
+	if err := properties.Encode("negate", setc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(setc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", setc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

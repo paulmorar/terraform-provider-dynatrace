@@ -58,12 +58,14 @@ func (me *WaitCondition) Schema() map[string]*schema.Schema {
 }
 
 func (me *WaitCondition) MarshalHCL(properties hcl.Properties) error {
-	properties["wait_for"] = me.WaitFor
-	if me.Milliseconds != nil {
-		properties["milliseconds"] = *me.Milliseconds
+	if err := properties.Encode("wait_for", me.WaitFor); err != nil {
+		return err
 	}
-	if me.TimeoutInMilliseconds != nil {
-		properties["timeout"] = *me.TimeoutInMilliseconds
+	if err := properties.Encode("milliseconds", me.Milliseconds); err != nil {
+		return err
+	}
+	if err := properties.Encode("timeout", me.TimeoutInMilliseconds); err != nil {
+		return err
 	}
 	if me.Validation != nil {
 		marshalled := hcl.Properties{}

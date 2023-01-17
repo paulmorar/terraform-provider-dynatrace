@@ -56,17 +56,17 @@ func (me *Bandwidth) Schema() map[string]*schema.Schema {
 }
 
 func (me *Bandwidth) MarshalHCL(properties hcl.Properties) error {
-	if me.NetworkType != nil {
-		properties["network_type"] = string(*me.NetworkType)
+	if err := properties.Encode("network_type", me.NetworkType); err != nil {
+		return err
 	}
-	if me.Latency != nil {
-		properties["latency"] = int(*me.Latency)
+	if err := properties.Encode("latency", me.Latency); err != nil {
+		return err
 	}
-	if me.Download != nil {
-		properties["download"] = int(*me.Download)
+	if err := properties.Encode("download", me.Download); err != nil {
+		return err
 	}
-	if me.Upload != nil {
-		properties["upload"] = int(*me.Upload)
+	if err := properties.Encode("upload", me.Upload); err != nil {
+		return err
 	}
 	return nil
 }

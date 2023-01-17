@@ -102,15 +102,15 @@ func (act *AWSConfigTag) MarshalJSON() ([]byte, error) {
 }
 
 func (act *AWSConfigTag) MarshalHCL(properties hcl.Properties) error {
-	if len(act.Unknowns) > 0 {
-		data, err := json.Marshal(act.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(act.Unknowns); err != nil {
+		return err
 	}
-	properties["name"] = act.Name
-	properties["value"] = act.Value
+	if err := properties.Encode("name", act.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", act.Value); err != nil {
+		return err
+	}
 	return nil
 }
 

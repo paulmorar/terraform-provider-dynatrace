@@ -88,27 +88,15 @@ func (me *Dashboard) MarshalHCL(properties hcl.Properties) error {
 		if err != nil {
 			return err
 		}
-		properties["unknowns"] = string(data)
-	}
-	if me.Metadata != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Metadata.MarshalHCL(marshalled); err == nil {
-			properties["dashboard_metadata"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("unknowns", string(data)); err != nil {
 			return err
 		}
 	}
-	if len(me.Tiles) > 0 {
-		entries := []any{}
-		for _, entry := range me.Tiles {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["tile"] = entries
+	if err := properties.Encode("dashboard_metadata", me.Metadata); err != nil {
+		return err
+	}
+	if err := properties.Encode("tile", me.Tiles); err != nil {
+		return err
 	}
 	return nil
 }

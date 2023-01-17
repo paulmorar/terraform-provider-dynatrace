@@ -70,17 +70,17 @@ func (dtc *DatabaseTopology) Schema() map[string]*schema.Schema {
 }
 
 func (dtc *DatabaseTopology) MarshalHCL(properties hcl.Properties) error {
-	if len(dtc.Unknowns) > 0 {
-		data, err := json.Marshal(dtc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(dtc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = dtc.Negate
-	properties["operator"] = string(dtc.Operator)
-	if dtc.Value != nil {
-		properties["value"] = dtc.Value.String()
+	if err := properties.Encode("negate", dtc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(dtc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", dtc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

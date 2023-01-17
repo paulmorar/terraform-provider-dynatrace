@@ -69,19 +69,14 @@ func (me *DimensionalRule) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["enabled"] = opt.Bool(me.Enabled)
-	properties["applies_to"] = string(me.AppliesTo)
-	if len(me.Conditions) > 0 {
-		entries := []any{}
-		for _, entry := range me.Conditions {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["condition"] = entries
+	if err := properties.Encode("enabled", opt.Bool(me.Enabled)); err != nil {
+		return err
+	}
+	if err := properties.Encode("applies_to", string(me.AppliesTo)); err != nil {
+		return err
+	}
+	if err := properties.Encode("condition", me.Conditions); err != nil {
+		return err
 	}
 
 	return nil

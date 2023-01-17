@@ -89,38 +89,17 @@ func (me *AutoTag) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	if me.Description != nil {
-		properties["description"] = me.Description
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if len(me.Rules) > 0 {
-		entries := make([]any, 0)
-		for _, rule := range me.Rules {
-			marshalled := hcl.Properties{}
-			if err := rule.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["rules"] = entries
-	} else {
-		properties["rules"] = nil
+	if err := properties.Encode("description", me.Description); err != nil {
+		return err
 	}
-	if me.EntitySelectorBasedRules != nil {
-		entries := make([]any, 0)
-		for _, rule := range me.EntitySelectorBasedRules {
-			marshalled := hcl.Properties{}
-
-			if err := rule.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["entity_selector_based_rule"] = entries
-	} else {
-		properties["entity_selector_based_rule"] = nil
+	if err := properties.Encode("rules", me.Rules); err != nil {
+		return err
+	}
+	if err := properties.Encode("entity_selector_based_rule", me.EntitySelectorBasedRules); err != nil {
+		return err
 	}
 	return nil
 }

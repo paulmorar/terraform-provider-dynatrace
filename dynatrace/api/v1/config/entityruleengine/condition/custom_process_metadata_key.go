@@ -54,15 +54,15 @@ func (cpmk *CustomProcessMetadataKey) Schema() map[string]*schema.Schema {
 }
 
 func (cpmk *CustomProcessMetadataKey) MarshalHCL(properties hcl.Properties) error {
-	if len(cpmk.Unknowns) > 0 {
-		data, err := json.Marshal(cpmk.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(cpmk.Unknowns); err != nil {
+		return err
 	}
-	properties["key"] = cpmk.Key
-	properties["source"] = string(cpmk.Source)
+	if err := properties.Encode("key", cpmk.Key); err != nil {
+		return err
+	}
+	if err := properties.Encode("source", string(cpmk.Source)); err != nil {
+		return err
+	}
 	return nil
 }
 

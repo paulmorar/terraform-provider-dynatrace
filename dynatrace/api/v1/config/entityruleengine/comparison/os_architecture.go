@@ -71,17 +71,17 @@ func (oac *OSArchitecture) Schema() map[string]*schema.Schema {
 }
 
 func (oac *OSArchitecture) MarshalHCL(properties hcl.Properties) error {
-	if len(oac.Unknowns) > 0 {
-		data, err := json.Marshal(oac.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(oac.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = oac.Negate
-	properties["operator"] = string(oac.Operator)
-	if oac.Value != nil {
-		properties["value"] = oac.Value.String()
+	if err := properties.Encode("negate", oac.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(oac.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", oac.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

@@ -39,16 +39,9 @@ func (me *Cookies) Schema() map[string]*schema.Schema {
 }
 
 func (me Cookies) MarshalHCL(properties hcl.Properties) error {
-	entries := []any{}
-	for _, cookie := range me {
-		marshalled := hcl.Properties{}
-		if err := cookie.MarshalHCL(marshalled); err == nil {
-			entries = append(entries, marshalled)
-		} else {
-			return err
-		}
+	if err := properties.EncodeSlice("cookie", me); err != nil {
+		return err
 	}
-	properties["cookie"] = entries
 	return nil
 }
 
@@ -90,11 +83,17 @@ func (me *Cookie) Schema() map[string]*schema.Schema {
 }
 
 func (me *Cookie) MarshalHCL(properties hcl.Properties) error {
-	properties["name"] = me.Name
-	properties["value"] = me.Value
-	properties["domain"] = me.Domain
-	if me.Path != nil {
-		properties["path"] = *me.Path
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
+	}
+	if err := properties.Encode("domain", me.Domain); err != nil {
+		return err
+	}
+	if err := properties.Encode("path", me.Path); err != nil {
+		return err
 	}
 	return nil
 }

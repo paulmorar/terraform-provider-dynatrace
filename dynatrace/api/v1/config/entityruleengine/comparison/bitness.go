@@ -70,17 +70,17 @@ func (bc *Bitness) Schema() map[string]*schema.Schema {
 }
 
 func (bc *Bitness) MarshalHCL(properties hcl.Properties) error {
-	if len(bc.Unknowns) > 0 {
-		data, err := json.Marshal(bc.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(bc.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = bc.Negate
-	properties["operator"] = string(bc.Operator)
-	if bc.Value != nil {
-		properties["value"] = bc.Value.String()
+	if err := properties.Encode("negate", bc.Negate); err != nil {
+		return err
+	}
+	if err := properties.Encode("operator", string(bc.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", bc.Value.String()); err != nil {
+		return err
 	}
 	return nil
 }

@@ -52,8 +52,8 @@ func (me *UserSessionQueryTileConfiguration) MarshalHCL(properties hcl.Propertie
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.HasAxisBucketing != nil {
-		properties["has_axis_bucketing"] = opt.Bool(me.HasAxisBucketing)
+	if err := properties.Encode("has_axis_bucketing", opt.Bool(me.HasAxisBucketing)); err != nil {
+		return err
 	}
 	return nil
 }

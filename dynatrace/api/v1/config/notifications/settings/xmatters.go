@@ -90,18 +90,30 @@ func (me *XMattersConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["active"] = me.Active
-	properties["alerting_profile"] = me.AlertingProfile
-	properties["accept_any_certificate"] = me.AcceptAnyCertificate
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("active", me.Active); err != nil {
+		return err
+	}
+	if err := properties.Encode("alerting_profile", me.AlertingProfile); err != nil {
+		return err
+	}
+	if err := properties.Encode("accept_any_certificate", me.AcceptAnyCertificate); err != nil {
+		return err
+	}
 
 	if len(me.Headers) > 0 {
 		if err := properties.EncodeSlice("header", me.Headers); err != nil {
 			return err
 		}
 	}
-	properties["payload"] = me.Payload
-	properties["url"] = me.URL
+	if err := properties.Encode("payload", me.Payload); err != nil {
+		return err
+	}
+	if err := properties.Encode("url", me.URL); err != nil {
+		return err
+	}
 
 	return nil
 }

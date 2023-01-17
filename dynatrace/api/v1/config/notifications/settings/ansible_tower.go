@@ -135,17 +135,33 @@ func (me *AnsibleTowerConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["active"] = me.Active
-	properties["alerting_profile"] = me.AlertingProfile
-	properties["accept_any_certificate"] = me.AcceptAnyCertificate
-	properties["custom_message"] = me.CustomMessage
-	properties["job_template_id"] = int(me.JobTemplateID)
-	properties["job_template_url"] = me.JobTemplateURL
-	if me.Password != nil {
-		properties["password"] = *me.Password
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	properties["username"] = me.Username
+	if err := properties.Encode("active", me.Active); err != nil {
+		return err
+	}
+	if err := properties.Encode("alerting_profile", me.AlertingProfile); err != nil {
+		return err
+	}
+	if err := properties.Encode("accept_any_certificate", me.AcceptAnyCertificate); err != nil {
+		return err
+	}
+	if err := properties.Encode("custom_message", me.CustomMessage); err != nil {
+		return err
+	}
+	if err := properties.Encode("job_template_id", int(me.JobTemplateID)); err != nil {
+		return err
+	}
+	if err := properties.Encode("job_template_url", me.JobTemplateURL); err != nil {
+		return err
+	}
+	if err := properties.Encode("password", me.Password); err != nil {
+		return err
+	}
+	if err := properties.Encode("username", me.Username); err != nil {
+		return err
+	}
 	return nil
 }
 

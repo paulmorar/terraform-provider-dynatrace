@@ -49,21 +49,11 @@ func (me *AnomalyDetection) Schema() map[string]*schema.Schema {
 }
 
 func (me *AnomalyDetection) MarshalHCL(properties hcl.Properties) error {
-	if me.OutageHandling != nil {
-		marshalled := hcl.Properties{}
-		if err := me.OutageHandling.MarshalHCL(marshalled); err == nil {
-			properties["outage_handling"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("outage_handling", me.OutageHandling); err != nil {
+		return err
 	}
-	if me.LoadingTimeThresholds != nil {
-		marshalled := hcl.Properties{}
-		if err := me.LoadingTimeThresholds.MarshalHCL(marshalled); err == nil {
-			properties["loading_time_thresholds"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("loading_time_thresholds", me.LoadingTimeThresholds); err != nil {
+		return err
 	}
 	return nil
 }

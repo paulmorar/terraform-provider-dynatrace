@@ -121,18 +121,36 @@ func (me *JiraConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	properties["active"] = me.Active
-	properties["alerting_profile"] = me.AlertingProfile
-	properties["issue_type"] = me.IssueType
-	if me.Password != nil {
-		properties["password"] = *me.Password
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	properties["project_key"] = me.ProjectKey
-	properties["summary"] = me.Summary
-	properties["url"] = me.URL
-	properties["username"] = me.Username
-	properties["description"] = me.Description
+	if err := properties.Encode("active", me.Active); err != nil {
+		return err
+	}
+	if err := properties.Encode("alerting_profile", me.AlertingProfile); err != nil {
+		return err
+	}
+	if err := properties.Encode("issue_type", me.IssueType); err != nil {
+		return err
+	}
+	if err := properties.Encode("password", me.Password); err != nil {
+		return err
+	}
+	if err := properties.Encode("project_key", me.ProjectKey); err != nil {
+		return err
+	}
+	if err := properties.Encode("summary", me.Summary); err != nil {
+		return err
+	}
+	if err := properties.Encode("url", me.URL); err != nil {
+		return err
+	}
+	if err := properties.Encode("username", me.Username); err != nil {
+		return err
+	}
+	if err := properties.Encode("description", me.Description); err != nil {
+		return err
+	}
 	return nil
 }
 

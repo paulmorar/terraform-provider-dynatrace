@@ -153,7 +153,9 @@ func (me *SLO) MarshalHCL(properties hcl.Properties) error {
 		if strings.HasSuffix(mr, ":splitBy():splitBy()") {
 			mr = mr[0 : len(mr)-len(":splitBy()")]
 			me.MetricRate = &mr
-			properties["rate"] = mr
+			if err := properties.Encode("rate", mr); err != nil {
+				return err
+			}
 		}
 	}
 	if me.MetricNumerator != nil {
@@ -161,7 +163,9 @@ func (me *SLO) MarshalHCL(properties hcl.Properties) error {
 		if strings.HasSuffix(mr, ":splitBy():splitBy()") {
 			mr = mr[0 : len(mr)-len(":splitBy()")]
 			me.MetricNumerator = &mr
-			properties["numerator"] = mr
+			if err := properties.Encode("numerator", mr); err != nil {
+				return err
+			}
 		}
 	}
 	if me.MetricDenominator != nil {
@@ -169,7 +173,9 @@ func (me *SLO) MarshalHCL(properties hcl.Properties) error {
 		if strings.HasSuffix(mr, ":splitBy():splitBy()") {
 			mr = mr[0 : len(mr)-len(":splitBy()")]
 			me.MetricDenominator = &mr
-			properties["denominator"] = mr
+			if err := properties.Encode("denominator", mr); err != nil {
+				return err
+			}
 		}
 	}
 	return nil

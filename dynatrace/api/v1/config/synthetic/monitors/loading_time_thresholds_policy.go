@@ -47,14 +47,11 @@ func (me *LoadingTimeThresholdsPolicy) Schema() map[string]*schema.Schema {
 }
 
 func (me *LoadingTimeThresholdsPolicy) MarshalHCL(properties hcl.Properties) error {
-	properties["enabled"] = me.Enabled
-	if len(me.Thresholds) > 0 {
-		marshalled := hcl.Properties{}
-		if err := me.Thresholds.MarshalHCL(marshalled); err == nil {
-			properties["thresholds"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("enabled", me.Enabled); err != nil {
+		return err
+	}
+	if err := properties.Encode("thresholds", me.Thresholds); err != nil {
+		return err
 	}
 	return nil
 }

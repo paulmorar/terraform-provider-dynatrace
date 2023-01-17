@@ -75,9 +75,15 @@ func (me *DashboardSharing) Schema() map[string]*schema.Schema {
 
 // MarshalHCL has no documentation
 func (me *DashboardSharing) MarshalHCL(properties hcl.Properties) error {
-	properties["dashboard_id"] = me.DashboardID
-	properties["enabled"] = me.Enabled
-	properties["preset"] = me.Preset
+	if err := properties.Encode("dashboard_id", me.DashboardID); err != nil {
+		return err
+	}
+	if err := properties.Encode("enabled", me.Enabled); err != nil {
+		return err
+	}
+	if err := properties.Encode("preset", me.Preset); err != nil {
+		return err
+	}
 	if len(me.Permissions) > 0 {
 		marshalled := hcl.Properties{}
 		if err := me.Permissions.MarshalHCL(marshalled); err != nil {

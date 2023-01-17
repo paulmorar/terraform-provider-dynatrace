@@ -73,13 +73,17 @@ func (me *Authentication) Schema() map[string]*schema.Schema {
 
 // MarshalHCL serializes the fields of an Authentication struct into a map, using the keys specified within the Schema function
 func (me *Authentication) MarshalHCL(properties hcl.Properties) error {
-	properties["type"] = string(me.Type)
-	properties["credentials"] = me.Credentials
-	if me.RealmName != nil {
-		properties["realm_name"] = *me.RealmName
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
 	}
-	if me.KdcIP != nil {
-		properties["kdc_ip"] = *me.KdcIP
+	if err := properties.Encode("credentials", me.Credentials); err != nil {
+		return err
+	}
+	if err := properties.Encode("realm_name", me.RealmName); err != nil {
+		return err
+	}
+	if err := properties.Encode("kdc_ip", me.KdcIP); err != nil {
+		return err
 	}
 	return nil
 }

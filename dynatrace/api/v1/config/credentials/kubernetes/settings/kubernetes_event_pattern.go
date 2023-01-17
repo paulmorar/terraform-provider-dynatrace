@@ -59,17 +59,19 @@ func (kep *KubernetesEventPattern) Schema() map[string]*schema.Schema {
 }
 
 func (kep *KubernetesEventPattern) MarshalHCL(properties hcl.Properties) error {
-	if len(kep.Unknowns) > 0 {
-		data, err := json.Marshal(kep.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(kep.Unknowns); err != nil {
+		return err
 	}
 
-	properties["active"] = kep.Active
-	properties["field_selector"] = kep.FieldSelector
-	properties["label"] = kep.Label
+	if err := properties.Encode("active", kep.Active); err != nil {
+		return err
+	}
+	if err := properties.Encode("field_selector", kep.FieldSelector); err != nil {
+		return err
+	}
+	if err := properties.Encode("label", kep.Label); err != nil {
+		return err
+	}
 
 	return nil
 }

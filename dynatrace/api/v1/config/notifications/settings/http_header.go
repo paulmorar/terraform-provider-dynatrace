@@ -51,9 +51,11 @@ func (me *HTTPHeader) Schema() map[string]*schema.Schema {
 }
 
 func (me *HTTPHeader) MarshalHCL(properties hcl.Properties) error {
-	properties["name"] = me.Name
-	if me.Value != nil {
-		properties["value"] = *me.Value
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
 	}
 
 	return nil

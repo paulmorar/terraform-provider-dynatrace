@@ -50,21 +50,11 @@ func (me *CustomEventFilter) Schema() map[string]*schema.Schema {
 }
 
 func (me *CustomEventFilter) MarshalHCL(properties hcl.Properties) error {
-	if me.Description != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Description.MarshalHCL(marshalled); err == nil {
-			properties["description"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("description", me.Description); err != nil {
+		return err
 	}
-	if me.Title != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Title.MarshalHCL(marshalled); err == nil {
-			properties["title"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("title", me.Title); err != nil {
+		return err
 	}
 	return nil
 }

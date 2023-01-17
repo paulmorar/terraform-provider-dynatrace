@@ -60,24 +60,15 @@ func (me *Wrapper) MarshalHCL(properties hcl.Properties) error {
 	if me.Strategy != nil {
 		switch strategy := me.Strategy.(type) {
 		case *Auto:
-			marshalled := hcl.Properties{}
-			if err := strategy.MarshalHCL(marshalled); err == nil {
-				properties["auto"] = []any{marshalled}
-			} else {
+			if err := properties.Encode("auto", strategy); err != nil {
 				return err
 			}
 		case *Static:
-			marshalled := hcl.Properties{}
-			if err := strategy.MarshalHCL(marshalled); err == nil {
-				properties["static"] = []any{marshalled}
-			} else {
+			if err := properties.Encode("static", strategy); err != nil {
 				return err
 			}
 		case *BaseMonitoringStrategy:
-			marshalled := hcl.Properties{}
-			if err := strategy.MarshalHCL(marshalled); err == nil {
-				properties["generic"] = []any{marshalled}
-			} else {
+			if err := properties.Encode("generic", strategy); err != nil {
 				return err
 			}
 		default:

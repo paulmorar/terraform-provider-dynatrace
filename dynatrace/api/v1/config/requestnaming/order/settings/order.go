@@ -47,7 +47,9 @@ func (me *Order) MarshalHCL(properties hcl.Properties) error {
 	for _, ref := range me.Values {
 		refs = append(refs, ref.ID)
 	}
-	properties["ids"] = refs
+	if err := properties.Encode("ids", refs); err != nil {
+		return err
+	}
 	return nil
 }
 

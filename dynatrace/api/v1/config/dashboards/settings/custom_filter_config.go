@@ -84,16 +84,17 @@ func (me *CustomFilterConfig) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["type"] = string(me.Type)
-	properties["custom_name"] = me.CustomName
-	properties["default_name"] = me.DefaultName
-	if me.ChartConfig != nil {
-		marshalled := hcl.Properties{}
-		if err := me.ChartConfig.MarshalHCL(marshalled); err == nil {
-			properties["chart_config"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
+	}
+	if err := properties.Encode("custom_name", me.CustomName); err != nil {
+		return err
+	}
+	if err := properties.Encode("default_name", me.DefaultName); err != nil {
+		return err
+	}
+	if err := properties.Encode("chart_config", me.ChartConfig); err != nil {
+		return err
 	}
 	if len(me.FiltersPerEntityType) > 0 {
 		filtersPerEntityType := &FiltersPerEntityType{Filters: []*FilterForEntityType{}}
@@ -111,10 +112,7 @@ func (me *CustomFilterConfig) MarshalHCL(properties hcl.Properties) error {
 			}
 			filtersPerEntityType.Filters = append(filtersPerEntityType.Filters, filterForEntityType)
 		}
-		marshalled := hcl.Properties{}
-		if err := filtersPerEntityType.MarshalHCL(marshalled); err == nil {
-			properties["filters"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("filters", filtersPerEntityType); err != nil {
 			return err
 		}
 	}

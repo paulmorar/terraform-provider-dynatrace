@@ -76,20 +76,17 @@ func (me *CapturedMethod) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	if me.ArgumentIndex != nil {
-		properties["argument_index"] = int(opt.Int32(me.ArgumentIndex))
+	if err := properties.Encode("argument_index", int(opt.Int32(me.ArgumentIndex))); err != nil {
+		return err
 	}
-	properties["capture"] = string(me.Capture)
-	if me.DeepObjectAccess != nil {
-		properties["deep_object_access"] = *me.DeepObjectAccess
+	if err := properties.Encode("capture", string(me.Capture)); err != nil {
+		return err
 	}
-	if me.Method != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Method.MarshalHCL(marshalled); err == nil {
-			properties["method"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("deep_object_access", me.DeepObjectAccess); err != nil {
+		return err
+	}
+	if err := properties.Encode("method", me.Method); err != nil {
+		return err
 	}
 	return nil
 }

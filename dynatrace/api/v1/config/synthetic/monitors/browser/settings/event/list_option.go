@@ -38,16 +38,9 @@ func (me *ListOptions) Schema() map[string]*schema.Schema {
 }
 
 func (me ListOptions) MarshalHCL(properties hcl.Properties) error {
-	entries := []any{}
-	for _, entry := range me {
-		marshalled := hcl.Properties{}
-		if err := entry.MarshalHCL(marshalled); err == nil {
-			entries = append(entries, marshalled)
-		} else {
-			return err
-		}
+	if err := properties.EncodeSlice("option", me); err != nil {
+		return err
 	}
-	properties["option"] = entries
 
 	return nil
 }
@@ -80,8 +73,12 @@ func (me *ListOption) Schema() map[string]*schema.Schema {
 }
 
 func (me *ListOption) MarshalHCL(properties hcl.Properties) error {
-	properties["index"] = me.Index
-	properties["value"] = me.Value
+	if err := properties.Encode("index", me.Index); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", me.Value); err != nil {
+		return err
+	}
 
 	return nil
 }

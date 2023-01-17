@@ -78,19 +78,21 @@ func (iac *IPAddress) Schema() map[string]*schema.Schema {
 }
 
 func (iac *IPAddress) MarshalHCL(properties hcl.Properties) error {
-	if len(iac.Unknowns) > 0 {
-		data, err := json.Marshal(iac.Unknowns)
-		if err != nil {
-			return err
-		}
-		properties["unknowns"] = string(data)
+	if err := properties.Unknowns(iac.Unknowns); err != nil {
+		return err
 	}
-	properties["negate"] = iac.Negate
-	properties["operator"] = string(iac.Operator)
-	if iac.Value != nil {
-		properties["value"] = *iac.Value
+	if err := properties.Encode("negate", iac.Negate); err != nil {
+		return err
 	}
-	properties["case_sensitive"] = opt.Bool(iac.CaseSensitive)
+	if err := properties.Encode("operator", string(iac.Operator)); err != nil {
+		return err
+	}
+	if err := properties.Encode("value", iac.Value); err != nil {
+		return err
+	}
+	if err := properties.Encode("case_sensitive", opt.Bool(iac.CaseSensitive)); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -31,7 +31,7 @@ type HeadersSection struct {
 func (me *HeadersSection) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"header": {
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Description: "contains an HTTP header of the request",
 			Required:    true,
 			MinItems:    1,
@@ -47,35 +47,18 @@ func (me *HeadersSection) Schema() map[string]*schema.Schema {
 }
 
 func (me *HeadersSection) MarshalHCL(properties hcl.Properties) error {
-	if len(me.Headers) > 0 {
-		entries := []any{}
-		for _, header := range me.Headers {
-			marshalled := hcl.Properties{}
-
-			if err := header.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["header"] = entries
+	if err := properties.EncodeSlice("header", me.Headers); err != nil {
+		return err
 	}
-	if len(me.Restrictions) > 0 {
-		properties["restrictions"] = me.Restrictions
+	if err := properties.Encode("restrictions", me.Restrictions); err != nil {
+		return err
 	}
 	return nil
 }
 
 func (me *HeadersSection) UnmarshalHCL(decoder hcl.Decoder) error {
-	if result, ok := decoder.GetOk("header.#"); ok {
-		me.Headers = Headers{}
-		for idx := 0; idx < result.(int); idx++ {
-			entry := new(Header)
-			if err := entry.UnmarshalHCL(hcl.NewDecoder(decoder, "header", idx)); err != nil {
-				return err
-			}
-			me.Headers = append(me.Headers, entry)
-		}
+	if err := decoder.DecodeSlice("header", &me.Headers); err != nil {
+		return err
 	}
 	if err := decoder.Decode("restrictions", &me.Restrictions); err != nil {
 		return err
@@ -89,7 +72,7 @@ type Headers []*Header
 func (me *Headers) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"header": {
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Description: "contains an HTTP header of the request",
 			Required:    true,
 			MinItems:    1,
@@ -99,33 +82,11 @@ func (me *Headers) Schema() map[string]*schema.Schema {
 }
 
 func (me Headers) MarshalHCL(properties hcl.Properties) error {
-	if len(me) > 0 {
-		entries := []any{}
-		for _, header := range me {
-			marshalled := hcl.Properties{}
-
-			if err := header.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["header"] = entries
-	}
-	return nil
+	return properties.EncodeSlice("header", me)
 }
 
 func (me *Headers) UnmarshalHCL(decoder hcl.Decoder) error {
-	if result, ok := decoder.GetOk("header.#"); ok {
-		for idx := 0; idx < result.(int); idx++ {
-			entry := new(Header)
-			if err := entry.UnmarshalHCL(hcl.NewDecoder(decoder, "header", idx)); err != nil {
-				return err
-			}
-			*me = append(*me, entry)
-		}
-	}
-	return nil
+	return decoder.DecodeSlice("header", me)
 }
 
 // Header contains an HTTP header of the request

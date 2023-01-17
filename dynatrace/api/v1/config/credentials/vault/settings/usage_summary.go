@@ -46,8 +46,12 @@ func (me *CredentialUsageObj) Schema() map[string]*schema.Schema {
 }
 
 func (me *CredentialUsageObj) MarshalHCL(properties hcl.Properties) error {
-	properties["type"] = string(me.MonitorType)
-	properties["count"] = int(me.Count)
+	if err := properties.Encode("type", string(me.MonitorType)); err != nil {
+		return err
+	}
+	if err := properties.Encode("count", int(me.Count)); err != nil {
+		return err
+	}
 	return nil
 }
 

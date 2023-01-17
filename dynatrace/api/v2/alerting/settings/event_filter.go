@@ -73,21 +73,11 @@ func (me *EventFilter) Schema() map[string]*schema.Schema {
 }
 
 func (me *EventFilter) MarshalHCL(properties hcl.Properties) error {
-	if me.Custom != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Custom.MarshalHCL(marshalled); err == nil {
-			properties["custom"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("custom", me.Custom); err != nil {
+		return err
 	}
-	if me.Predefined != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Predefined.MarshalHCL(marshalled); err == nil {
-			properties["predefined"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("predefined", me.Predefined); err != nil {
+		return err
 	}
 	return nil
 }

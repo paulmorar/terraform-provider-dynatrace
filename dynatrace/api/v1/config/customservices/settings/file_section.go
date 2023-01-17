@@ -56,11 +56,11 @@ func (me *FileSection) Schema() map[string]*schema.Schema {
 }
 
 func (me *FileSection) MarshalHCL(properties hcl.Properties) error {
-	if me.Name != nil {
-		properties["name"] = opt.String(me.Name)
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if me.Match != nil {
-		properties["match"] = string(*me.Match)
+	if err := properties.Encode("match", me.Match); err != nil {
+		return err
 	}
 	return nil
 }

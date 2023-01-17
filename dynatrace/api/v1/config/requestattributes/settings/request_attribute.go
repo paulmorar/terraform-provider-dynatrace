@@ -105,31 +105,30 @@ func (me *RequestAttribute) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	if me.SkipPersonalDataMasking != nil {
-		properties["skip_personal_data_masking"] = opt.Bool(me.SkipPersonalDataMasking)
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if me.Confidential != nil {
-		properties["confidential"] = opt.Bool(me.Confidential)
+	if err := properties.Encode("skip_personal_data_masking", opt.Bool(me.SkipPersonalDataMasking)); err != nil {
+		return err
 	}
-	if len(me.DataSources) > 0 {
-		entries := []any{}
-		for _, entry := range me.DataSources {
-			marshalled := hcl.Properties{}
-			if err := entry.MarshalHCL(marshalled); err == nil {
-				entries = append(entries, marshalled)
-			} else {
-				return err
-			}
-		}
-		properties["data_sources"] = entries
+	if err := properties.Encode("confidential", opt.Bool(me.Confidential)); err != nil {
+		return err
 	}
-	properties["data_type"] = string(me.DataType)
-	properties["normalization"] = string(me.Normalization)
-	if me.Enabled != nil {
-		properties["enabled"] = opt.Bool(me.Enabled)
+	if err := properties.Encode("data_sources", me.DataSources); err != nil {
+		return err
 	}
-	properties["aggregation"] = string(me.Aggregation)
+	if err := properties.Encode("data_type", string(me.DataType)); err != nil {
+		return err
+	}
+	if err := properties.Encode("normalization", string(me.Normalization)); err != nil {
+		return err
+	}
+	if err := properties.Encode("enabled", opt.Bool(me.Enabled)); err != nil {
+		return err
+	}
+	if err := properties.Encode("aggregation", string(me.Aggregation)); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -109,34 +109,34 @@ func (me *Window) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Unknowns(me.Unknowns); err != nil {
 		return err
 	}
-	properties["name"] = me.Name
-	if len(me.Description) > 0 {
-		properties["description"] = me.Description
+	if err := properties.Encode("name", me.Name); err != nil {
+		return err
 	}
-	if me.Schedule != nil {
-		marshalled := hcl.Properties{}
-		if err := me.Schedule.MarshalHCL(marshalled); err == nil {
-			properties["schedule"] = []any{marshalled}
-		} else {
-			return err
-		}
+	if err := properties.Encode("description", me.Description); err != nil {
+		return err
 	}
-	if me.SuppressSyntheticMonitorsExecution != nil {
-		properties["suppress_synth_mon_exec"] = opt.Bool(me.SuppressSyntheticMonitorsExecution)
+	if err := properties.Encode("schedule", me.Schedule); err != nil {
+		return err
+	}
+	if err := properties.Encode("suppress_synth_mon_exec", opt.Bool(me.SuppressSyntheticMonitorsExecution)); err != nil {
+		return err
 	}
 	if !me.Enabled {
-		properties["enabled"] = me.Enabled
-	}
-	if me.Scope != nil && !me.Scope.IsEmpty() {
-		marshalled := hcl.Properties{}
-		if err := me.Scope.MarshalHCL(marshalled); err == nil {
-			properties["scope"] = []any{marshalled}
-		} else {
+		if err := properties.Encode("enabled", me.Enabled); err != nil {
 			return err
 		}
 	}
-	properties["suppression"] = string(me.Suppression)
-	properties["type"] = string(me.Type)
+	if me.Scope != nil && !me.Scope.IsEmpty() {
+		if err := properties.Encode("scope", me.Scope); err != nil {
+			return err
+		}
+	}
+	if err := properties.Encode("suppression", string(me.Suppression)); err != nil {
+		return err
+	}
+	if err := properties.Encode("type", string(me.Type)); err != nil {
+		return err
+	}
 	return nil
 }
 

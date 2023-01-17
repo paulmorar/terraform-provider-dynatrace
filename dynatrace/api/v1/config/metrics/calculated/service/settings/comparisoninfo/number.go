@@ -79,7 +79,7 @@ func (me *Number) MarshalHCL(properties hcl.Properties) error {
 		return err
 	}
 	// if len(me.Values) > 0 {
-	// 	properties["values"] = me.Values
+	// 	if err := properties.Encode("values", me.Values); err != nil { return err }
 	// }
 	return nil
 }
