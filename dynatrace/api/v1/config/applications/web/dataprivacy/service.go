@@ -65,7 +65,7 @@ func (me *service) Get(id string, v *dataprivacy.ApplicationDataPrivacy) error {
 
 func (me *service) Update(id string, v *dataprivacy.ApplicationDataPrivacy) error {
 	id = strings.TrimSuffix(id, "-data-privacy")
-	err := me.client.Put(fmt.Sprintf("/api/config/v1/applications/web/%s/dataPrivacy", id), v, 201).Finish()
+	err := me.client.Put(fmt.Sprintf("/api/config/v1/applications/web/%s/dataPrivacy", id), v, 201, 204).Finish()
 	if err != nil && strings.HasPrefix(err.Error(), "No Content (PUT)") {
 		return nil
 	}

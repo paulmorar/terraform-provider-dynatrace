@@ -38,6 +38,7 @@ func unref(v reflect.Value) reflect.Value {
 
 var stringType = reflect.ValueOf("").Type()
 var stringPointerType = reflect.ValueOf(opt.NewString("")).Type()
+var stringSliceType = reflect.ValueOf([]string{}).Type()
 
 func Name(v any) string {
 	rv := unref(reflect.ValueOf(v))

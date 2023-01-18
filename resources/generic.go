@@ -20,6 +20,7 @@ package resources
 import (
 	"context"
 	"os"
+	"strings"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
@@ -96,60 +97,25 @@ func (me *Generic) Create(ctx context.Context, d *schema.ResourceData, m any) di
 	}
 	stub, err := me.Service(m).Create(sttngs)
 	if err != nil {
-		// if restError, ok := err.(rest.Error); ok {
-		// 	if len(restError.ConstraintViolations) == 1 {
-		// 		if restError.ConstraintViolations[0].Message == "Management zone with this name already exists. Please provide a different one." {
-		// 			stubs, e2 := me.Service(m).List()
-		// 			if e2 != nil {
-		// 				return diag.FromErr(err)
-		// 			}
-		// 			foundID := ""
-		// 			for _, stub := range stubs {
-		// 				if settings.Name(sttngs) == stub.Name {
-		// 					foundID = stub.ID
-		// 					break
-		// 				}
-		// 			}
-		// 			if foundID == "" {
-		// 				return diag.FromErr(err)
-		// 			}
-		// 			d.SetId(foundID)
-		// 			replaceSettings := me.Settings()
-		// 			if e2 = me.Service(m).Get(foundID, replaceSettings); e2 != nil {
-		// 				return diag.FromErr(err)
-		// 			}
-		// 			if err := me.Service(m).Update(foundID, sttngs); err != nil {
-		// 				return diag.FromErr(err)
-		// 			}
-		// 			data, e2 := json.Marshal(replaceSettings)
-		// 			if e2 != nil {
-		// 				return diag.FromErr(err)
-		// 			}
-		// 			buf := new(bytes.Buffer)
-		// 			// writer, e2 := gzip.NewWriterLevel(buf, gzip.BestCompression)
-		// 			writer, e2 := zlib.NewWriterLevel(buf, gzip.BestCompression)
-		// 			if e2 != nil {
-		// 				return diag.FromErr(err)
-		// 			}
-		// 			writer.Write(data)
-		// 			writer.Flush()
-
-		// 			if e2 != nil {
-		// 				return diag.FromErr(err)
-		// 			}
-		// 			d.Set("replaced_value", base64.StdEncoding.EncodeToString(buf.Bytes()))
-		// 			return me.Read(ctx, d, m)
-		// 		}
-		// 	}
-		// }
 		return diag.FromErr(err)
 	}
 	d.SetId(stub.ID)
+	if settings.SupportsFlawedReasons(sttngs) {
+		flawedReasons := settings.GetFlawedReasons(sttngs)
+		if len(flawedReasons) > 0 {
+			d.Set("flawed_reasons", flawedReasons)
+		} else {
+			d.Set("flawed_reasons", []string{})
+		}
+	}
 	return me.Read(ctx, d, m)
 }
 
 func (me *Generic) Update(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	sttngs := me.Settings()
+	if strings.HasSuffix(d.Id(), "---flawed----") {
+		return me.Create(ctx, d, m)
+	}
 	if err := sttngs.UnmarshalHCL(hcl.DecoderFrom(d)); err != nil {
 		return diag.FromErr(err)
 	}
@@ -160,6 +126,9 @@ func (me *Generic) Update(ctx context.Context, d *schema.ResourceData, m any) di
 }
 
 func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+	if strings.HasSuffix(d.Id(), "---flawed----") {
+		return diag.Diagnostics{}
+	}
 	var err error
 	sttngs := me.Settings()
 	// if os.Getenv("CACHE_OFFLINE_MODE") != "true" {
@@ -213,16 +182,30 @@ func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag
 			}
 		}
 	}
+	if settings.SupportsFlawedReasons(sttngs) {
+		flawedReasons := settings.GetFlawedReasons(sttngs)
+		if len(flawedReasons) > 0 {
+			d.Set("flawed_reasons", flawedReasons)
+		} else {
+			d.Set("flawed_reasons", []string{})
+			delete(marshalled, "flawed_reasons")
+		}
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	for k, v := range marshalled {
 		d.Set(k, v)
 	}
+
 	return diag.Diagnostics{}
 }
 
 func (me *Generic) Delete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+	if strings.HasSuffix(d.Id(), "---flawed----") {
+		d.SetId("")
+		return diag.Diagnostics{}
+	}
 	if err := me.Service(m).Delete(d.Id()); err != nil {
 		if restError, ok := err.(rest.Error); ok {
 			if restError.Code == 404 {

@@ -69,6 +69,33 @@ func getLegacyField(v reflect.Value) reflect.Value {
 	return field
 }
 
+func GetFlawedReasons(settings any) []string {
+	v := reflect.ValueOf(settings)
+	if tField, found := v.Type().Elem().FieldByName("FlawedReasons"); found {
+		if tField.Tag.Get("json") != "-" {
+			return []string{}
+		}
+	}
+	field := v.Elem().FieldByName("FlawedReasons")
+	if !field.IsValid() {
+		return []string{}
+	}
+	if field.Type() != stringSliceType {
+		return []string{}
+	}
+	return field.Interface().([]string)
+}
+
+func SupportsFlawedReasons(settings any) bool {
+	v := reflect.ValueOf(settings)
+	if tField, found := v.Type().Elem().FieldByName("FlawedReasons"); found {
+		if tField.Tag.Get("json") != "-" {
+			return false
+		}
+	}
+	return true
+}
+
 func LegacyID(id string) string {
 	objID := &ObjectID{ID: id}
 	if e := objID.Decode(); e == nil && len(objID.Key) > 0 {

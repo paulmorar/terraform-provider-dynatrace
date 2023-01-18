@@ -96,15 +96,25 @@ func (me *service) Create(v *mysettings.CalculatedServiceMetric) (*settings.Stub
 		attempts = attempts + 1
 		req := client.Post("/api/config/v1/calculatedMetrics/service", v, 201)
 		if err = req.Finish(&stub); err != nil {
-			if !strings.Contains(err.Error(), "Metric definition must specify a known request attribute") {
-				return nil, err
+			if strings.Contains(err.Error(), "Metric definition must specify a known request attribute") {
+				if attempts < maxAttempts {
+					time.Sleep(500 * time.Millisecond)
+				} else {
+					return nil, err
+				}
 			}
+			if strings.Contains(err.Error(), "At least one condition of the following types must be used:") {
+				restErr := err.(rest.Error)
+				reasons := []string{}
+				for _, violations := range restErr.ConstraintViolations {
+					reasons = append(reasons, violations.Message)
+				}
+				v.FlawedReasons = reasons
+				return &settings.Stub{ID: v.TsmMetricKey + "---flawed----", Name: v.Name}, nil
+			}
+			return nil, err
 			// log.Println(".... request attribute is not fully known yet to cluster - retrying")
-			if attempts < maxAttempts {
-				time.Sleep(500 * time.Millisecond)
-			} else {
-				return nil, err
-			}
+
 		} else {
 			return &stub, nil
 		}

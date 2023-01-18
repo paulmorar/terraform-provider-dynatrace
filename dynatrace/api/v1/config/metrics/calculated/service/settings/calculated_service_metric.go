@@ -40,6 +40,7 @@ type CalculatedServiceMetric struct {
 	TsmMetricKey        string                      `json:"tsmMetricKey"`                       // The key of the calculated service metric.
 	UnitDisplayName     *string                     `json:"unitDisplayName,omitempty"`          // The display name of the metric's unit.   Only applicable when the **unit** parameter is set to `UNSPECIFIED`.
 	Conditions          Conditions                  `json:"conditions,omitempty"`               // The set of conditions for the metric usage.   **All** the specified conditions must be fulfilled to use the metric.
+	FlawedReasons       []string                    `json:"-"`
 	Unknowns            map[string]json.RawMessage  `json:"-"`
 }
 
@@ -85,6 +86,13 @@ func (me *CalculatedServiceMetric) Schema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "Restricts the metric usage to specified management zones. This field is mutually exclusive with the `entity_id` field",
 			Elem:        &schema.Schema{Type: schema.TypeString},
+		},
+		"flawed_reasons": {
+			Type:        schema.TypeSet,
+			Optional:    true,
+			Description: "for migration purposes only",
+			Elem:        &schema.Schema{Type: schema.TypeString},
+			Computed:    true,
 		},
 		"metric_definition": {
 			Type:        schema.TypeList,

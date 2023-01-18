@@ -73,7 +73,7 @@ func (me *service) Validate(v *errors.Rules) error {
 
 func (me *service) Update(id string, v *errors.Rules) error {
 	id = strings.TrimSuffix(id, "-error-rules")
-	err := me.client.Put(fmt.Sprintf("/api/config/v1/applications/web/%s/errorRules", id), v, 201).Finish()
+	err := me.client.Put(fmt.Sprintf("/api/config/v1/applications/web/%s/errorRules", id), v, 201, 204).Finish()
 	if err != nil && strings.HasPrefix(err.Error(), "No Content (PUT)") {
 		return nil
 	}
