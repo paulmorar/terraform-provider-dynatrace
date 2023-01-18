@@ -19,7 +19,6 @@ package comparisoninfo
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"
 
@@ -86,7 +85,6 @@ func (me *HTTPMethod) UnmarshalHCL(decoder hcl.Decoder) error {
 		"operator": &me.Comparison,
 		"unknowns": &me.Unknowns,
 	})
-	log.Printf("values: %v", me.Values)
 	return err
 }
 

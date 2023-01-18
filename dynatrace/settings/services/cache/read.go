@@ -282,9 +282,11 @@ func (me *readService[T]) SchemaID() string {
 	return me.service.SchemaID() + ":cache"
 }
 
-func Read[T settings.Settings](service settings.RService[T]) settings.RService[T] {
-	if mode == ModeDisabled {
-		return service
+func Read[T settings.Settings](service settings.RService[T], force ...bool) settings.RService[T] {
+	if len(force) == 0 {
+		if mode == ModeDisabled {
+			return service
+		}
 	}
 	schemaID := service.SchemaID()
 	if stored, ok := caches[schemaID]; ok {

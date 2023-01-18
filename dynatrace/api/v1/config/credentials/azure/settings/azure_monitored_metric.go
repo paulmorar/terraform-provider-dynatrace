@@ -111,14 +111,8 @@ func (amm *AzureMonitoredMetric) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Encode("name", amm.Name); err != nil {
 		return err
 	}
-	if amm.Dimensions != nil {
-		entries := []any{}
-		for _, dimension := range amm.Dimensions {
-			entries = append(entries, dimension)
-		}
-		if err := properties.Encode("dimensions", entries); err != nil {
-			return err
-		}
+	if err := properties.Encode("dimensions", amm.Dimensions); err != nil {
+		return err
 	}
 	return nil
 }

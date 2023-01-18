@@ -197,7 +197,17 @@ func (me *defaultService[T]) create(v T) (*Stub, error) {
 
 	var stub Stub
 	if err = req.Finish(&stub); err != nil {
-		if me.options.CreateRetry != nil {
+		if me.options.HijackOnCreate != nil {
+			var hijackedStub *Stub
+			if hijackedStub, err = me.options.HijackOnCreate(err, me, v); err != nil {
+				return nil, err
+			}
+			if hijackedStub != nil {
+				return hijackedStub, me.Update(hijackedStub.ID, v)
+			} else {
+				return nil, err
+			}
+		} else if me.options.CreateRetry != nil {
 			if modifiedPayload := me.options.CreateRetry(v, err); (any)(modifiedPayload) != (any)(nil) {
 				if err = client.Post(me.createURL(modifiedPayload), modifiedPayload, 200, 201).Finish(&stub); err != nil {
 					return nil, err

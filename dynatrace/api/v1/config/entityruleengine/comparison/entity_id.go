@@ -19,7 +19,6 @@ package comparison
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/entityruleengine/comparison/entity_id"
 
@@ -89,7 +88,6 @@ func (eic *EntityID) MarshalHCL(properties hcl.Properties) error {
 }
 
 func (eic *EntityID) UnmarshalHCL(decoder hcl.Decoder) error {
-	log.Println("UnmarshalHCL")
 	if value, ok := decoder.GetOk("unknowns"); ok {
 		if err := json.Unmarshal([]byte(value.(string)), eic); err != nil {
 			return err

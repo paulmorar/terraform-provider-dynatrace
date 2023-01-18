@@ -33,7 +33,7 @@ func Export(args []string) bool {
 		return false
 	}
 
-	defer export.CleanUp.Finish()
+	// defer export.CleanUp.Finish()
 	if err := runExport(); err != nil {
 		fmt.Println(err.Error())
 	}

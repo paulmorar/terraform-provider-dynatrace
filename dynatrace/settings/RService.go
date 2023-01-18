@@ -27,6 +27,19 @@ type RService[T Settings] interface {
 	SchemaID() string
 }
 
+func FindByName[T Settings](service RService[T], name string) (stub *Stub, err error) {
+	var stubs Stubs
+	if stubs, err = service.List(); err != nil {
+		return nil, err
+	}
+	for _, stub := range stubs.ToStubs() {
+		if stub.Name == name {
+			return stub, nil
+		}
+	}
+	return nil, nil
+}
+
 type CRUDService[T Settings] interface {
 	List() (Stubs, error)
 	Get(id string, v T) error

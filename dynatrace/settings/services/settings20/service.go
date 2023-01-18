@@ -161,6 +161,17 @@ func (me *service[T]) Create(v T) (*settings.Stub, error) {
 	objectID := []SettingsObjectCreateResponse{}
 
 	if err := req.Finish(&objectID); err != nil {
+		if me.options.HijackOnCreate != nil {
+			var hijackedStub *settings.Stub
+			if hijackedStub, err = me.options.HijackOnCreate(err, me, v); err != nil {
+				return nil, err
+			}
+			if hijackedStub != nil {
+				return hijackedStub, me.Update(hijackedStub.ID, v)
+			} else {
+				return nil, err
+			}
+		}
 		return nil, err
 	}
 	itemName := settings.Name(v)

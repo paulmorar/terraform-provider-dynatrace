@@ -52,3 +52,22 @@ type ConstraintViolation struct {
 	Message           string `json:"message,omitempty"`
 	Path              string `json:"path,omitempty"`
 }
+
+func ContainsViolation(err error, message string) bool {
+	if restError, ok := err.(Error); ok {
+		return restError.ContainsViolation(message)
+	}
+	return false
+}
+
+func (me Error) ContainsViolation(message string) bool {
+	if len(me.ConstraintViolations) == 0 {
+		return false
+	}
+	for _, violation := range me.ConstraintViolations {
+		if violation.Message == message {
+			return true
+		}
+	}
+	return false
+}

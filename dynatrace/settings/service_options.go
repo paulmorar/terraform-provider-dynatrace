@@ -36,6 +36,12 @@ type ServiceOptions[T Settings] struct {
 	OnBeforeUpdate func(id string, v T) error
 	HasNoValidator bool
 	Name           func(id string, v T) (string, error)
+	HijackOnCreate func(err error, service RService[T], v T) (*Stub, error)
+}
+
+func (me *ServiceOptions[T]) Hijack(fn func(err error, service RService[T], v T) (*Stub, error)) *ServiceOptions[T] {
+	me.HijackOnCreate = fn
+	return me
 }
 
 func (me *ServiceOptions[T]) WithCreateRetry(fn func(v T, err error) T) *ServiceOptions[T] {

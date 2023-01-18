@@ -23,6 +23,7 @@ import (
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/google/uuid"
 
 	networkzones "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/networkzones/settings"
 )
@@ -62,7 +63,8 @@ func (me *service) Validate(v *networkzones.NetworkZone) error {
 func (me *service) Create(v *networkzones.NetworkZone) (*settings.Stub, error) {
 	var err error
 
-	id := *v.ID
+	// id := *v.ID
+	id := uuid.NewString()
 
 	var stub settings.Stub
 	req := me.client.Put(fmt.Sprintf("/api/v2/networkZones/%s", url.PathEscape(id)), v, 201)

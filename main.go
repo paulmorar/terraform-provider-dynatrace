@@ -21,6 +21,7 @@ import (
 	"os"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/export"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
@@ -106,6 +107,8 @@ func main() {
 	// if tf2json(os.Args) {
 	// 	return
 	// }
+	defer export.CleanUp.Finish()
+
 	if dynatrace.Export(os.Args) {
 		return
 	}

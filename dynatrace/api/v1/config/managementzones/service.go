@@ -18,6 +18,7 @@
 package managementzones
 
 import (
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
 	managementzones "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/managementzones/settings"
@@ -30,6 +31,13 @@ func Service(credentials *settings.Credentials) settings.CRUDService[*management
 	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		settings.DefaultServiceOptions[*managementzones.ManagementZone](BasePath),
+		settings.DefaultServiceOptions[*managementzones.ManagementZone](BasePath).Hijack(Hijack),
 	)
+}
+
+func Hijack(err error, service settings.RService[*managementzones.ManagementZone], v *managementzones.ManagementZone) (*settings.Stub, error) {
+	if rest.ContainsViolation(err, "Management zone must have a unique name.") {
+		return settings.FindByName(service, settings.Name(v))
+	}
+	return nil, nil
 }

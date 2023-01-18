@@ -35,6 +35,24 @@ type Settings interface {
 	Schema() map[string]*schema.Schema
 }
 
+func SetID(settings Settings, id string) {
+	rv := reflect.ValueOf(settings).Elem()
+	if field := getIDField(rv); field.IsValid() {
+		field.Set(reflect.ValueOf(&id))
+	}
+}
+
+func getIDField(v reflect.Value) reflect.Value {
+	field := v.FieldByName("ID")
+	if !field.IsValid() {
+		return reflect.Value{}
+	}
+	if field.Type() != stringPointerType {
+		return reflect.Value{}
+	}
+	return field
+}
+
 func getLegacyField(v reflect.Value) reflect.Value {
 	if tField, found := v.Type().FieldByName("LegacyID"); found {
 		if tField.Tag.Get("json") != "-" {
