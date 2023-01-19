@@ -31,6 +31,7 @@ import (
 )
 
 var logger = initLogger()
+var Logger = logger
 
 type onDemandWriter struct {
 	logFileName string
@@ -145,7 +146,12 @@ func (me *request) Raw() ([]byte, error) {
 		body = bytes.NewBuffer(data)
 	}
 	// if os.Getenv("DT_REST_DEBUG_REQUEST_PAYLOAD") == "true" && me.payload != nil {
-	logger.Println(me.method, url+"\n    "+string(data))
+	if len(data) > 0 {
+		logger.Println(me.method, url+"\n    "+string(data))
+	} else {
+		logger.Println(me.method, url)
+	}
+
 	// } else {
 	// logger.Println(me.method, url)
 	// }
@@ -190,7 +196,7 @@ func (me *request) Raw() ([]byte, error) {
 	if data, err = io.ReadAll(res.Body); err != nil {
 		return nil, err
 	}
-	logger.Println("  ", res.StatusCode, string(data))
+	// logger.Println("  ", res.StatusCode, string(data))
 	if len(me.expect) > 0 && !me.expect.contains(res.StatusCode) {
 		var env errorEnvelope
 		if err = json.Unmarshal(data, &env); err == nil && env.Error != nil {
@@ -201,6 +207,9 @@ func (me *request) Raw() ([]byte, error) {
 				env = envs[0]
 				return nil, Error{Code: env.Error.Code, Method: me.method, URL: url, Message: env.Error.Message, ConstraintViolations: env.Error.ConstraintViolations}
 			}
+		}
+		if len(data) > 0 {
+			return nil, fmt.Errorf("status code %d (expected: %d): %s", res.StatusCode, me.expect, string(data))
 		}
 		return nil, fmt.Errorf("status code %d (expected: %d)", res.StatusCode, me.expect)
 	}

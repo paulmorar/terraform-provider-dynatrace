@@ -40,8 +40,28 @@ type CalculatedServiceMetric struct {
 	TsmMetricKey        string                      `json:"tsmMetricKey"`                       // The key of the calculated service metric.
 	UnitDisplayName     *string                     `json:"unitDisplayName,omitempty"`          // The display name of the metric's unit.   Only applicable when the **unit** parameter is set to `UNSPECIFIED`.
 	Conditions          Conditions                  `json:"conditions,omitempty"`               // The set of conditions for the metric usage.   **All** the specified conditions must be fulfilled to use the metric.
-	FlawedReasons       []string                    `json:"-"`
 	Unknowns            map[string]json.RawMessage  `json:"-"`
+}
+
+func (me *CalculatedServiceMetric) FillDemoValues() []string {
+	if len(me.ManagementZones) > 0 {
+		return []string{}
+	}
+	reqConditions := []string{"SERVICE_DISPLAY_NAME", "SERVICE_PUBLIC_DOMAIN_NAME", "SERVICE_WEB_APPLICATION_ID", "SERVICE_WEB_CONTEXT_ROOT", "SERVICE_WEB_SERVER_NAME", "SERVICE_WEB_SERVICE_NAME", "SERVICE_WEB_SERVICE_NAMESPACE", "REMOTE_SERVICE_NAME", "REMOTE_ENDPOINT", "AZURE_FUNCTIONS_SITE_NAME", "AZURE_FUNCTIONS_FUNCTION_NAME", "CTG_GATEWAY_URL", "CTG_SERVER_NAME", "ACTOR_SYSTEM", "ESB_APPLICATION_NAME", "SERVICE_TAG", "SERVICE_TYPE", "PROCESS_GROUP_TAG", "PROCESS_GROUP_NAME"}
+	var found bool
+	if me.Conditions != nil {
+		for _, condition := range me.Conditions {
+			for _, reqCondition := range reqConditions {
+				if string(condition.Attribute) == reqCondition {
+					found = true
+				}
+			}
+		}
+	}
+	if !found {
+		return []string{"The metric needs to either get limited by specifying a Management Zone or by specifying one or more conditions related to SERVICE_DISPLAY_NAME, SERVICE_PUBLIC_DOMAIN_NAME, SERVICE_WEB_APPLICATION_ID, SERVICE_WEB_CONTEXT_ROOT, SERVICE_WEB_SERVER_NAME, SERVICE_WEB_SERVICE_NAME, SERVICE_WEB_SERVICE_NAMESPACE, REMOTE_SERVICE_NAME, REMOTE_ENDPOINT, AZURE_FUNCTIONS_SITE_NAME, AZURE_FUNCTIONS_FUNCTION_NAME, CTG_GATEWAY_URL, CTG_SERVER_NAME, ACTOR_SYSTEM, ESB_APPLICATION_NAME, SERVICE_TAG, SERVICE_TYPE, PROCESS_GROUP_TAG or PROCESS_GROUP_NAME"}
+	}
+	return []string{}
 }
 
 func (me *CalculatedServiceMetric) Schema() map[string]*schema.Schema {
@@ -86,13 +106,6 @@ func (me *CalculatedServiceMetric) Schema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "Restricts the metric usage to specified management zones. This field is mutually exclusive with the `entity_id` field",
 			Elem:        &schema.Schema{Type: schema.TypeString},
-		},
-		"flawed_reasons": {
-			Type:        schema.TypeSet,
-			Optional:    true,
-			Description: "for migration purposes only",
-			Elem:        &schema.Schema{Type: schema.TypeString},
-			Computed:    true,
 		},
 		"metric_definition": {
 			Type:        schema.TypeList,

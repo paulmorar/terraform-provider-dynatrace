@@ -79,7 +79,7 @@ func (ptc *PaasType) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Encode("operator", string(ptc.Operator)); err != nil {
 		return err
 	}
-	if err := properties.Encode("value", ptc.Value.String()); err != nil {
+	if err := properties.Encode("value", ptc.Value); err != nil {
 		return err
 	}
 	return nil

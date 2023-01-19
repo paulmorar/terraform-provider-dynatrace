@@ -310,9 +310,12 @@ var AllResources = map[ResourceType]ResourceDescriptor{
 		alertingv1.Service,
 		Dependencies.LegacyID(ResourceTypes.ManagementZoneV2),
 	),
-	ResourceTypes.RequestNamings: NewResourceDescriptor(order.Service),
-	ResourceTypes.IAMUser:        NewResourceDescriptor(users.Service),
-	ResourceTypes.IAMGroup:       NewResourceDescriptor(groups.Service),
+	ResourceTypes.RequestNamings: NewResourceDescriptor(
+		order.Service,
+		Dependencies.ID(ResourceTypes.RequestNaming),
+	),
+	ResourceTypes.IAMUser:  NewResourceDescriptor(users.Service),
+	ResourceTypes.IAMGroup: NewResourceDescriptor(groups.Service),
 }
 
 var BlackListedResources = []ResourceType{

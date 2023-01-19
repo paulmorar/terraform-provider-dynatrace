@@ -24,8 +24,6 @@ import (
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/xjson"
 
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/opt"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -33,7 +31,7 @@ import (
 type MethodRule struct {
 	MethodName    string                     `json:"methodName"`           // The method to instrument
 	ArgumentTypes []string                   `json:"argumentTypes"`        // Fully qualified types of argument the method expects
-	ReturnType    *string                    `json:"returnType"`           // Fully qualified type the method returns
+	ReturnType    string                     `json:"returnType"`           // Fully qualified type the method returns
 	Visibility    *Visibility                `json:"visibility,omitempty"` // The visibility of the method rule
 	Modifiers     []Modifier                 `json:"modifiers,omitempty"`  // The modifiers of the method rule
 	Unknowns      map[string]json.RawMessage `json:"-"`
@@ -147,7 +145,7 @@ func (me *MethodRule) UnmarshalHCL(decoder hcl.Decoder) error {
 		me.Visibility = Visibility(value.(string)).Ref()
 	}
 	if value, ok := decoder.GetOk("returns"); ok && len(value.(string)) > 0 {
-		me.ReturnType = opt.NewString(value.(string))
+		me.ReturnType = value.(string)
 	}
 
 	return nil

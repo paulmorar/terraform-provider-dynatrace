@@ -74,7 +74,8 @@ func (me *SeverityRule) Schema() map[string]*schema.Schema {
 			Description: "A set of tags you want to filter by. You can also specify a tag value alongside the tag name using the syntax `name:value`.",
 			MinItems:    1,
 			Optional:    true,
-			Elem:        &schema.Schema{Type: schema.TypeString}},
+			Elem:        &schema.Schema{Type: schema.TypeString},
+		},
 	}
 }
 
@@ -88,9 +89,11 @@ func (me *SeverityRule) MarshalHCL(properties hcl.Properties) error {
 	if err := properties.Encode("include_mode", string(me.TagFilterIncludeMode)); err != nil {
 		return err
 	}
-
 	if err := properties.Encode("tags", me.Tags); err != nil {
 		return err
+	}
+	if tags, ok := properties["tags"]; ok && tags == nil {
+		properties["tags"] = []string{}
 	}
 	return nil
 }
@@ -105,11 +108,8 @@ func (me *SeverityRule) UnmarshalHCL(decoder hcl.Decoder) error {
 	if value, ok := decoder.GetOk("delay_in_minutes"); ok {
 		me.DelayInMinutes = int32(value.(int))
 	}
-	if value, ok := decoder.GetOk("tags"); ok {
-		me.Tags = []string{}
-		for _, entry := range value.(*schema.Set).List() {
-			me.Tags = append(me.Tags, entry.(string))
-		}
+	if err := decoder.Decode("tags", &me.Tags); err != nil {
+		return err
 	}
 	return nil
 }

@@ -122,6 +122,7 @@ func (me *Credentials) Schema() map[string]*schema.Schema {
 			Optional:    true,
 			MaxItems:    2,
 			Elem:        &schema.Resource{Schema: new(CredentialUsageObj).Schema()},
+			Deprecated:  "`credential_usage_summary` will be removed in future versions. It's not getting filled anymore, because it's runtime data",
 		},
 	}
 }
@@ -192,9 +193,10 @@ func (me *Credentials) MarshalHCL(properties hcl.Properties) error {
 		}
 		properties["external"] = []any{marshalled}
 	}
-	if err := properties.Encode("credential_usage_summary", me.CredentialUsageSummary); err != nil {
-		return err
-	}
+	// if err := properties.Encode("credential_usage_summary", me.CredentialUsageSummary); err != nil {
+	// 	return err
+	// }
+	properties["credential_usage_summary"] = nil
 
 	switch me.Type {
 	case CredentialsTypes.PublicCertificate:
@@ -251,16 +253,16 @@ func (me *Credentials) UnmarshalHCL(decoder hcl.Decoder) error {
 			me.Type = CredentialsTypes.Certificate
 		}
 	}
-	if result, ok := decoder.GetOk("credential_usage_summary.#"); ok {
-		me.CredentialUsageSummary = []*CredentialUsageObj{}
-		for idx := 0; idx < result.(int); idx++ {
-			entry := new(CredentialUsageObj)
-			if err := entry.UnmarshalHCL(hcl.NewDecoder(decoder, "credential_usage_summary", idx)); err != nil {
-				return err
-			}
-			me.CredentialUsageSummary = append(me.CredentialUsageSummary, entry)
-		}
-	}
+	// if result, ok := decoder.GetOk("credential_usage_summary.#"); ok {
+	// 	me.CredentialUsageSummary = []*CredentialUsageObj{}
+	// 	for idx := 0; idx < result.(int); idx++ {
+	// 		entry := new(CredentialUsageObj)
+	// 		if err := entry.UnmarshalHCL(hcl.NewDecoder(decoder, "credential_usage_summary", idx)); err != nil {
+	// 			return err
+	// 		}
+	// 		me.CredentialUsageSummary = append(me.CredentialUsageSummary, entry)
+	// 	}
+	// }
 	return nil
 }
 

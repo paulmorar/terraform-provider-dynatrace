@@ -100,14 +100,14 @@ func (me *Generic) Create(ctx context.Context, d *schema.ResourceData, m any) di
 		return diag.FromErr(err)
 	}
 	d.SetId(stub.ID)
-	if settings.SupportsFlawedReasons(sttngs) {
-		flawedReasons := settings.GetFlawedReasons(sttngs)
-		if len(flawedReasons) > 0 {
-			d.Set("flawed_reasons", flawedReasons)
-		} else {
-			d.Set("flawed_reasons", []string{})
-		}
-	}
+	// if settings.SupportsFlawedReasons(sttngs) {
+	// 	flawedReasons := settings.GetFlawedReasons(sttngs)
+	// 	if len(flawedReasons) > 0 {
+	// 		d.Set("flawed_reasons", flawedReasons)
+	// 	} else {
+	// 		d.Set("flawed_reasons", []string{})
+	// 	}
+	// }
 	return me.Read(ctx, d, m)
 }
 
@@ -182,15 +182,15 @@ func (me *Generic) Read(ctx context.Context, d *schema.ResourceData, m any) diag
 			}
 		}
 	}
-	if settings.SupportsFlawedReasons(sttngs) {
-		flawedReasons := settings.GetFlawedReasons(sttngs)
-		if len(flawedReasons) > 0 {
-			d.Set("flawed_reasons", flawedReasons)
-		} else {
-			d.Set("flawed_reasons", []string{})
-			delete(marshalled, "flawed_reasons")
-		}
-	}
+	// if settings.SupportsFlawedReasons(sttngs) {
+	// 	flawedReasons := settings.GetFlawedReasons(sttngs)
+	// 	if len(flawedReasons) > 0 {
+	// 		d.Set("flawed_reasons", flawedReasons)
+	// 	} else {
+	// 		d.Set("flawed_reasons", []string{})
+	// 		delete(marshalled, "flawed_reasons")
+	// 	}
+	// }
 	if err != nil {
 		return diag.FromErr(err)
 	}

@@ -168,6 +168,13 @@ func (me *AutoTag) MarshalJSON() ([]byte, error) {
 		}
 		m["name"] = rawMessage
 	}
+	{
+		rawMessage, err := json.Marshal(me.Description)
+		if err != nil {
+			return nil, err
+		}
+		m["description"] = rawMessage
+	}
 	if len(me.Rules) > 0 {
 		rawMessage, err := json.Marshal(me.Rules)
 		if err != nil {

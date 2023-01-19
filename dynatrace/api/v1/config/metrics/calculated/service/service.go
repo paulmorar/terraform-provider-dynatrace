@@ -105,16 +105,21 @@ func (me *service) Create(v *mysettings.CalculatedServiceMetric) (*settings.Stub
 			}
 			if strings.Contains(err.Error(), "At least one condition of the following types must be used:") {
 				restErr := err.(rest.Error)
-				reasons := []string{}
-				for _, violations := range restErr.ConstraintViolations {
-					reasons = append(reasons, violations.Message)
+				// reasons := []string{}
+				if len(restErr.ConstraintViolations) > 0 {
+					// for _, violations := range restErr.ConstraintViolations {
+					// 	reasons = append(reasons, violations.Message)
+					// }
+					return &settings.Stub{ID: v.TsmMetricKey + "---flawed----", Name: v.Name}, nil
 				}
-				v.FlawedReasons = reasons
+			}
+			if strings.Contains(err.Error(), `{"parameterLocation":"PAYLOAD_BODY","message":"must not be null","path":"metricDefinition.metric"}`) {
+				return &settings.Stub{ID: v.TsmMetricKey + "---flawed----", Name: v.Name}, nil
+			}
+			if strings.Contains(err.Error(), `{"parameterLocation":"PAYLOAD_BODY","message":"Please check entityId: there is no such SERVICE in the system","path":"entityId"}`) {
 				return &settings.Stub{ID: v.TsmMetricKey + "---flawed----", Name: v.Name}, nil
 			}
 			return nil, err
-			// log.Println(".... request attribute is not fully known yet to cluster - retrying")
-
 		} else {
 			return &stub, nil
 		}
