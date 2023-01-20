@@ -40,6 +40,7 @@ import (
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/logging"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/resources"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/resources/customtags"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/resources/environments"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/resources/usergroups"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/resources/users"
@@ -194,6 +195,7 @@ func Provider() *schema.Provider {
 			"dynatrace_iam_user":                   resources.NewGeneric(export.ResourceTypes.IAMUser).Resource(),
 			"dynatrace_iam_group":                  resources.NewGeneric(export.ResourceTypes.IAMGroup).Resource(),
 			"dynatrace_api_token":                  resources.NewGeneric(export.ResourceTypes.APIToken).Resource(),
+			"dynatrace_custom_tags":                customtags.Resource(),
 		},
 		ConfigureContextFunc: config.ProviderConfigure,
 	}

@@ -32,6 +32,28 @@ type TagFilter struct {
 	Value   *string `json:"value,omitempty"` // The value of the tag. Not applicable to custom tags.
 }
 
+func (me *TagFilter) Equals(other *TagFilter) bool {
+	if other == nil {
+		return false
+	}
+	if me.Key != other.Key {
+		return false
+	}
+	if me.Context != other.Context {
+		return false
+	}
+	if me.Value == nil && other.Value != nil {
+		return false
+	}
+	if me.Value != nil && other.Value == nil {
+		return false
+	}
+	if me.Value != nil && *me.Value != *other.Value {
+		return false
+	}
+	return true
+}
+
 func (me *TagFilter) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"context": {
