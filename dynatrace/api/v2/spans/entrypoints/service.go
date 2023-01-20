@@ -25,7 +25,8 @@ import (
 )
 
 const SchemaID = "builtin:span-entry-points"
+const SchemaVersion = "0.1.16"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*entrypoints.SpanEntryPoint] {
-	return settings20.Service[*entrypoints.SpanEntryPoint](credentials, SchemaID)
+	return settings20.Service[*entrypoints.SpanEntryPoint](credentials, SchemaID, SchemaVersion)
 }

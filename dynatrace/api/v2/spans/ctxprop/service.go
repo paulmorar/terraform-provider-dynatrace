@@ -25,7 +25,8 @@ import (
 )
 
 const SchemaID = "builtin:span-context-propagation"
+const SchemaVersion = "0.1.18"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*ctxprop.PropagationSetting] {
-	return settings20.Service[*ctxprop.PropagationSetting](credentials, SchemaID)
+	return settings20.Service[*ctxprop.PropagationSetting](credentials, SchemaID, SchemaVersion)
 }

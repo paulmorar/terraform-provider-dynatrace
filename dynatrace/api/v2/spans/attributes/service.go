@@ -28,9 +28,10 @@ import (
 )
 
 const SchemaID = "builtin:span-attribute"
+const SchemaVersion = "0.0.28"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*attributes.SpanAttribute] {
-	return settings20.Service(credentials, SchemaID, &settings20.ServiceOptions[*attributes.SpanAttribute]{HijackOnCreate: HiJack})
+	return settings20.Service(credentials, SchemaID, SchemaVersion, &settings20.ServiceOptions[*attributes.SpanAttribute]{HijackOnCreate: HiJack})
 }
 
 func HiJack(err error, service settings.RService[*attributes.SpanAttribute], v *attributes.SpanAttribute) (*settings.Stub, error) {

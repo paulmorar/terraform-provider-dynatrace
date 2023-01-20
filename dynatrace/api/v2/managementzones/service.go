@@ -25,7 +25,8 @@ import (
 )
 
 const SchemaID = "builtin:management-zones"
+const SchemaVersion = "1.0.4"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*managementzones.Settings] {
-	return settings20.Service(credentials, SchemaID, &settings20.ServiceOptions[*managementzones.Settings]{LegacyID: settings.LegacyLongDecode})
+	return settings20.Service(credentials, SchemaID, SchemaVersion, &settings20.ServiceOptions[*managementzones.Settings]{LegacyID: settings.LegacyLongDecode})
 }

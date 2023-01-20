@@ -31,6 +31,7 @@ type ServiceOptions[T Settings] struct {
 	Stubs          RecordStubs
 	CompleteGet    func(client rest.Client, id string, v T) error
 	CreateRetry    func(v T, err error) T
+	DeleteRetry    func(id string, err error) (bool, error)
 	CreateConfirm  int
 	OnChanged      func(rest.Client, string, T) error
 	OnBeforeUpdate func(id string, v T) error
@@ -61,6 +62,10 @@ func (me *ServiceOptions[T]) NoValidator() *ServiceOptions[T] {
 
 func (me *ServiceOptions[T]) WithOnChanged(onChanged func(rest.Client, string, T) error) *ServiceOptions[T] {
 	me.OnChanged = onChanged
+	return me
+}
+func (me *ServiceOptions[T]) WithDeleteRetry(deleteRetry func(id string, err error) (bool, error)) *ServiceOptions[T] {
+	me.DeleteRetry = deleteRetry
 	return me
 }
 

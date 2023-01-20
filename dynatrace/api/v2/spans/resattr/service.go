@@ -24,7 +24,8 @@ import (
 )
 
 const SchemaID = "builtin:resource-attribute"
+const SchemaVersion = "1.0.24"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*resattr.ResourceAttributes] {
-	return settings20.Service[*resattr.ResourceAttributes](credentials, SchemaID)
+	return settings20.Service[*resattr.ResourceAttributes](credentials, SchemaID, SchemaVersion)
 }

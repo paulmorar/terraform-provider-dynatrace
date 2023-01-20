@@ -180,11 +180,13 @@ func (me ResourceStatus) IsOneOf(stati ...ResourceStatus) bool {
 var ResourceStati = struct {
 	Downloaded    ResourceStatus
 	Erronous      ResourceStatus
+	Excluded      ResourceStatus
 	Discovered    ResourceStatus
 	PostProcessed ResourceStatus
 }{
 	"Downloaded",
 	"Erronous",
+	"Excluded",
 	"Discovered",
 	"PostProcessed",
 }

@@ -144,6 +144,10 @@ func (me *Environment) GetAttentionFolder() string {
 	return path.Join(me.OutputFolder, ".requires_attention")
 }
 
+func (me *Environment) GetFlawedFolder() string {
+	return path.Join(me.OutputFolder, ".flawed")
+}
+
 func (me *Environment) RefersTo(resource *Resource) bool {
 	if resource == nil {
 		return false

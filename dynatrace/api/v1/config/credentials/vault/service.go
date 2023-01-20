@@ -18,7 +18,12 @@
 package vault
 
 import (
+	"fmt"
+	"net/url"
+	"strings"
+
 	vault "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/credentials/vault/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 )
 
@@ -29,6 +34,30 @@ func Service(credentials *settings.Credentials) settings.CRUDService[*vault.Cred
 	return settings.NewCRUDService(
 		credentials,
 		SchemaID,
-		settings.DefaultServiceOptions[*vault.Credentials](BasePath).WithStubs(&vault.CredentialsList{}).NoValidator(),
+		settings.DefaultServiceOptions[*vault.Credentials](BasePath).
+			WithStubs(&vault.CredentialsList{}).
+			NoValidator().
+			WithDeleteRetry(func(id string, err error) (bool, error) {
+				if strings.Contains(err.Error(), "as long as there are monitors assigned to it") {
+					client := rest.DefaultClient(credentials.URL, credentials.Token)
+					response := struct {
+						Monitors []struct {
+							EntityID string `json:"entityId"`
+						} `json:"monitors"`
+					}{}
+					if err := client.Get(fmt.Sprintf("/api/v1/synthetic/monitors?credentialId=%s", url.QueryEscape(id)), 200).Finish(&response); err != nil {
+						return false, err
+					}
+					if len(response.Monitors) > 0 {
+						for _, monitor := range response.Monitors {
+							if err := client.Delete(fmt.Sprintf("/api/v1/synthetic/monitors/%s", url.PathEscape(monitor.EntityID)), 204).Finish(); err != nil {
+								return false, err
+							}
+						}
+					}
+					return true, nil
+				}
+				return false, nil
+			}),
 	)
 }

@@ -24,7 +24,8 @@ import (
 )
 
 const SchemaID = "builtin:anomaly-detection.frequent-issues"
+const SchemaVersion = "1.0.2"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*frequentissues.FrequentIssues] {
-	return settings20.Service[*frequentissues.FrequentIssues](credentials, SchemaID)
+	return settings20.Service[*frequentissues.FrequentIssues](credentials, SchemaID, SchemaVersion)
 }

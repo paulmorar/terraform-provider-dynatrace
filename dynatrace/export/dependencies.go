@@ -62,6 +62,9 @@ func (me *mgmzdep) Replace(environment *Environment, s string, replacingIn Resou
 	}
 	resources := []any{}
 	for _, resource := range environment.Module(me.resourceType).Resources {
+		if resource.Status.IsOneOf(ResourceStati.Erronous, ResourceStati.Excluded) {
+			continue
+		}
 		found := false
 
 		m1 := regexp.MustCompile(fmt.Sprintf(`"managementZone": {([\S\s]*)"name":(.*)"%s"([\S\s]*)}`, resource.Name))
@@ -70,6 +73,13 @@ func (me *mgmzdep) Replace(environment *Environment, s string, replacingIn Resou
 			s = replaced
 			found = true
 		}
+		m1 = regexp.MustCompile(fmt.Sprintf(`management_zones = \[(.*)\"%s\"(.*)\]`, resource.Name))
+		replaced = m1.ReplaceAllString(s, fmt.Sprintf(`management_zones = [ $1"%s"$2 ]`, fmt.Sprintf(replacePattern, me.resourceType, resource.UniqueName)))
+		if replaced != s {
+			s = replaced
+			found = true
+		}
+
 		if found {
 			resources = append(resources, resource)
 		}

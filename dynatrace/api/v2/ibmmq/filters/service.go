@@ -24,7 +24,8 @@ import (
 )
 
 const SchemaID = "builtin:mainframe.mqfilters"
+const SchemaVersion = "1.0.3"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*filters.Filters] {
-	return settings20.Service[*filters.Filters](credentials, SchemaID)
+	return settings20.Service[*filters.Filters](credentials, SchemaID, SchemaVersion)
 }

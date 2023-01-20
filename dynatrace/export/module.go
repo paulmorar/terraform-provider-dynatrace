@@ -156,6 +156,16 @@ func (me *Module) GetAttentionFolder(relative ...bool) string {
 	return path.Join(me.Type.Trim())
 }
 
+func (me *Module) GetFlawedFolder(relative ...bool) string {
+	if me.Environment.Flags.Flat {
+		return me.Environment.GetFlawedFolder()
+	}
+	if len(relative) == 0 || !relative[0] {
+		return path.Join(me.Environment.GetFlawedFolder(), path.Join(me.Type.Trim()))
+	}
+	return path.Join(me.Type.Trim())
+}
+
 func (me *Module) GetFile(name string) string {
 	return path.Join(me.GetFolder(), name)
 }

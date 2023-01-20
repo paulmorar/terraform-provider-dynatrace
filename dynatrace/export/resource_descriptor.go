@@ -19,6 +19,7 @@ package export
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/iam/groups"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/iam/users"
@@ -116,12 +117,18 @@ type ResourceDescriptor struct {
 	Dependencies []Dependency
 	Service      func(credentials *settings.Credentials) settings.CRUDService[settings.Settings]
 	protoType    settings.Settings
+	except       func(id string, name string) bool
 }
 
 func (me ResourceDescriptor) Specify(t notifications.Type) ResourceDescriptor {
 	if notification, ok := me.protoType.(*notifications.Notification); ok {
 		notification.Type = t
 	}
+	return me
+}
+
+func (me ResourceDescriptor) Except(except func(id string, name string) bool) ResourceDescriptor {
+	me.except = except
 	return me
 }
 
@@ -167,15 +174,22 @@ var AllResources = map[ResourceType]ResourceDescriptor{
 		Dependencies.ID(ResourceTypes.SyntheticLocation),
 		Dependencies.ID(ResourceTypes.WebApplication),
 		Dependencies.ID(ResourceTypes.Credentials),
-	),
+	).Except(func(id string, name string) bool {
+		return strings.HasPrefix(name, "Monitor synchronizing credentials with")
+	}),
 	ResourceTypes.CalculatedServiceMetric: NewResourceDescriptor(
 		calculated_service_metrics.Service,
 		Dependencies.ManagementZone,
 		Dependencies.RequestAttribute,
+		Dependencies.ManagementZone,
 	),
 	ResourceTypes.CloudFoundryCredentials: NewResourceDescriptor(cloudfoundry.Service),
-	ResourceTypes.CustomAnomalies:         NewResourceDescriptor(custom_anomalies.Service),
-	ResourceTypes.CustomService:           NewResourceDescriptor(customservices.Service),
+	ResourceTypes.CustomAnomalies: NewResourceDescriptor(
+		custom_anomalies.Service,
+	).Except(func(id string, name string) bool {
+		return strings.HasPrefix(id, "builtin:") || strings.HasPrefix(id, "ruxit.") || strings.HasPrefix(id, "dynatrace.") || strings.HasPrefix(id, "custom.remote.python.") || strings.HasPrefix(id, "custom.python.")
+	}),
+	ResourceTypes.CustomService: NewResourceDescriptor(customservices.Service),
 	ResourceTypes.Credentials: NewResourceDescriptor(
 		vault.Service,
 		Dependencies.ID(ResourceTypes.Credentials),

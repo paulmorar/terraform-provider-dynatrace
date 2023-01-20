@@ -27,15 +27,16 @@ import (
 	"net/url"
 )
 
-func Service[T settings.Settings](credentials *settings.Credentials, schemaID string, options ...*ServiceOptions[T]) settings.CRUDService[T] {
+func Service[T settings.Settings](credentials *settings.Credentials, schemaID string, schemaVersion string, options ...*ServiceOptions[T]) settings.CRUDService[T] {
 	var opts *ServiceOptions[T]
 	if len(options) > 0 {
 		opts = options[0]
 	}
 	return &service[T]{
-		schemaID: schemaID,
-		client:   rest.DefaultClient(credentials.URL, credentials.Token),
-		options:  opts,
+		schemaID:      schemaID,
+		schemaVersion: schemaVersion,
+		client:        rest.DefaultClient(credentials.URL, credentials.Token),
+		options:       opts,
 	}
 }
 
@@ -56,9 +57,10 @@ type SettingsObjectCreateResponse struct {
 }
 
 type service[T settings.Settings] struct {
-	schemaID string
-	client   rest.Client
-	options  *ServiceOptions[T]
+	schemaID      string
+	schemaVersion string
+	client        rest.Client
+	options       *ServiceOptions[T]
 }
 
 func (me *service[T]) LegacyID() func(id string) string {
@@ -149,9 +151,10 @@ func (me *service[T]) Validate(v T) error {
 
 func (me *service[T]) Create(v T) (*settings.Stub, error) {
 	soc := SettingsObjectCreate{
-		SchemaID: me.schemaID,
-		Scope:    "environment",
-		Value:    v,
+		SchemaID:      me.schemaID,
+		SchemaVersion: me.schemaVersion,
+		Scope:         "environment",
+		Value:         v,
 	}
 	if scopeAware, ok := any(v).(ScopeAware); ok {
 		soc.Scope = scopeAware.GetScope()
@@ -180,7 +183,7 @@ func (me *service[T]) Create(v T) (*settings.Stub, error) {
 }
 
 func (me *service[T]) Update(id string, v T) error {
-	sou := SettingsObjectUpdate{Value: v}
+	sou := SettingsObjectUpdate{Value: v, SchemaVersion: me.schemaVersion}
 	return me.client.Put(fmt.Sprintf("/api/v2/settings/objects/%s", url.PathEscape(id)), &sou, 200).Finish()
 }
 

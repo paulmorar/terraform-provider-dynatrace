@@ -24,7 +24,8 @@ import (
 )
 
 const SchemaID = "builtin:anomaly-detection.metric-events"
+const SchemaVersion = "1.0.3"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*metricevents.MetricEvents] {
-	return settings20.Service[*metricevents.MetricEvents](credentials, SchemaID)
+	return settings20.Service[*metricevents.MetricEvents](credentials, SchemaID, SchemaVersion)
 }

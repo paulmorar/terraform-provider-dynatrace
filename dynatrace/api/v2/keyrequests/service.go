@@ -26,10 +26,11 @@ import (
 )
 
 const SchemaID = "builtin:settings.subscriptions.service"
+const SchemaVersion = "0.1.7"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*keyrequests.KeyRequest] {
 	topologyService := cache.Read(toposervices.Service(credentials))
-	return settings20.Service(credentials, SchemaID, &settings20.ServiceOptions[*keyrequests.KeyRequest]{
+	return settings20.Service(credentials, SchemaID, SchemaVersion, &settings20.ServiceOptions[*keyrequests.KeyRequest]{
 		Name: func(id string, v *keyrequests.KeyRequest) (string, error) {
 			service := settings.NewSettings(topologyService)
 			if err := topologyService.Get(v.ServiceID, service); err != nil {

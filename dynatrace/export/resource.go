@@ -112,8 +112,19 @@ func (me *Resource) GetAttentionFile() string {
 	return path.Join(me.Module.GetAttentionFolder(false), me.GetFileName())
 }
 
+func (me *Resource) GetFlawedFile() string {
+	return path.Join(me.Module.GetFlawedFolder(false), me.GetFileName())
+}
+
+func (me *Resource) CreateFlawedFile() (*os.File, error) {
+	flawedFile := me.GetFlawedFile()
+	absdir, _ := filepath.Abs(path.Dir(flawedFile))
+	os.MkdirAll(absdir, os.ModePerm)
+	return os.Create(flawedFile)
+}
+
 func (me *Resource) Download() error {
-	if me.Status.IsOneOf(ResourceStati.Erronous, ResourceStati.Downloaded, ResourceStati.PostProcessed) {
+	if me.Status.IsOneOf(ResourceStati.Erronous, ResourceStati.Excluded, ResourceStati.Downloaded, ResourceStati.PostProcessed) {
 		return nil
 	}
 
@@ -126,6 +137,13 @@ func (me *Resource) Download() error {
 	if me.Module.Status == ModuleStati.Untouched {
 		if err = me.Module.Discover(); err != nil {
 			return err
+		}
+	}
+
+	if me.Module.Descriptor.except != nil {
+		if me.Module.Descriptor.except(me.ID, me.Name) {
+			me.Status = ResourceStati.Excluded
+			return nil
 		}
 	}
 
@@ -156,14 +174,29 @@ func (me *Resource) Download() error {
 	if legacyID != nil {
 		me.LegacyID = *legacyID
 	}
+	comments := settings.FillDemoValues(settngs)
+	if len(comments) > 0 {
+		for _, comment := range comments {
+			if strings.HasPrefix(comment, "FLAWED SETTINGS") {
+				me.Status = ResourceStati.Erronous
+			}
+		}
+	}
+
 	me.Module.MkdirAll()
 	var outputFile *os.File
-	if outputFile, err = me.CreateFile(); err != nil {
-		return err
+	if me.Status != ResourceStati.Erronous {
+		if outputFile, err = me.CreateFile(); err != nil {
+			return err
+		}
+		defer outputFile.Close()
+	} else {
+		if outputFile, err = me.CreateFlawedFile(); err != nil {
+			return err
+		}
+		defer outputFile.Close()
 	}
-	defer outputFile.Close()
 
-	comments := settings.FillDemoValues(settngs)
 	finalComments := []string{}
 	if me.Module.Environment.Flags.PersistIDs {
 		finalComments = []string{"ID " + me.ID}
@@ -183,19 +216,21 @@ func (me *Resource) Download() error {
 	if err = hclgen.ExportResource(settngs, outputFile, string(me.Type), me.UniqueName, finalComments...); err != nil {
 		return err
 	}
-	if len(comments) > 0 {
+	if me.Status != ResourceStati.Erronous && len(comments) > 0 {
 		orig, _ := filepath.Abs(me.GetFile())
 		att, _ := filepath.Abs(me.GetAttentionFile())
 		absdir, _ := filepath.Abs(path.Dir(me.GetAttentionFile()))
 		os.MkdirAll(absdir, os.ModePerm)
 		os.Link(orig, att)
 	}
-	me.Status = ResourceStati.Downloaded
+	if me.Status != ResourceStati.Erronous {
+		me.Status = ResourceStati.Downloaded
+	}
 	return nil
 }
 
 func (me *Resource) PostProcess() error {
-	if me.Status.IsOneOf(ResourceStati.Erronous, ResourceStati.PostProcessed) {
+	if me.Status.IsOneOf(ResourceStati.Erronous, ResourceStati.Excluded, ResourceStati.PostProcessed) {
 		return nil
 	}
 	var err error

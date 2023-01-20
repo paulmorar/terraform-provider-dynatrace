@@ -24,6 +24,7 @@ import (
 )
 
 const SchemaID = "builtin:problem.notifications"
+const SchemaVersion = "1.4.1"
 
 type filter struct {
 	Type Type
@@ -39,7 +40,7 @@ func (me *filter) Suffix() string {
 
 func Service(credentials *settings.Credentials, t Type) settings.CRUDService[*Notification] {
 	return filtered.Service[*Notification](
-		settings20.Service(credentials, SchemaID, &settings20.ServiceOptions[*Notification]{LegacyID: settings.LegacyObjIDDecode}),
+		settings20.Service(credentials, SchemaID, SchemaVersion, &settings20.ServiceOptions[*Notification]{LegacyID: settings.LegacyObjIDDecode}),
 		&filter{Type: t},
 	)
 }

@@ -24,7 +24,8 @@ import (
 )
 
 const SchemaID = "builtin:ibmmq.ims-bridges"
+const SchemaVersion = "0.0.8"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*imsbridges.IMSBridge] {
-	return settings20.Service[*imsbridges.IMSBridge](credentials, SchemaID)
+	return settings20.Service[*imsbridges.IMSBridge](credentials, SchemaID, SchemaVersion)
 }
