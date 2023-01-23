@@ -105,7 +105,7 @@ func (me *service[T]) List() (settings.Stubs, error) {
 		if nextPageKey != nil {
 			urlStr = fmt.Sprintf("/api/v2/settings/objects?nextPageKey=%s", url.QueryEscape(*nextPageKey))
 		} else {
-			urlStr = fmt.Sprintf("/api/v2/settings/objects?schemaIds=%s&fields=%s&pageSize=500", url.QueryEscape(me.SchemaID()), url.QueryEscape("objectId,value,scope,schemaVersion"))
+			urlStr = fmt.Sprintf("/api/v2/settings/objects?schemaIds=%s&fields=%s&pageSize=100", url.QueryEscape(me.SchemaID()), url.QueryEscape("objectId,value,scope,schemaVersion"))
 		}
 		req := me.client.Get(urlStr, 200)
 		if err = req.Finish(&sol); err != nil {
