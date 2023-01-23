@@ -473,5 +473,8 @@ const credsNotProvided = "REST API didn't provide credential data"
 
 func (kc *KubernetesCredentials) FillDemoValues() []string {
 	kc.AuthToken = opt.NewString("################")
-	return []string{credsNotProvided}
+	if len(kc.EndpointURL) > 0 {
+		return []string{credsNotProvided}
+	}
+	return []string{credsNotProvided, "FLAWED SETTINGS There is no EndpointURL configured - automatically created"}
 }
