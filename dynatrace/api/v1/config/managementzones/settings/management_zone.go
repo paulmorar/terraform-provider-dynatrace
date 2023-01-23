@@ -38,6 +38,16 @@ type ManagementZone struct {
 	Unknowns                 map[string]json.RawMessage `json:"-"`
 }
 
+func (mz *ManagementZone) Validate() []string {
+	result := []string{}
+	if len(mz.Rules) > 0 {
+		for _, rule := range mz.Rules {
+			result = append(result, rule.Validate()...)
+		}
+	}
+	return result
+}
+
 func (mz *ManagementZone) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {

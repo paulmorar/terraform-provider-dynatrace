@@ -245,11 +245,11 @@ var AllResources = map[ResourceType]ResourceDescriptor{
 	).Specify(notifications.Types.Jira),
 	ResourceTypes.KeyRequests: NewResourceDescriptor(
 		keyrequests.Service,
-		Dependencies.Service,
-		Dependencies.Host,
-		Dependencies.HostGroup,
-		Dependencies.ProcessGroup,
-		Dependencies.ProcessGroupInstance,
+		Coalesce(Dependencies.Service),
+		Coalesce(Dependencies.Host),
+		Coalesce(Dependencies.HostGroup),
+		Coalesce(Dependencies.ProcessGroup),
+		Coalesce(Dependencies.ProcessGroupInstance),
 	),
 	ResourceTypes.KubernetesCredentials: NewResourceDescriptor(kubernetes.Service),
 	ResourceTypes.Maintenance: NewResourceDescriptor(

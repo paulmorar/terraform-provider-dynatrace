@@ -36,6 +36,16 @@ type NamingRule struct {
 	Unknowns   map[string]json.RawMessage `json:"-"`
 }
 
+func (me *NamingRule) Validate() []string {
+	result := []string{}
+	if len(me.Conditions) > 0 {
+		for _, cond := range me.Conditions {
+			result = append(result, cond.Validate()...)
+		}
+	}
+	return result
+}
+
 func (me *NamingRule) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {

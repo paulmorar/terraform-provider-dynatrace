@@ -18,7 +18,6 @@
 package export
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"path"
@@ -27,8 +26,8 @@ import (
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/shutdown"
 
-	"github.com/dlclark/regexp2"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hclgen"
 )
 
@@ -126,39 +125,10 @@ func (me *Resource) CreateFlawedFile() (*os.File, error) {
 	return os.Create(flawedFile)
 }
 
-// Please use possessive or lazy quantifiers within your capture group
-const QUANTIFIERS_WITHIN_CAPTURING_GROUP = `(?<!\\)(?:\\\\)*([^\*\+]*[\+\*](?![\+\?]).*(?<!\\)(?:\\\\)*)`
-
-// Please do not use a greedy all match
-const ALL_MATCH_NO_CAPTURING_GROUP = `(?<!\()\.[\*\+](?![\)\+\?])`
-
-// Greedy or lazy character classes are not allowed, please use a possessive quantifier instead
-const CHARACTER_CLASS_WITH_GREEDY_OR_LAZY_QUANTIFIER = `(?<!\\)(?:\\\\)*](?>\*|\+)(?!\+)`
-
-func regexCheck(s string) ([]string, error) {
-	result := []string{}
-	match := false
-	var err error
-
-	if match, err = regexp2.MustCompile(QUANTIFIERS_WITHIN_CAPTURING_GROUP, 0).MatchString(s); err != nil {
-		return nil, err
-	} else if match {
-		result = append(result, "Please use possessive or lazy quantifiers within your capture group")
-	}
-	if match, err = regexp2.MustCompile(ALL_MATCH_NO_CAPTURING_GROUP, 0).MatchString(s); err != nil {
-		return nil, err
-	} else if match {
-		result = append(result, "Please do not use a greedy all match")
-	}
-	if match, err = regexp2.MustCompile(CHARACTER_CLASS_WITH_GREEDY_OR_LAZY_QUANTIFIER, 0).MatchString(s); err != nil {
-		return nil, err
-	} else if match {
-		result = append(result, "Greedy or lazy character classes are not allowed, please use a possessive quantifier instead")
-	}
-	return result, nil
-}
-
 func (me *Resource) Download() error {
+	if shutdown.System.Stopped() {
+		return nil
+	}
 	if me.Status.IsOneOf(ResourceStati.Erronous, ResourceStati.Excluded, ResourceStati.Downloaded, ResourceStati.PostProcessed) {
 		return nil
 	}
@@ -210,6 +180,8 @@ func (me *Resource) Download() error {
 		me.LegacyID = *legacyID
 	}
 	comments := settings.FillDemoValues(settngs)
+	comments = append(comments, settings.Validate(settngs)...)
+
 	if len(comments) > 0 {
 		for _, comment := range comments {
 			if strings.HasPrefix(comment, "FLAWED SETTINGS") {
@@ -234,31 +206,6 @@ func (me *Resource) Download() error {
 		}
 	}
 
-	buf := new(bytes.Buffer)
-
-	if err = hclgen.ExportResource(settngs, buf, string(me.Type), me.UniqueName, finalComments...); err != nil {
-		return err
-	}
-
-	fileContents := buf.String()
-
-	buf = new(bytes.Buffer)
-	flawedLines, err := regexCheck(fileContents)
-	if err != nil {
-		return err
-	}
-	if len(flawedLines) > 0 {
-		me.Flawed = true
-		for _, flawedLine := range flawedLines {
-			if _, err := buf.WriteString("# FLAWED SETTINGS " + flawedLine + "\n"); err != nil {
-				return err
-			}
-		}
-	}
-	if _, err := buf.WriteString(fileContents); err != nil {
-		return err
-	}
-
 	me.Module.MkdirAll(me.Flawed)
 
 	var outputFile *os.File
@@ -267,7 +214,7 @@ func (me *Resource) Download() error {
 	}
 	defer outputFile.Close()
 
-	if _, err := outputFile.Write(buf.Bytes()); err != nil {
+	if err = hclgen.ExportResource(settngs, outputFile, string(me.Type), me.UniqueName, finalComments...); err != nil {
 		return err
 	}
 
@@ -285,6 +232,10 @@ func (me *Resource) Download() error {
 }
 
 func (me *Resource) PostProcess() error {
+	if shutdown.System.Stopped() {
+		return nil
+	}
+
 	if me.Status.IsOneOf(ResourceStati.Erronous, ResourceStati.Excluded, ResourceStati.PostProcessed) {
 		return nil
 	}

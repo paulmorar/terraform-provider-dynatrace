@@ -28,6 +28,7 @@ import (
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/shutdown"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/version"
 )
 
@@ -345,6 +346,10 @@ func (me *Module) GetNonPostProcessedResources() []*Resource {
 }
 
 func (me *Module) Download(keys ...string) (err error) {
+	if shutdown.System.Stopped() {
+		return nil
+	}
+
 	if me.Status.IsOneOf(ModuleStati.Erronous) {
 		return nil
 	}
@@ -408,6 +413,10 @@ func (me *Module) Download(keys ...string) (err error) {
 }
 
 func (me *Module) Discover() error {
+	if shutdown.System.Stopped() {
+		return nil
+	}
+
 	if me.Status.IsOneOf(ModuleStati.Downloaded, ModuleStati.Discovered, ModuleStati.Erronous) {
 		return nil
 	}

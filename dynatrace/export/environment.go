@@ -26,6 +26,7 @@ import (
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/entity"
 	entitysettings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/entity/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/shutdown"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/version"
 )
 
@@ -74,6 +75,10 @@ func (me *Environment) InitialDownload() error {
 	sort.Strings(resourceTypes)
 
 	for _, sResourceType := range resourceTypes {
+		if shutdown.System.Stopped() {
+			return nil
+		}
+
 		keys := me.ResArgs[sResourceType]
 		module := me.Module(ResourceType(sResourceType))
 		if err := module.Download(keys...); err != nil {
@@ -87,6 +92,9 @@ func (me *Environment) PostProcess() error {
 	fmt.Println("Post-Processing Resources ...")
 	resources := me.GetNonPostProcessedResources()
 	for len(resources) > 0 {
+		if shutdown.System.Stopped() {
+			return nil
+		}
 		m := map[ResourceType][]*Resource{}
 		for _, resource := range resources {
 			var reslist []*Resource
@@ -101,6 +109,9 @@ func (me *Environment) PostProcess() error {
 		for k, reslist := range m {
 			fmt.Println("- " + k)
 			for _, resource := range reslist {
+				if shutdown.System.Stopped() {
+					return nil
+				}
 				if err := resource.PostProcess(); err != nil {
 					return err
 				}
@@ -113,6 +124,10 @@ func (me *Environment) PostProcess() error {
 }
 
 func (me *Environment) Finish() (err error) {
+	if shutdown.System.Stopped() {
+		return nil
+	}
+
 	if err = me.WriteResourceFiles(); err != nil {
 		return err
 	}

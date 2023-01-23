@@ -73,6 +73,16 @@ func (mzr *Rule) Schema() map[string]*schema.Schema {
 	}
 }
 
+func (mzr *Rule) Validate() []string {
+	result := []string{}
+	if len(mzr.Conditions) > 0 {
+		for _, cond := range mzr.Conditions {
+			result = append(result, cond.Validate()...)
+		}
+	}
+	return result
+}
+
 func (mzr *Rule) SortConditions() {
 	if len(mzr.Conditions) > 0 {
 		conds := []*entityruleengine.Condition{}

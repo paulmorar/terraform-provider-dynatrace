@@ -42,6 +42,16 @@ type Rule struct {
 	Unknowns         map[string]json.RawMessage    `json:"-"`
 }
 
+func (mzr *Rule) Validate() []string {
+	result := []string{}
+	if len(mzr.Conditions) > 0 {
+		for _, cond := range mzr.Conditions {
+			result = append(result, cond.Validate()...)
+		}
+	}
+	return result
+}
+
 func (me *Rule) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"type": {

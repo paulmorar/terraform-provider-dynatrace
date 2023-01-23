@@ -27,3 +27,26 @@ func FillDemoValues(settings Settings) []string {
 	}
 	return []string{}
 }
+
+type RegexValidator interface {
+	Validate() []string
+}
+
+func Validate(settings Settings) []string {
+	m := map[string]string{}
+	if demoSettings, ok := settings.(RegexValidator); ok {
+		messages := demoSettings.Validate()
+		if len(messages) == 0 {
+			return []string{}
+		}
+		for _, message := range messages {
+			m[message] = message
+		}
+		result := []string{}
+		for k := range m {
+			result = append(result, k)
+		}
+		return result
+	}
+	return []string{}
+}

@@ -35,6 +35,20 @@ type Condition struct {
 	Unknowns       map[string]json.RawMessage `json:"-"`
 }
 
+type Validator interface {
+	Validate() []string
+}
+
+func (erec *Condition) Validate() []string {
+	if erec.ComparisonInfo == nil {
+		return []string{}
+	}
+	if validator, ok := erec.ComparisonInfo.(Validator); ok {
+		return validator.Validate()
+	}
+	return []string{}
+}
+
 func rmType(m map[string]*schema.Schema) map[string]*schema.Schema {
 	delete(m, "type")
 	return m

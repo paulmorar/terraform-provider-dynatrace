@@ -37,6 +37,16 @@ type AutoTag struct {
 	Unknowns                 map[string]json.RawMessage `json:"-"`
 }
 
+func (me *AutoTag) Validate() []string {
+	result := []string{}
+	if len(me.Rules) > 0 {
+		for _, rule := range me.Rules {
+			result = append(result, rule.Validate()...)
+		}
+	}
+	return result
+}
+
 func (me *AutoTag) Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
