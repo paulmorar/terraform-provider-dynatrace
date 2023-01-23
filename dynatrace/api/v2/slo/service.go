@@ -62,7 +62,7 @@ func (me *service) Get(id string, v *slo.SLO) error {
 				time.Sleep(time.Second * 2)
 			}
 			for _, stub := range slos.SLOs {
-				v.Timeframe = stub.Timeframe
+				v.Timeframe = stub.SLO.Timeframe
 			}
 		}
 		numRequiredSuccesses--
@@ -83,9 +83,8 @@ type sloList struct {
 }
 
 type sloListEntry struct {
-	ID        string `json:"id"`
-	Name      string `json:"name"`
-	Timeframe string `json:"timeframe"`
+	slo.SLO
+	ID string `json:"id"`
 }
 
 func (me *service) List() (settings.Stubs, error) {
@@ -99,7 +98,7 @@ func (me *service) List() (settings.Stubs, error) {
 	}
 	stubs := settings.Stubs{}
 	for _, slo := range slos.SLOs {
-		stubs = append(stubs, &settings.Stub{ID: slo.ID, Name: slo.Name})
+		stubs = append(stubs, &settings.Stub{ID: slo.ID, Name: slo.SLO.Name, Value: &slo.SLO})
 	}
 
 	return stubs, nil
@@ -154,7 +153,7 @@ func (me *service) Create(v *slo.SLO) (*settings.Stub, error) {
 			time.Sleep(time.Second * 2)
 		}
 		for _, stub := range slos.SLOs {
-			v.Timeframe = stub.Timeframe
+			v.Timeframe = stub.SLO.Timeframe
 		}
 	}
 

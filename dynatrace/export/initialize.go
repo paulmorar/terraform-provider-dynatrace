@@ -100,12 +100,11 @@ func Initialize() (environment *Environment, err error) {
 	}
 
 	return &Environment{
-		OutputFolder:      targetFolder,
-		Credentials:       credentials,
-		Modules:           map[ResourceType]*Module{},
-		DataSourceModules: map[DataSourceType]*DataSourceModule{},
-		Flags:             flags,
-		ResArgs:           resArgs,
+		OutputFolder: targetFolder,
+		Credentials:  credentials,
+		Modules:      map[ResourceType]*Module{},
+		Flags:        flags,
+		ResArgs:      resArgs,
 	}, nil
 }
 

@@ -1,84 +1,76 @@
 package cache_test
 
 import (
-	"archive/tar"
-	"fmt"
+	"errors"
 	"os"
 	"testing"
 
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings/services/cache"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/testing/assert"
 	"github.com/google/uuid"
 )
 
-const contentsEntryA = "adasdflk;jkj;lkj;alsdfasdfasdjlfkj;dsfsadjfk"
-const contentsEntryB = "assssasdfasdfsdffd"
+func hide(v any) {}
 
-func TestTarFileSystem(t *testing.T) {
-	fileName := uuid.NewString()
-	file, err := os.Create(fileName)
+var testdata = map[string]string{
+	"eins": uuid.NewString(),
+	"zwei": uuid.NewString(),
+	"drei": uuid.NewString(),
+	"vier": uuid.NewString(),
+}
+
+func TestTarFolder(t *testing.T) {
+	os.Remove("reini-war-data.tar")
+	folder, err := cache.NewTarFolder("reini-war-data")
+	hide(folder)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	defer func() {
-		file.Close()
-		os.Remove(fileName)
+		// os.Remove("reini-war-data.tar")
 	}()
-	writer := tar.NewWriter(file)
-	header := tar.Header{
-		Name: "one",
-		Size: int64(len([]byte(contentsEntryA))),
+	for k, v := range testdata {
+		if err := folder.Save(settings.Stub{ID: k, Name: k}, []byte(v)); err != nil {
+			t.Error(err)
+			return
+		}
 	}
-	if err := writer.WriteHeader(&header); err != nil {
-		t.Error(err)
-		return
-	}
-	writer.Write([]byte(contentsEntryA))
-	if err := writer.Flush(); err != nil {
-		t.Error(err)
-		return
-	}
-	posAfterFirstEntry, err := file.Seek(0, 1)
+	folder, err = cache.NewTarFolder("reini-war-data")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Println("posAfterFirstEntry", posAfterFirstEntry)
-	header = tar.Header{
-		Name: "two",
-		Size: int64(len([]byte(contentsEntryB))),
+	assert := assert.New(t)
+	for k, v := range testdata {
+		if t.Failed() {
+			break
+		}
+		stub, data, err := folder.Get(k)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		assert.Equals(k, stub.ID)
+		assert.Equals(k, stub.Name)
+		assert.Equals(v, string(data))
 	}
-	if err := writer.WriteHeader(&header); err != nil {
+	if err := folder.Delete("eins"); err != nil {
 		t.Error(err)
 		return
 	}
-	writer.Write([]byte(contentsEntryB))
-	posAfterSecondEntry, err := file.Seek(0, 1)
+	stub, data, err := folder.Get("eins")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Println("posAfterSecondEntry", posAfterSecondEntry)
-	file.Close()
-
-	infile, err := os.Open(fileName)
-	if err != nil {
-		t.Error(err)
+	if data != nil {
+		t.Error(errors.New("data should was expected to be nil"))
 		return
 	}
-	defer func() {
-		infile.Close()
-	}()
-	fmt.Println("Seek", posAfterFirstEntry)
-	if _, err = infile.Seek(posAfterFirstEntry, 0); err != nil {
-		t.Error(err)
+	if stub != nil {
+		t.Error(errors.New("stub should was expected to be nil"))
 		return
 	}
-	reader := tar.NewReader(infile)
-	inheader, err := reader.Next()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	fmt.Println(inheader.Name)
-
 }

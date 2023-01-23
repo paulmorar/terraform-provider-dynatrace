@@ -41,6 +41,7 @@ type onDemandLogger struct {
 }
 
 var odl = &onDemandLogger{name: "terraform-provider-dynatrace.log"}
+var File = log.New(odl, "", log.LstdFlags)
 
 func (odl *onDemandLogger) f() (*os.File, error) {
 	odl.mu.Lock()

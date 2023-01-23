@@ -35,11 +35,23 @@ type Module struct {
 	Environment *Environment
 	Type        ResourceType
 	Resources   map[string]*Resource
+	DataSources map[string]*DataSource
 	namer       UniqueNamer
 	Status      ModuleStatus
 	Error       error
 	Descriptor  *ResourceDescriptor
 	Service     settings.CRUDService[settings.Settings]
+}
+
+func (me *Module) DataSource(id string) *DataSource {
+	if dataSource, found := me.DataSources[id]; found {
+		return dataSource
+	}
+	dataSource := me.Environment.DataSource(id)
+	if dataSource != nil {
+		me.DataSources[id] = dataSource
+	}
+	return dataSource
 }
 
 func (me *Module) ContainsPostProcessedResources() bool {
@@ -49,27 +61,6 @@ func (me *Module) ContainsPostProcessedResources() bool {
 		}
 	}
 	return false
-}
-
-func (me *Module) DataSourceReferences() []*DataSource {
-	dataSources := map[string]*DataSource{}
-	for _, resource := range me.Resources {
-		if !resource.Status.IsOneOf(ResourceStati.PostProcessed, ResourceStati.Downloaded) {
-			continue
-		}
-		for _, dataSource := range resource.DataSourceReferences {
-			key := fmt.Sprintf("%s.%s", dataSource.ID, dataSource.Type)
-			dataSources[key] = dataSource
-		}
-	}
-	result := []*DataSource{}
-	if len(dataSources) == 0 {
-		return result
-	}
-	for _, dataSource := range dataSources {
-		result = append(result, dataSource)
-	}
-	return result
 }
 
 func (me *Module) GetResourcesReferencedFromOtherModules() []*Resource {
@@ -257,6 +248,31 @@ func (me *Module) WriteVariablesFile() (err error) {
 	return nil
 }
 
+func (me *Module) WriteDataSourcesFile() (err error) {
+	if me.Environment.Flags.Flat {
+		return nil
+	}
+
+	var datasourcesFile *os.File
+	if datasourcesFile, err = me.CreateFile("___datasources___.tf"); err != nil {
+		return err
+	}
+	defer func() {
+		datasourcesFile.Close()
+		format(datasourcesFile.Name(), true)
+	}()
+	for dataSourceID, dataSource := range me.DataSources {
+		if _, err = datasourcesFile.WriteString(fmt.Sprintf(`data "dynatrace_entity" "%s" {
+			type = "%s"
+			name = "%s"				
+		}
+`, dataSourceID, dataSource.Type, dataSource.Name)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (me *Module) WriteResourcesFile() (err error) {
 	if me.Environment.Flags.Flat {
 		return nil
@@ -332,24 +348,57 @@ func (me *Module) Download(keys ...string) (err error) {
 			return err
 		}
 	}
-	fmt.Println("Downloading \"" + me.Type + "\" ...")
+
+	// 	fmt.Print(ClearLine)
+	// 	fmt.Print("\r")
+	// 	fmt.Printf("  - %s (%d of %d)", me.Type, idx, length)
+	// }
+	// fmt.Print(ClearLine)
+	// fmt.Print("\r")
+	// fmt.Printf("  - %s\n", me.Type)
+
+	const ClearLine = "\033[2K"
 	if len(keys) == 0 {
+		length := len(me.Resources)
+		fmt.Printf("Downloading \"%s\" (0 of %d)", me.Type, length)
+		idx := 0
 		for _, resource := range me.Resources {
 			if err := resource.Download(); err != nil {
 				return err
 			}
+			idx++
+			fmt.Print(ClearLine)
+			fmt.Print("\r")
+			fmt.Printf("Downloading \"%s\" (%d of %d)", me.Type, idx, length)
 		}
+		fmt.Print(ClearLine)
+		fmt.Print("\r")
+		fmt.Printf("Downloading \"%s\"\n", me.Type)
 		return nil
 	}
+	resourcesToDownload := []*Resource{}
 	for _, key := range keys {
 		for _, resource := range me.Resources {
 			if resource.ID == key {
-				if err := resource.Download(); err != nil {
-					return err
-				}
+				resourcesToDownload = append(resourcesToDownload, resource)
 			}
 		}
 	}
+	length := len(me.Resources)
+	fmt.Printf("Downloading \"%s\" (0 of %d)", me.Type, length)
+	idx := 0
+	for _, resource := range resourcesToDownload {
+		if err := resource.Download(); err != nil {
+			return err
+		}
+		idx++
+		fmt.Print(ClearLine)
+		fmt.Print("\r")
+		fmt.Printf("Downloading \"%s\" (%d of %d)", me.Type, idx, length)
+	}
+	fmt.Print(ClearLine)
+	fmt.Print("\r")
+	fmt.Printf("Downloading \"%s\"\n", me.Type)
 	return nil
 }
 

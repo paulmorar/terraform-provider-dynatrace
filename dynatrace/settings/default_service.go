@@ -18,11 +18,13 @@
 package settings
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/shutdown"
 )
 
 func NewCRUDService[T Settings](credentials *Credentials, schemaID string, options *ServiceOptions[T]) CRUDService[T] {
@@ -256,6 +258,7 @@ func (me *defaultService[T]) update(id string, v T) error {
 
 func (me *defaultService[T]) Delete(id string) error {
 	var err error
+	numRetries := 0
 	for {
 		if err = me.client.Delete(me.deleteURL(id)).Expect(204).Finish(); err != nil {
 			if me.options != nil && me.options.DeleteRetry != nil {
@@ -269,6 +272,15 @@ func (me *defaultService[T]) Delete(id string) error {
 			}
 			if !strings.Contains(err.Error(), "Could not delete configuration") {
 				return err
+			} else {
+				numRetries++
+				if numRetries > 100 {
+					return fmt.Errorf("unable to delete '%s' even after 100 retries", id)
+				}
+				if shutdown.System.Stopped() {
+					return nil
+				}
+				time.Sleep(time.Second)
 			}
 		} else {
 			return nil

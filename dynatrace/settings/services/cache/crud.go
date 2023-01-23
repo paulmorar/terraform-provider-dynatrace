@@ -312,9 +312,11 @@ func (me *crudService[T]) SchemaID() string {
 	return me.service.SchemaID() + ":cache"
 }
 
-func CRUD[T settings.Settings](service settings.CRUDService[T]) settings.CRUDService[T] {
-	if mode == ModeDisabled {
-		return service
+func CRUD[T settings.Settings](service settings.CRUDService[T], force ...bool) settings.CRUDService[T] {
+	if len(force) == 0 {
+		if mode == ModeDisabled {
+			return service
+		}
 	}
 	schemaID := service.SchemaID()
 	if stored, ok := caches[schemaID]; ok {

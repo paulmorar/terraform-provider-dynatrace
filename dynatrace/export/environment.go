@@ -23,17 +23,32 @@ import (
 	"path"
 	"sort"
 
+	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/entity"
+	entitysettings "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v2/entity/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/version"
 )
 
 type Environment struct {
-	OutputFolder      string
-	Credentials       *settings.Credentials
-	Modules           map[ResourceType]*Module
-	DataSourceModules map[DataSourceType]*DataSourceModule
-	Flags             Flags
-	ResArgs           map[string][]string
+	OutputFolder string
+	Credentials  *settings.Credentials
+	Modules      map[ResourceType]*Module
+	Flags        Flags
+	ResArgs      map[string][]string
+}
+
+func (me *Environment) DataSource(id string) *DataSource {
+	for _, module := range me.Modules {
+		if dataSource, found := module.DataSources[id]; found {
+			return dataSource
+		}
+	}
+	service := entity.Service(me.Credentials)
+	var entity entitysettings.Entity
+	if err := service.Get(id, &entity); err == nil {
+		return &DataSource{ID: *entity.EntityId, Name: *entity.DisplayName, Type: *entity.Type}
+	}
+	return nil
 }
 
 func (me *Environment) Export() (err error) {
@@ -72,22 +87,36 @@ func (me *Environment) PostProcess() error {
 	fmt.Println("Post-Processing Resources ...")
 	resources := me.GetNonPostProcessedResources()
 	for len(resources) > 0 {
+		m := map[ResourceType][]*Resource{}
 		for _, resource := range resources {
-			if err := resource.PostProcess(); err != nil {
-				return err
+			var reslist []*Resource
+			if rl, found := m[resource.Type]; !found {
+				reslist = []*Resource{}
+			} else {
+				reslist = rl
+			}
+			reslist = append(reslist, resource)
+			m[resource.Type] = reslist
+		}
+		for k, reslist := range m {
+			fmt.Println("- " + k)
+			for _, resource := range reslist {
+				if err := resource.PostProcess(); err != nil {
+					return err
+				}
 			}
 		}
+
 		resources = me.GetNonPostProcessedResources()
 	}
 	return nil
 }
 
 func (me *Environment) Finish() (err error) {
-	if err = me.WriteDataSourceFiles(); err != nil {
+	if err = me.WriteResourceFiles(); err != nil {
 		return err
 	}
-
-	if err = me.WriteResourceFiles(); err != nil {
+	if err = me.WriteDataSourceFiles(); err != nil {
 		return err
 	}
 	if err = me.WriteMainFile(); err != nil {
@@ -109,26 +138,12 @@ func (me *Environment) Module(resType ResourceType) *Module {
 	module := &Module{
 		Type:        resType,
 		Resources:   map[string]*Resource{},
-		namer:       NewUniqueNamer().Replace(ResourceName),
-		Status:      ModuleStati.Untouched,
-		Environment: me,
-	}
-	me.Modules[resType] = module
-	return module
-}
-
-func (me *Environment) DataSourceModule(dataSourceType DataSourceType) *DataSourceModule {
-	if stored, found := me.DataSourceModules[dataSourceType]; found {
-		return stored
-	}
-	module := &DataSourceModule{
-		Type:        dataSourceType,
 		DataSources: map[string]*DataSource{},
 		namer:       NewUniqueNamer().Replace(ResourceName),
 		Status:      ModuleStati.Untouched,
 		Environment: me,
 	}
-	me.DataSourceModules[dataSourceType] = module
+	me.Modules[resType] = module
 	return module
 }
 
@@ -170,10 +185,35 @@ func (me *Environment) GetNonPostProcessedResources() []*Resource {
 
 func (me *Environment) WriteDataSourceFiles() (err error) {
 	if me.Flags.Flat {
+		dataSources := map[string]*DataSource{}
+		for _, module := range me.Modules {
+			for k, v := range module.DataSources {
+				dataSources[k] = v
+			}
+		}
+		var datasourcesFile *os.File
+		if datasourcesFile, err = me.CreateFile("___datasources___.tf"); err != nil {
+			return err
+		}
+		defer func() {
+			datasourcesFile.Close()
+			format(datasourcesFile.Name(), true)
+		}()
+
+		for dataSourceID, dataSource := range dataSources {
+			if _, err = datasourcesFile.WriteString(fmt.Sprintf(`data "dynatrace_entity" "%s" {
+				type = "%s"
+				name = "%s"				
+			}
+`, dataSourceID, dataSource.Type, dataSource.Name)); err != nil {
+				return err
+			}
+		}
+
 		return nil
 	}
-	for _, resourceType := range me.GetResourceTypesWithDownloads() {
-		if err = me.WriteDataSources(resourceType); err != nil {
+	for _, module := range me.Modules {
+		if err = module.WriteDataSourcesFile(); err != nil {
 			return err
 		}
 	}
@@ -191,6 +231,7 @@ func (me *Environment) WriteResourceFiles() (err error) {
 	}
 	return nil
 }
+
 func (me *Environment) WriteProviderFiles() (err error) {
 	var outputFile *os.File
 	if outputFile, err = me.CreateFile("___providers___.tf"); err != nil {
@@ -228,34 +269,6 @@ func (me *Environment) WriteProviderFiles() (err error) {
 	}
 	for _, module := range me.Modules {
 		if err = module.WriteProviderFile(); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (me *Environment) WriteDataSources(resourceType ResourceType) (err error) {
-	if me.Flags.Flat {
-		return nil
-	}
-	module := me.Module(resourceType)
-	dataSources := module.DataSourceReferences()
-	if len(dataSources) == 0 {
-		return nil
-	}
-	if err = module.MkdirAll(); err != nil {
-		return err
-	}
-	var outputFile *os.File
-	if outputFile, err = module.OpenFile("___datasources___.tf"); err != nil {
-		return err
-	}
-	defer func() {
-		outputFile.Close()
-		format(outputFile.Name(), true)
-	}()
-	for _, dataSource := range dataSources {
-		if err = dataSource.DownloadTo(me.Credentials, outputFile); err != nil {
 			return err
 		}
 	}

@@ -29,18 +29,34 @@ type Dependency interface {
 	DataSourceType() DataSourceType
 }
 
+func Coalesce(d Dependency) Dependency {
+	switch dep := d.(type) {
+	case *entityds:
+		return &entityds{Type: dep.Type, Pattern: dep.Pattern, Coalesce: true}
+	}
+	return d
+}
+
 var Dependencies = struct {
-	ManagementZone   Dependency
-	LegacyID         func(resourceType ResourceType) Dependency
-	ID               func(resourceType ResourceType) Dependency
-	DataSourceID     func(DataSourceType) Dependency
-	RequestAttribute Dependency
+	ManagementZone       Dependency
+	LegacyID             func(resourceType ResourceType) Dependency
+	ID                   func(resourceType ResourceType) Dependency
+	Service              Dependency
+	HostGroup            Dependency
+	Host                 Dependency
+	ProcessGroup         Dependency
+	ProcessGroupInstance Dependency
+	RequestAttribute     Dependency
 }{
-	ManagementZone:   &mgmzdep{ResourceTypes.ManagementZoneV2},
-	LegacyID:         func(resourceType ResourceType) Dependency { return &legacyID{resourceType} },
-	ID:               func(resourceType ResourceType) Dependency { return &iddep{resourceType} },
-	DataSourceID:     func(dataSourceType DataSourceType) Dependency { return &dsid{dataSourceType} },
-	RequestAttribute: &reqAttName{ResourceTypes.RequestAttribute},
+	ManagementZone:       &mgmzdep{ResourceTypes.ManagementZoneV2},
+	LegacyID:             func(resourceType ResourceType) Dependency { return &legacyID{resourceType} },
+	ID:                   func(resourceType ResourceType) Dependency { return &iddep{resourceType} },
+	Service:              &entityds{"SERVICE", "SERVICE-[A-Z0-9]{16}", false},
+	HostGroup:            &entityds{"HOST_GROUP", "HOST_GROUP-[A-Z0-9]{16}", false},
+	Host:                 &entityds{"HOST", "HOST-[A-Z0-9]{16}", false},
+	ProcessGroup:         &entityds{"PROCESS_GROUP", "PROCESS_GROUP-[A-Z0-9]{16}", false},
+	ProcessGroupInstance: &entityds{"PROCESS_GROUP_INSTANCE", "PROCESS_GROUP_INSTANCE-[A-Z0-9]{16}", false},
+	RequestAttribute:     &reqAttName{ResourceTypes.RequestAttribute},
 }
 
 type mgmzdep struct {
@@ -154,31 +170,39 @@ func (me *iddep) Replace(environment *Environment, s string, replacingIn Resourc
 	return s, resources
 }
 
-type dsid struct {
-	dataSourceType DataSourceType
+type entityds struct {
+	Type     string
+	Pattern  string
+	Coalesce bool
 }
 
-func (me *dsid) ResourceType() ResourceType {
+func (me *entityds) ResourceType() ResourceType {
 	return ""
 }
 
-func (me *dsid) DataSourceType() DataSourceType {
-	return me.dataSourceType
+func (me *entityds) DataSourceType() DataSourceType {
+	return ""
 }
 
-func (me *dsid) Replace(environment *Environment, s string, replacingIn ResourceType) (string, []any) {
-	datasources := []any{}
-	for id, datasource := range environment.DataSourceModule(me.dataSourceType).DataSources {
-		found := false
-		if strings.Contains(s, id) {
-			s = strings.ReplaceAll(s, id, fmt.Sprintf("${data.%s.%s.id}", me.dataSourceType, datasource.UniqueName))
-			found = true
+func (me *entityds) Replace(environment *Environment, s string, replacingIn ResourceType) (string, []any) {
+	found := false
+	m1 := regexp.MustCompile(me.Pattern)
+	s = m1.ReplaceAllStringFunc(s, func(id string) string {
+		dataSource := environment.Module(replacingIn).DataSource(id)
+		if dataSource == nil {
+			return s
 		}
-		if found {
-			datasources = append(datasources, datasource)
+		found = true
+		if me.Coalesce {
+			return fmt.Sprintf(`${coalesce(data.dynatrace_entity.%s.id, "%s-0000000000000000")}`, dataSource.ID, me.Type)
 		}
+		return fmt.Sprintf("${data.dynatrace_entity.%s.id}", dataSource.ID)
+	})
+	if found {
+		return s, []any{found}
+	} else {
+		return s, []any{}
 	}
-	return s, datasources
 }
 
 type reqAttName struct {

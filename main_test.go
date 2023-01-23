@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
 	"testing"
 )
 
@@ -106,3 +107,51 @@ func TestFoo(t *testing.T) {
 }
 
 func hide(v any) {}
+
+func TestRegex(t *testing.T) {
+	contents := `
+# ID calc:service.apigee_reverse_pt
+# ATTENTION The metric needs to either get limited by specifying a Management Zone or by specifying one or more conditions related to SERVICE_DISPLAY_NAME, SERVICE_PUBLIC_DOMAIN_NAME, SERVICE_WEB_APPLICATION_ID, SERVICE_WEB_CONTEXT_ROOT, SERVICE_WEB_SERVER_NAME, SERVICE_WEB_SERVICE_NAME, SERVICE_WEB_SERVICE_NAMESPACE, REMOTE_SERVICE_NAME, REMOTE_ENDPOINT, AZURE_FUNCTIONS_SITE_NAME, AZURE_FUNCTIONS_FUNCTION_NAME, CTG_GATEWAY_URL, CTG_SERVER_NAME, ACTOR_SYSTEM, ESB_APPLICATION_NAME, SERVICE_TAG, SERVICE_TYPE, PROCESS_GROUP_TAG or PROCESS_GROUP_NAME
+resource "dynatrace_calculated_service_metric" "Apigee_reverse_PT" {
+  name       = "Apigee_reverse_PT"
+  enabled    = true
+  entity_id  = "SERVICE-262EAAB57DC4CF7E"
+  metric_key = "calc:service.apigee_reverse_pt"
+  unit       = "MICRO_SECOND"
+  conditions {
+    condition {
+      attribute = "REQUEST_NAME"
+      comparison {
+        # negate = false
+        string {
+          # case_sensitive = false
+          operator         = "CONTAINS"
+          value            = "/deposit-payments/idp-mandatory-receive/v1/payme"
+        }
+      }
+    }
+  }
+  dimension_definition {
+    name              = "Dimension"
+    dimension         = "{Request:Name}"
+    top_x             = 10
+    top_x_aggregation = "AVERAGE"
+    top_x_direction   = "DESCENDING"
+  }
+  metric_definition {
+    metric = "PROCESSING_TIME"
+  }
+}
+`
+	m1 := regexp.MustCompile("SERVICE-[A-Z0-9]{16}")
+	m1.ReplaceAllStringFunc(contents, func(s string) string {
+		t.Log(s)
+		return s
+	})
+	// services := m1.FindAllString(contents, -1)
+	// if len(services) > 0 {
+	// 	for _, service := range services {
+	// 		t.Log(service)
+	// 	}
+	// }
+}

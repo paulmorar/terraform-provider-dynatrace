@@ -36,11 +36,17 @@ func (me *Hosts) ToStubs() settings.Stubs {
 	return res
 }
 
+type HostGroup struct {
+	ID   string `json:"meId"`
+	Name string `json:"name"`
+}
+
 // Host is a short representation of a host
 type Host struct {
 	EntityId    string       `json:"entityId"`    // The entity ID of the host
 	DisplayName string       `json:"displayName"` // The name of the host as displayed in the UI
 	Tags        []tagapi.Tag `json:"tags"`        // The list of entity tags
+	HostGroup   *HostGroup   `json:"hostGroup"`
 }
 
 func (me *Host) Schema() map[string]*schema.Schema {

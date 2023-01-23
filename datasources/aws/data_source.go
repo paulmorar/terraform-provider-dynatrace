@@ -18,8 +18,8 @@
 package aws
 
 import (
+	svc "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/credentials/aws/iam"
 	iam "github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/api/v1/config/credentials/aws/iam/settings"
-	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/export"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/provider/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -32,7 +32,7 @@ func DataSource() *schema.Resource {
 }
 
 func DataSourceRead(d *schema.ResourceData, m any) (err error) {
-	service := export.DSService(config.Credentials(m), export.DataSourceTypes.AWSIAMExternalID)
+	service := svc.Service(config.Credentials(m))
 
 	var settings iam.Settings
 	if err = service.Get("", &settings); err != nil {

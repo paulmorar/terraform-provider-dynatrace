@@ -263,8 +263,10 @@ func (me *Resource) PostProcess() error {
 			if module.Status == ModuleStati.Erronous {
 				continue
 			}
-			if err = module.Discover(); err != nil {
-				return err
+			if !module.Status.IsOneOf(ModuleStati.Downloaded, ModuleStati.Discovered, ModuleStati.Erronous) {
+				if err = module.Discover(); err != nil {
+					return err
+				}
 			}
 		}
 		var err error

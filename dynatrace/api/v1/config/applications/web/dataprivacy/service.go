@@ -37,7 +37,7 @@ func Service(credentials *settings.Credentials) settings.CRUDService[*dataprivac
 	return &service{
 		schemaID:      SchemaID,
 		client:        rest.DefaultClient(credentials.URL, credentials.Token),
-		webAppService: cache.CRUD(webservice.Service(credentials))}
+		webAppService: cache.CRUD(webservice.Service(credentials), true)}
 }
 
 type service struct {
@@ -54,12 +54,21 @@ func (me *service) Get(id string, v *dataprivacy.ApplicationDataPrivacy) error {
 		return err
 	}
 
-	application := web.Application{}
-	if err := me.webAppService.Get(id, &application); err != nil {
+	stubs, err := me.webAppService.List()
+	if err != nil {
 		return err
 	}
-	v.Name = "Data Privacy Settings for " + application.Name
-	v.WebApplicationID = &id
+	for _, stub := range stubs {
+		if stub.ID == id {
+			v.Name = "Data Privacy Settings for " + stub.Name
+			v.WebApplicationID = &id
+			break
+		}
+	}
+	// application := web.Application{}
+	// if err := me.webAppService.Get(id, &application); err != nil {
+	// 	return err
+	// }
 	return nil
 }
 

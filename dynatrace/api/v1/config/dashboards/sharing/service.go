@@ -36,7 +36,7 @@ const SchemaID = "v1:config:dashboards:sharing"
 func Service(credentials *settings.Credentials) settings.CRUDService[*sharing.DashboardSharing] {
 	return &service{
 		client:           rest.DefaultClient(credentials.URL, credentials.Token),
-		dashboardService: cache.CRUD(jsondashboards.Service(credentials)),
+		dashboardService: cache.CRUD(jsondashboards.Service(credentials), true),
 	}
 }
 

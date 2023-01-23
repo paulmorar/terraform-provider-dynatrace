@@ -38,7 +38,7 @@ const SchemaID = "v1:config:applications:web:errors"
 func Service(credentials *settings.Credentials) settings.CRUDService[*errors.Rules] {
 	return &service{
 		client:        rest.DefaultClient(credentials.URL, credentials.Token),
-		webAppService: cache.CRUD(webservice.Service(credentials))}
+		webAppService: cache.CRUD(webservice.Service(credentials), true)}
 }
 
 type service struct {
@@ -52,12 +52,23 @@ func (me *service) Get(id string, v *errors.Rules) error {
 		return err
 	}
 
-	application := web.Application{}
-	if err := me.webAppService.Get(id, &application); err != nil {
+	// application := web.Application{}
+	// if err := me.webAppService.Get(id, &application); err != nil {
+	// 	return err
+	// }
+	stubs, err := me.webAppService.List()
+	if err != nil {
 		return err
 	}
-	v.Name = "Error Rules for " + application.Name
-	v.WebApplicationID = id
+	for _, stub := range stubs {
+		if stub.ID == id {
+			v.Name = "Data Privacy Settings for " + stub.Name
+			v.WebApplicationID = id
+			break
+		}
+	}
+	// v.Name = "Error Rules for " + application.Name
+	// v.WebApplicationID = id
 	return nil
 }
 

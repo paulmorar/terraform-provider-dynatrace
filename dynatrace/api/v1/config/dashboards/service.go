@@ -28,7 +28,7 @@ import (
 const SchemaID = "v1:config:dashboards"
 
 func Service(credentials *settings.Credentials) settings.CRUDService[*dashboards.Dashboard] {
-	return &service{service: cache.CRUD(jsondashboards.Service(credentials))}
+	return &service{service: cache.CRUD(jsondashboards.Service(credentials), true)}
 }
 
 type service struct {

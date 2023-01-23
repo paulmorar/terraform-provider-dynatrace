@@ -15,7 +15,7 @@
 * limitations under the License.
  */
 
-package entities
+package entity
 
 import (
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hcl"

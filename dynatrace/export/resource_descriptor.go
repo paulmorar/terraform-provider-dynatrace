@@ -163,7 +163,14 @@ var AllResources = map[ResourceType]ResourceDescriptor{
 		errors.Service,
 		Dependencies.ID(ResourceTypes.WebApplication),
 	),
-	ResourceTypes.AutoTag: NewResourceDescriptor(autotags.Service),
+	ResourceTypes.AutoTag: NewResourceDescriptor(
+		autotags.Service,
+		Coalesce(Dependencies.Service),
+		Coalesce(Dependencies.Host),
+		Coalesce(Dependencies.HostGroup),
+		Coalesce(Dependencies.ProcessGroup),
+		Coalesce(Dependencies.ProcessGroupInstance),
+	),
 	ResourceTypes.AWSCredentials: NewResourceDescriptor(
 		aws.Service,
 		Dependencies.ID(ResourceTypes.AWSCredentials),
@@ -182,6 +189,11 @@ var AllResources = map[ResourceType]ResourceDescriptor{
 		Dependencies.ManagementZone,
 		Dependencies.RequestAttribute,
 		Dependencies.ManagementZone,
+		Dependencies.Service,
+		Dependencies.Host,
+		Dependencies.HostGroup,
+		Dependencies.ProcessGroup,
+		Dependencies.ProcessGroupInstance,
 	),
 	ResourceTypes.CloudFoundryCredentials: NewResourceDescriptor(cloudfoundry.Service),
 	ResourceTypes.CustomAnomalies: NewResourceDescriptor(
@@ -233,7 +245,11 @@ var AllResources = map[ResourceType]ResourceDescriptor{
 	).Specify(notifications.Types.Jira),
 	ResourceTypes.KeyRequests: NewResourceDescriptor(
 		keyrequests.Service,
-		Dependencies.DataSourceID(DataSourceTypes.Service),
+		Dependencies.Service,
+		Dependencies.Host,
+		Dependencies.HostGroup,
+		Dependencies.ProcessGroup,
+		Dependencies.ProcessGroupInstance,
 	),
 	ResourceTypes.KubernetesCredentials: NewResourceDescriptor(kubernetes.Service),
 	ResourceTypes.Maintenance: NewResourceDescriptor(
@@ -351,6 +367,6 @@ func Service(credentials *settings.Credentials, resourceType ResourceType) setti
 	return AllResources[resourceType].Service(credentials)
 }
 
-func DSService(credentials *settings.Credentials, dataSourceType DataSourceType) settings.RService[settings.Settings] {
-	return AllDataSources[dataSourceType].Service(credentials)
-}
+// func DSService(credentials *settings.Credentials, dataSourceType DataSourceType) settings.RService[settings.Settings] {
+// 	return AllDataSources[dataSourceType].Service(credentials)
+// }
