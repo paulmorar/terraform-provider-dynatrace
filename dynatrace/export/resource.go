@@ -18,6 +18,7 @@
 package export
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"path"
@@ -27,6 +28,7 @@ import (
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/rest"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/dynatrace/settings"
 
+	"github.com/dlclark/regexp2"
 	"github.com/dynatrace-oss/terraform-provider-dynatrace/terraform/hclgen"
 )
 
@@ -41,6 +43,8 @@ type Resource struct {
 	Error                error
 	ResourceReferences   []*Resource
 	DataSourceReferences []*DataSource
+	OutputFileAbs        string
+	Flawed               bool
 }
 
 func (me *Resource) SetName(name string) *Resource {
@@ -105,6 +109,9 @@ func (me *Resource) GetFileName() string {
 }
 
 func (me *Resource) GetFile() string {
+	if me.Flawed {
+		return path.Join(me.Module.GetFlawedFolder(), me.GetFileName())
+	}
 	return path.Join(me.Module.GetFolder(), me.GetFileName())
 }
 
@@ -112,15 +119,43 @@ func (me *Resource) GetAttentionFile() string {
 	return path.Join(me.Module.GetAttentionFolder(false), me.GetFileName())
 }
 
-func (me *Resource) GetFlawedFile() string {
-	return path.Join(me.Module.GetFlawedFolder(false), me.GetFileName())
-}
-
 func (me *Resource) CreateFlawedFile() (*os.File, error) {
-	flawedFile := me.GetFlawedFile()
+	flawedFile := path.Join(me.Module.GetFlawedFolder(false), me.GetFileName())
 	absdir, _ := filepath.Abs(path.Dir(flawedFile))
 	os.MkdirAll(absdir, os.ModePerm)
 	return os.Create(flawedFile)
+}
+
+// Please use possessive or lazy quantifiers within your capture group
+const QUANTIFIERS_WITHIN_CAPTURING_GROUP = `(?<!\\)(?:\\\\)*([^\*\+]*[\+\*](?![\+\?]).*(?<!\\)(?:\\\\)*)`
+
+// Please do not use a greedy all match
+const ALL_MATCH_NO_CAPTURING_GROUP = `(?<!\()\.[\*\+](?![\)\+\?])`
+
+// Greedy or lazy character classes are not allowed, please use a possessive quantifier instead
+const CHARACTER_CLASS_WITH_GREEDY_OR_LAZY_QUANTIFIER = `(?<!\\)(?:\\\\)*](?>\*|\+)(?!\+)`
+
+func regexCheck(s string) ([]string, error) {
+	result := []string{}
+	match := false
+	var err error
+
+	if match, err = regexp2.MustCompile(QUANTIFIERS_WITHIN_CAPTURING_GROUP, 0).MatchString(s); err != nil {
+		return nil, err
+	} else if match {
+		result = append(result, "Please use possessive or lazy quantifiers within your capture group")
+	}
+	if match, err = regexp2.MustCompile(ALL_MATCH_NO_CAPTURING_GROUP, 0).MatchString(s); err != nil {
+		return nil, err
+	} else if match {
+		result = append(result, "Please do not use a greedy all match")
+	}
+	if match, err = regexp2.MustCompile(CHARACTER_CLASS_WITH_GREEDY_OR_LAZY_QUANTIFIER, 0).MatchString(s); err != nil {
+		return nil, err
+	} else if match {
+		result = append(result, "Greedy or lazy character classes are not allowed, please use a possessive quantifier instead")
+	}
+	return result, nil
 }
 
 func (me *Resource) Download() error {
@@ -178,23 +213,9 @@ func (me *Resource) Download() error {
 	if len(comments) > 0 {
 		for _, comment := range comments {
 			if strings.HasPrefix(comment, "FLAWED SETTINGS") {
-				me.Status = ResourceStati.Erronous
+				me.Flawed = true
 			}
 		}
-	}
-
-	me.Module.MkdirAll()
-	var outputFile *os.File
-	if me.Status != ResourceStati.Erronous {
-		if outputFile, err = me.CreateFile(); err != nil {
-			return err
-		}
-		defer outputFile.Close()
-	} else {
-		if outputFile, err = me.CreateFlawedFile(); err != nil {
-			return err
-		}
-		defer outputFile.Close()
 	}
 
 	finalComments := []string{}
@@ -213,10 +234,44 @@ func (me *Resource) Download() error {
 		}
 	}
 
-	if err = hclgen.ExportResource(settngs, outputFile, string(me.Type), me.UniqueName, finalComments...); err != nil {
+	buf := new(bytes.Buffer)
+
+	if err = hclgen.ExportResource(settngs, buf, string(me.Type), me.UniqueName, finalComments...); err != nil {
 		return err
 	}
-	if me.Status != ResourceStati.Erronous && len(comments) > 0 {
+
+	fileContents := buf.String()
+
+	buf = new(bytes.Buffer)
+	flawedLines, err := regexCheck(fileContents)
+	if err != nil {
+		return err
+	}
+	if len(flawedLines) > 0 {
+		me.Flawed = true
+		for _, flawedLine := range flawedLines {
+			if _, err := buf.WriteString("# FLAWED SETTINGS " + flawedLine + "\n"); err != nil {
+				return err
+			}
+		}
+	}
+	if _, err := buf.WriteString(fileContents); err != nil {
+		return err
+	}
+
+	me.Module.MkdirAll(me.Flawed)
+
+	var outputFile *os.File
+	if outputFile, err = me.CreateFile(); err != nil {
+		return err
+	}
+	defer outputFile.Close()
+
+	if _, err := outputFile.Write(buf.Bytes()); err != nil {
+		return err
+	}
+
+	if !me.Flawed && me.Status != ResourceStati.Erronous && len(comments) > 0 {
 		orig, _ := filepath.Abs(me.GetFile())
 		att, _ := filepath.Abs(me.GetAttentionFile())
 		absdir, _ := filepath.Abs(path.Dir(me.GetAttentionFile()))
@@ -249,16 +304,7 @@ func (me *Resource) PostProcess() error {
 	}
 	for _, dependency := range descriptor.Dependencies {
 		resourceType := dependency.ResourceType()
-		if len(resourceType) == 0 {
-			// dataSourceType := dependency.DataSourceType()
-			// module := me.Module.Environment.DataSourceModule(dataSourceType)
-			// if module.Status == ModuleStati.Erronous {
-			// 	continue
-			// }
-			// if err = module.Discover(credentials); err != nil {
-			// 	return err
-			// }
-		} else {
+		if len(resourceType) > 0 {
 			module := me.Module.Environment.Module(resourceType)
 			if module.Status == ModuleStati.Erronous {
 				continue

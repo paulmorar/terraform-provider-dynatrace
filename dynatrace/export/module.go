@@ -123,7 +123,10 @@ func (me *Module) Resource(id string) *Resource {
 	return res
 }
 
-func (me *Module) MkdirAll() error {
+func (me *Module) MkdirAll(flawed bool) error {
+	if flawed {
+		return os.MkdirAll(me.GetFlawedFolder(), os.ModePerm)
+	}
 	return os.MkdirAll(me.GetFolder(), os.ModePerm)
 }
 
@@ -166,7 +169,9 @@ func (me *Module) OpenFile(name string) (file *os.File, err error) {
 }
 
 func (me *Module) CreateFile(name string) (*os.File, error) {
-	return os.Create(me.GetFile(name))
+	fileName := me.GetFile(name)
+	os.MkdirAll(filepath.Dir(fileName), os.ModePerm)
+	return os.Create(fileName)
 }
 
 func (me *Module) WriteProviderFile() (err error) {
@@ -176,7 +181,7 @@ func (me *Module) WriteProviderFile() (err error) {
 	if !me.ContainsPostProcessedResources() {
 		return
 	}
-	if err = me.MkdirAll(); err != nil {
+	if err = me.MkdirAll(false); err != nil {
 		return err
 	}
 	var outputFile *os.File

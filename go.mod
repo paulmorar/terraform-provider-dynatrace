@@ -3,6 +3,7 @@ module github.com/dynatrace-oss/terraform-provider-dynatrace
 go 1.19
 
 require (
+	github.com/dlclark/regexp2 v1.8.0
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/go-hclog v1.4.0
 	github.com/hashicorp/hcl/v2 v2.15.0
